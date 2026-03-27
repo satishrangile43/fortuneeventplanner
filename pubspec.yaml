@@ -1,0 +1,49 @@
+name: event
+description: "A premium Flutter project for Fortune Event Planner with 100+ themes and dynamic UI."
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  
+  # --- CORE UI & NAVIGATION ---
+  cupertino_icons: ^1.0.8
+  google_fonts: ^6.2.1
+  go_router: ^13.2.0
+  responsive_builder: ^0.7.0
+  provider: ^6.1.2 # Theme aur State management ke liye
+  
+  # --- ANIMATIONS & EFFECTS ---
+  flutter_animate: ^4.5.0
+  lottie: ^3.1.2 # Premium vector animations ke liye
+  
+  # --- LAYOUT & COMPONENTS ---
+  carousel_slider: ^5.0.0 # Upgraded version for Sliders
+  flutter_staggered_grid_view: ^0.7.0 # Masonry Gallery ke liye
+  font_awesome_flutter: ^10.7.0 # Premium Icons (Brand icons ke liye best hai)
+  
+  # --- THEMING (100+ CUSTOM THEMES) ---
+  flex_color_scheme: ^8.1.1 # Isse hum tumhare GuruDiary wale themes easily handle karenge
+  
+  # --- NETWORKING & UTILS ---
+  http: ^1.2.0 # Google Sheets integration ke liye
+  url_launcher: ^6.2.5 # Phone, Email aur Website links ke liye
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.0 # Latest lints for clean code
+
+flutter:
+  uses-material-design: true
+
+  # --- ASSETS SECTION ---
+  assets:
+    - assets/images/
+    - assets/images/icons/
+    - assets/animations/ # Lottie files ke liye naya folder
