@@ -1,5 +1,7 @@
 import 'dart:convert';
+import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 
 import '../theme/app_theme.dart'; // 🚀 GLOBAL THEME ENGINE IMPORTED
@@ -22,8 +24,68 @@ class _ContactFormWidgetState extends State<ContactFormWidget> {
 
   bool _isLoading = false;
 
+  // 🚀 ENGINE SYNC: Dynamic Snackbar/Toast Generator
+  void _showCustomToast(String message, Color bgColor, IconData icon) {
+    if (AppTheme.enableSoundEffects) HapticFeedback.mediumImpact();
+
+    SnackBar behavior;
+    
+    // Check global toast style setting
+    if (AppTheme.toastStyle == 'glass') {
+      behavior = SnackBar(
+        content: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+            child: Row(
+              children: [
+                Icon(icon, color: Colors.white),
+                const SizedBox(width: 10),
+                Expanded(child: Text(message, style: AppTheme.getBodyStyle(fontSize: 14, color: Colors.white))),
+              ],
+            ),
+          ),
+        ),
+        backgroundColor: bgColor.withValues(alpha: 0.6),
+        behavior: SnackBarBehavior.floating,
+        elevation: 0,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppTheme.getGlobalRadius())),
+      );
+    } else if (AppTheme.toastStyle == 'banner') {
+      behavior = SnackBar(
+        content: Row(
+          children: [
+            Icon(icon, color: Colors.white),
+            const SizedBox(width: 10),
+            Expanded(child: Text(message, style: AppTheme.getBodyStyle(fontSize: 14, color: Colors.white))),
+          ],
+        ),
+        backgroundColor: bgColor,
+        behavior: SnackBarBehavior.fixed, // Attaches to the bottom
+      );
+    } else { // default floating
+      behavior = SnackBar(
+        content: Row(
+          children: [
+            Icon(icon, color: Colors.white),
+            const SizedBox(width: 10),
+            Expanded(child: Text(message, style: AppTheme.getBodyStyle(fontSize: 14, color: Colors.white))),
+          ],
+        ),
+        backgroundColor: bgColor,
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppTheme.getGlobalRadius())),
+      );
+    }
+
+    ScaffoldMessenger.of(context).showSnackBar(behavior);
+  }
+
   Future<void> _submitForm() async {
-    if (!_formKey.currentState!.validate()) return;
+    if (!_formKey.currentState!.validate()) {
+      if (AppTheme.enableSoundEffects) HapticFeedback.vibrate();
+      return;
+    }
 
     setState(() => _isLoading = true);
 
@@ -44,14 +106,8 @@ class _ContactFormWidgetState extends State<ContactFormWidget> {
       if (!mounted) return; 
 
       if (response.statusCode == 200 || response.statusCode == 302) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            // 🚀 ENGINE SYNC: Dynamic Font
-            content: Text('Message sent successfully!', style: AppTheme.getBodyStyle(fontSize: 14, color: Colors.white)),
-            backgroundColor: Colors.green,
-            behavior: SnackBarBehavior.floating,
-          ),
-        );
+        _showCustomToast('Message sent successfully! We will contact you soon.', Colors.green.shade600, Icons.check_circle_outline);
+        
         _nameController.clear();
         _emailController.clear();
         _eventTypeController.clear();
@@ -61,14 +117,7 @@ class _ContactFormWidgetState extends State<ContactFormWidget> {
       }
     } catch (e) {
       if (!mounted) return; 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          // 🚀 ENGINE SYNC: Dynamic Font
-          content: Text('Something went wrong. Please try again.', style: AppTheme.getBodyStyle(fontSize: 14, color: Colors.white)),
-          backgroundColor: Colors.redAccent,
-          behavior: SnackBarBehavior.floating,
-        ),
-      );
+      _showCustomToast('Something went wrong. Please try again.', Colors.redAccent.shade700, Icons.error_outline);
     } finally {
       if (mounted) {
         setState(() => _isLoading = false);
@@ -79,7 +128,7 @@ class _ContactFormWidgetState extends State<ContactFormWidget> {
   @override
   Widget build(BuildContext context) {
     // 🚀 ENGINE SYNC: Dynamic Button Radius based on Global Style
-    double buttonRadius = AppTheme.buttonStyle == 'pill' ? 50 : (AppTheme.buttonStyle == 'square' ? 0 : 10);
+    double buttonRadius = AppTheme.buttonStyle == 'pill' ? 50 : (AppTheme.buttonStyle == 'square' ? 0 : AppTheme.getGlobalRadius());
     
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -123,32 +172,36 @@ class _ContactFormWidgetState extends State<ContactFormWidget> {
               
               const SizedBox(height: 40),
               
-              SizedBox(
-                width: double.infinity,
-                height: 55,
-                child: ElevatedButton(
-                  onPressed: _isLoading ? null : _submitForm,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppTheme.accent, // 🚀 ENGINE SYNC: Accent Color
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(buttonRadius)), // 🚀 ENGINE SYNC: Button Style
-                    elevation: AppTheme.enableShadows ? 5 : 0, // 🚀 ENGINE SYNC: Shadow toggle
-                    shadowColor: AppTheme.accent.withValues(alpha: 0.4),
+              MouseRegion(
+                // 🚀 ENGINE SYNC: Custom Cursor
+                cursor: AppTheme.cursorType == 'none' ? SystemMouseCursors.none : SystemMouseCursors.click,
+                child: SizedBox(
+                  width: double.infinity,
+                  height: 55,
+                  child: ElevatedButton(
+                    onPressed: _isLoading ? null : _submitForm,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppTheme.accent, // 🚀 ENGINE SYNC: Accent Color
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(buttonRadius)), // 🚀 ENGINE SYNC: Button Style
+                      elevation: AppTheme.enableShadows ? 8 : 0, // 🚀 ENGINE SYNC: Shadow toggle
+                      shadowColor: AppTheme.accent.withValues(alpha: 0.4),
+                    ),
+                    child: _isLoading 
+                      ? const SizedBox(
+                          height: 25, width: 25, 
+                          // 🚀 ENGINE SYNC: Loader Color based on text main
+                          child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2)
+                        )
+                      : Text(
+                          'SEND MESSAGE',
+                          // 🚀 ENGINE SYNC: Body Font
+                          style: AppTheme.getBodyStyle(
+                            fontSize: 14,
+                            weight: FontWeight.bold,
+                            color: AppTheme.bg, // 🚀 Contrast text color
+                          ).copyWith(letterSpacing: 2.0),
+                        ),
                   ),
-                  child: _isLoading 
-                    ? const SizedBox(
-                        height: 25, width: 25, 
-                        // 🚀 ENGINE SYNC: Loader Color based on text main
-                        child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2)
-                      )
-                    : Text(
-                        'SEND MESSAGE',
-                        // 🚀 ENGINE SYNC: Body Font
-                        style: AppTheme.getBodyStyle(
-                          fontSize: 14,
-                          weight: FontWeight.bold,
-                          color: AppTheme.bg, // 🚀 Contrast text color
-                        ).copyWith(letterSpacing: 2.0),
-                      ),
                 ),
               ),
             ],
@@ -159,10 +212,6 @@ class _ContactFormWidgetState extends State<ContactFormWidget> {
   }
 
   Widget _buildTextField(String label, String hint, TextEditingController controller, {int maxLines = 1}) {
-    // 🚀 ENGINE SYNC: Form Field Radius based on Global Component Style
-    double fieldRadius = AppTheme.buttonStyle == 'pill' ? 25 : (AppTheme.buttonStyle == 'square' ? 0 : 10);
-    if(maxLines > 1 && AppTheme.buttonStyle == 'pill') fieldRadius = 20; // Don't make large text areas fully rounded
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -181,26 +230,8 @@ class _ContactFormWidgetState extends State<ContactFormWidget> {
           // 🚀 ENGINE SYNC: Input Text Font
           style: AppTheme.getBodyStyle(fontSize: 14, color: AppTheme.textMain), 
           validator: (value) => (value == null || value.trim().isEmpty) ? 'Required' : null,
-          decoration: InputDecoration(
-            hintText: hint,
-            // 🚀 ENGINE SYNC: Hint Font
-            hintStyle: AppTheme.getBodyStyle(fontSize: 14, color: AppTheme.textSub.withValues(alpha: 0.5)),
-            filled: true,
-            fillColor: AppTheme.cardBg, // 🚀 ENGINE SYNC: Dynamic Card Background
-            contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(fieldRadius),
-              borderSide: BorderSide(color: AppTheme.textSub.withValues(alpha: 0.2)),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(fieldRadius),
-              borderSide: BorderSide(color: AppTheme.accent, width: 2), // 🚀 ENGINE SYNC: Active Border
-            ),
-            errorBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(fieldRadius),
-              borderSide: const BorderSide(color: Colors.redAccent),
-            ),
-          ),
+          // 🚀 ENGINE SYNC: Master Decoration from AppTheme
+          decoration: AppTheme.getFormInputDecoration(hint),
         ),
       ],
     );

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 // Hamare banaye hue Custom Widgets aur Theme Engine
@@ -23,7 +24,10 @@ class ContactPage extends StatelessWidget {
       context: context,
       builder: (ctx) => AlertDialog(
         backgroundColor: Colors.black.withValues(alpha: 0.9),
-        shape: RoundedRectangleBorder(side: BorderSide(color: AppTheme.accent, width: 1), borderRadius: BorderRadius.circular(15)),
+        shape: RoundedRectangleBorder(
+          side: BorderSide(color: AppTheme.accent, width: 1), 
+          borderRadius: BorderRadius.circular(AppTheme.getGlobalRadius())
+        ),
         title: Text("✏️ Edit Object", style: AppTheme.getHeadingStyle(fontSize: 18, color: Colors.white)),
         content: Column(
           mainAxisSize: MainAxisSize.min,
@@ -55,7 +59,10 @@ class ContactPage extends StatelessWidget {
                 Colors.redAccent, Colors.greenAccent, Colors.purpleAccent, Colors.orangeAccent
               ].map((c) => 
                 GestureDetector(
-                  onTap: () => provider.updateElement('${elementKey}_color', c),
+                  onTap: () {
+                    if (AppTheme.enableSoundEffects) HapticFeedback.selectionClick();
+                    provider.updateElement('${elementKey}_color', c);
+                  },
                   child: Container(
                     width: 30, height: 30,
                     decoration: BoxDecoration(shape: BoxShape.circle, color: c, border: Border.all(color: Colors.white38)),
@@ -74,7 +81,10 @@ class ContactPage extends StatelessWidget {
                 },
                 icon: const Icon(Icons.refresh, color: Colors.white, size: 16),
                 label: const Text("Reset", style: TextStyle(color: Colors.white)),
-                style: ElevatedButton.styleFrom(backgroundColor: Colors.redAccent.withValues(alpha: 0.8)),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.redAccent.withValues(alpha: 0.8),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppTheme.getGlobalRadius())),
+                ),
               ),
             )
           ],
@@ -101,7 +111,7 @@ class ContactPage extends StatelessWidget {
         decoration: BoxDecoration(
           border: Border.all(color: Colors.pinkAccent, width: 2, style: BorderStyle.solid), 
           color: Colors.pinkAccent.withValues(alpha: 0.1),
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: BorderRadius.circular(AppTheme.getGlobalRadius()),
         ),
         padding: const EdgeInsets.all(4),
         child: child,
@@ -114,75 +124,74 @@ class ContactPage extends StatelessWidget {
     var screenSize = MediaQuery.of(context).size;
     bool isMobile = screenSize.width < 850;
 
-    // 🚀 ENGINE SYNC: Wrap with Consumer
     return Consumer<ThemeProvider>(
       builder: (context, provider, child) {
-        return Scaffold(
-          // 🎨 ENGINE SYNC: Dynamic Background with local override support
-          backgroundColor: provider.elementSettings['contact_bg_color'] ?? AppTheme.bg,
-          body: Column(
-            children: [
-              const CustomNavbar(),
-              Expanded(
-                child: SingleChildScrollView(
-                  physics: const BouncingScrollPhysics(),
-                  child: Column(
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: isMobile ? 20 : 80,
-                          vertical: 80, // Thoda extra premium padding
-                        ),
-                        child: isMobile
-                            ? Column(
-                                children: [
-                                  _buildContactInfo(context, provider, isMobile),
-                                  const SizedBox(height: 50),
-                                  // 🚀 ENGINE SYNC: Form Container with UI Style Engine
-                                  Container(
-                                    padding: const EdgeInsets.all(30),
-                                    decoration: AppTheme.getCardDecoration(isHovered: false),
-                                    child: const ContactFormWidget(isMobile: true),
-                                  ),
-                                ],
-                              )
-                            : Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  // Left Side: Text & Contact Details
-                                  Expanded(flex: 1, child: _buildContactInfo(context, provider, isMobile)),
-                                  const SizedBox(width: 80),
-                                  // Right Side: Form Container with UI Style Engine
-                                  Expanded(
-                                    flex: 1,
-                                    child: Container(
-                                      padding: const EdgeInsets.all(50),
-                                      // 🚀 ENGINE SYNC: UI Style Engine (Glass, Flat, etc.)
+        // ✅ FIX: Scaffold ko MouseRegion mein wrap kiya kyunki Scaffold mouseCursor support nahi karta
+        return MouseRegion(
+          cursor: AppTheme.cursorType == 'none' ? SystemMouseCursors.none : MouseCursor.defer,
+          child: Scaffold(
+            backgroundColor: provider.elementSettings['contact_bg_color'] ?? AppTheme.bg,
+            body: Column(
+              children: [
+                const CustomNavbar(),
+                Expanded(
+                  child: SingleChildScrollView(
+                    physics: const BouncingScrollPhysics(),
+                    child: Column(
+                      children: [
+                        Padding(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: isMobile ? 20 : 80,
+                            vertical: 80,
+                          ),
+                          child: isMobile
+                              ? Column(
+                                  children: [
+                                    _buildContactInfo(context, provider, isMobile),
+                                    const SizedBox(height: 50),
+                                    Container(
+                                      padding: const EdgeInsets.all(30),
                                       decoration: AppTheme.getCardDecoration(isHovered: false),
-                                      child: const ContactFormWidget(isMobile: false),
+                                      child: const ContactFormWidget(isMobile: true),
                                     ),
-                                  ),
-                                ],
-                              ),
-                      ),
-                      const CustomFooter(),
-                    ],
+                                  ],
+                                )
+                              : Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Expanded(flex: 1, child: _buildContactInfo(context, provider, isMobile)),
+                                    const SizedBox(width: 80),
+                                    Expanded(
+                                      flex: 1,
+                                      child: AppTheme.applyAnim(
+                                        Container(
+                                          padding: const EdgeInsets.all(50),
+                                          decoration: AppTheme.getCardDecoration(isHovered: false),
+                                          child: const ContactFormWidget(isMobile: false),
+                                        ),
+                                        500,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                        ),
+                        const CustomFooter(),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         );
       }
     );
   }
 
-  // Left Side (Contact Details)
   Widget _buildContactInfo(BuildContext context, ThemeProvider provider, bool isMobile) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // 🚀 ENGINE SYNC: Editable Title
         _buildEditable(
           context, provider, 'contact_title', "Let's\nConnect.",
           AppTheme.applyAnim(
@@ -197,10 +206,7 @@ class ContactPage extends StatelessWidget {
             100,
           ),
         ),
-        
         const SizedBox(height: 30),
-        
-        // 🚀 ENGINE SYNC: Editable Subtitle
         _buildEditable(
           context, provider, 'contact_subtitle', 'Ready to elevate your next event?\nContact our team for a consultation.',
           AppTheme.applyAnim(
@@ -214,15 +220,11 @@ class ContactPage extends StatelessWidget {
             300,
           ),
         ),
-
         const SizedBox(height: 50),
-
         _buildDetailItem(context, provider, 'contact_1', 'KAUSHIK PANJRE', '+91 91745 64996', 400),
         _buildDetailItem(context, provider, 'contact_2', 'MEET SHAH', '+91 7693064811', 500),
         _buildDetailItem(context, provider, 'contact_3', 'PUSHPENDRA THAKUR', '+91 8224968245', 600),
-        
         const SizedBox(height: 20),
-        
         _buildDetailItem(context, provider, 'contact_email', 'EMAIL', 'fortuneeventplanner1@gmail.com', 700),
         _buildDetailItem(context, provider, 'contact_address', 'ADDRESS', '152 orbit mall vijay nagar indore', 800),
       ],
@@ -231,36 +233,63 @@ class ContactPage extends StatelessWidget {
 
   Widget _buildDetailItem(BuildContext context, ThemeProvider provider, String id, String title, String detail, int delay) {
     return AppTheme.applyAnim(
-      Padding(
-        padding: const EdgeInsets.only(bottom: 30.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              title,
-              style: AppTheme.getBodyStyle(
-                fontSize: 12,
-                weight: FontWeight.bold,
-                color: AppTheme.accent.withValues(alpha: .7), 
-              ).copyWith(letterSpacing: 3.0),
-            ),
-            const SizedBox(height: 8),
-            // 🚀 ENGINE SYNC: Editable Detail Text
-            _buildEditable(
-              context, provider, '${id}_detail', detail,
+      _ContactInfoHoverWrapper(
+        child: Padding(
+          padding: const EdgeInsets.only(bottom: 30.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
               Text(
-                provider.elementSettings['${id}_detail_text'] ?? detail,
+                title,
                 style: AppTheme.getBodyStyle(
-                  fontSize: 17,
-                  weight: FontWeight.w500,
-                  color: provider.elementSettings['${id}_detail_color'] ?? AppTheme.textMain, 
+                  fontSize: 12,
+                  weight: FontWeight.bold,
+                  color: AppTheme.accent.withValues(alpha: .7), 
+                ).copyWith(letterSpacing: 3.0),
+              ),
+              const SizedBox(height: 8),
+              _buildEditable(
+                context, provider, '${id}_detail', detail,
+                Text(
+                  provider.elementSettings['${id}_detail_text'] ?? detail,
+                  style: AppTheme.getBodyStyle(
+                    fontSize: 17,
+                    weight: FontWeight.w500,
+                    color: provider.elementSettings['${id}_detail_color'] ?? AppTheme.textMain, 
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
       delay,
+    );
+  }
+}
+
+class _ContactInfoHoverWrapper extends StatefulWidget {
+  final Widget child;
+  const _ContactInfoHoverWrapper({required this.child});
+
+  @override
+  State<_ContactInfoHoverWrapper> createState() => _ContactInfoHoverWrapperState();
+}
+
+class _ContactInfoHoverWrapperState extends State<_ContactInfoHoverWrapper> {
+  bool _isHovered = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return MouseRegion(
+      onEnter: (_) => setState(() => _isHovered = true),
+      onExit: (_) => setState(() => _isHovered = false),
+      cursor: AppTheme.cursorType == 'none' ? SystemMouseCursors.none : SystemMouseCursors.click,
+      child: AnimatedContainer(
+        duration: Duration(milliseconds: AppTheme.durationMs), // 🚀 ENGINE SYNC
+        transform: AppTheme.getHoverTransform(_isHovered), // 🚀 ENGINE SYNC
+        child: widget.child,
+      ),
     );
   }
 }

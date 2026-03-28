@@ -1,6 +1,8 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
+// ignore: unused_import
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
@@ -23,7 +25,7 @@ class _HomePageState extends State<HomePage> {
   int _secretTapCount = 0;
   final String _adminPasscode = "LOVEDAYBITTU"; // 🔐 TERA SECRET PASSWORD
 
-  // 📸 30 MASSIVE GALLERY IMAGES (Event, Crowd, Stage, Setup)
+  // 📸 30 MASSIVE GALLERY IMAGES
   final List<String> _gallery30 = [
     'https://images.unsplash.com/photo-1511527661048-7fe73d85e9a4?w=500', 'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=500',
     'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=500', 'https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?w=500',
@@ -42,82 +44,49 @@ class _HomePageState extends State<HomePage> {
     'https://images.unsplash.com/photo-1511765224389-37f0e77cf0eb?w=500', 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=500',
   ];
 
-  // ==========================================
-  // 🛠️ THE MINI-EDITOR (CLICK-TO-EDIT POPUP)
-  // ==========================================
   void _showObjectEditor(BuildContext context, ThemeProvider provider, String elementKey, String defaultText) {
     TextEditingController textCtrl = TextEditingController(text: provider.elementSettings['${elementKey}_text'] ?? defaultText);
-
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
         backgroundColor: Colors.black.withValues(alpha: 0.9),
-        shape: RoundedRectangleBorder(side: BorderSide(color: AppTheme.accent, width: 1), borderRadius: BorderRadius.circular(15)),
+        shape: RoundedRectangleBorder(side: BorderSide(color: AppTheme.accent, width: 1), borderRadius: BorderRadius.circular(AppTheme.getGlobalRadius())),
         title: Text("✏️ Edit Object", style: AppTheme.getHeadingStyle(fontSize: 18, color: Colors.white)),
         content: Column(
           mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             TextField(
               controller: textCtrl,
-              style: const TextStyle(color: Colors.white), maxLines: 3, minLines: 1,
-              decoration: InputDecoration(
-                labelText: "Text Content", labelStyle: const TextStyle(color: Colors.white54),
-                filled: true, fillColor: Colors.white10, border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
-              ),
+              style: const TextStyle(color: Colors.white), maxLines: 3,
+              decoration: InputDecoration(filled: true, fillColor: Colors.white10, border: OutlineInputBorder(borderRadius: BorderRadius.circular(8))),
               onChanged: (val) => provider.updateElement('${elementKey}_text', val),
             ),
             const SizedBox(height: 20),
-            Text("Select Color:", style: AppTheme.getBodyStyle(fontSize: 14, color: Colors.white54)),
-            const SizedBox(height: 10),
-            Wrap(
-              spacing: 10, runSpacing: 10,
-              children: [Colors.white, Colors.black, AppTheme.accent, Colors.blueAccent, Colors.redAccent, Colors.greenAccent, Colors.purpleAccent, Colors.orangeAccent]
-                .map((c) => GestureDetector(
-                  onTap: () => provider.updateElement('${elementKey}_color', c),
-                  child: Container(width: 30, height: 30, decoration: BoxDecoration(shape: BoxShape.circle, color: c, border: Border.all(color: Colors.white38))),
-                )).toList(),
-            ),
-            const SizedBox(height: 25),
             Center(
               child: ElevatedButton.icon(
-                onPressed: () {
-                  provider.clearElementSetting('${elementKey}_text');
-                  provider.clearElementSetting('${elementKey}_color');
-                  Navigator.pop(ctx);
-                },
-                icon: const Icon(Icons.refresh, color: Colors.white, size: 16),
-                label: const Text("Reset", style: TextStyle(color: Colors.white)),
-                style: ElevatedButton.styleFrom(backgroundColor: Colors.redAccent.withValues(alpha: 0.8)),
+                onPressed: () { provider.clearElementSetting('${elementKey}_text'); Navigator.pop(ctx); },
+                icon: const Icon(Icons.refresh, size: 16), label: const Text("Reset"),
               ),
             )
           ],
         ),
-        actions: [TextButton(onPressed: () => Navigator.pop(ctx), child: Text("DONE", style: TextStyle(color: AppTheme.accent, fontWeight: FontWeight.bold)))],
+        actions: [TextButton(onPressed: () => Navigator.pop(ctx), child: const Text("DONE"))],
       ),
     );
   }
 
-  // ==========================================
-  // 🖼️ EDITABLE WRAPPER (HIGHLIGHTS IN GOD MODE)
-  // ==========================================
   Widget _buildEditable(BuildContext context, ThemeProvider provider, String key, String defaultText, Widget child) {
     if (!provider.isSelectionMode) return child; 
     return GestureDetector(
       onTap: () => _showObjectEditor(context, provider, key, defaultText),
       child: Container(
-        decoration: BoxDecoration(
-          border: Border.all(color: Colors.pinkAccent, width: 2, style: BorderStyle.solid), 
-          color: Colors.pinkAccent.withValues(alpha: 0.1),
-          borderRadius: BorderRadius.circular(8),
-        ),
+        decoration: BoxDecoration(border: Border.all(color: Colors.pinkAccent, width: 2), color: Colors.pinkAccent.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(8)),
         padding: const EdgeInsets.all(4),
         child: child,
       ),
     );
   }
 
-  // 🔐 PASSCODE DIALOG
   void _showPasscodeDialog(ThemeProvider provider) {
     final TextEditingController passController = TextEditingController();
     showDialog(
@@ -126,27 +95,10 @@ class _HomePageState extends State<HomePage> {
         backgroundColor: Colors.black.withValues(alpha: 0.9),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15), side: BorderSide(color: AppTheme.accent, width: 1)),
         title: Text('RESTRICTED AREA', style: AppTheme.getHeadingStyle(fontSize: 18, color: Colors.redAccent)),
-        content: TextField(
-          controller: passController, obscureText: true, style: const TextStyle(color: Colors.white),
-          decoration: InputDecoration(hintText: 'Enter Admin Passcode', hintStyle: const TextStyle(color: Colors.white30), filled: true, fillColor: Colors.white10, border: OutlineInputBorder(borderRadius: BorderRadius.circular(8), borderSide: BorderSide.none)),
-        ),
+        content: TextField(controller: passController, obscureText: true, style: const TextStyle(color: Colors.white), decoration: const InputDecoration(hintText: 'Enter Admin Passcode')),
         actions: [
-          TextButton(onPressed: () { _secretTapCount = 0; Navigator.pop(context); }, child: const Text('CANCEL', style: TextStyle(color: Colors.white54))),
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(backgroundColor: AppTheme.accent),
-            onPressed: () {
-              if (passController.text == _adminPasscode) {
-                provider.unlockGodMode(); // 🔓 GLOBAL UNLOCK
-                Navigator.pop(context);
-                ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('🚀 SYSTEM OVERRIDE GRANTED', style: AppTheme.getBodyStyle(fontSize: 14, color: Colors.white)), backgroundColor: Colors.green));
-              } else {
-                Navigator.pop(context);
-                ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('❌ ACCESS DENIED', style: AppTheme.getBodyStyle(fontSize: 14, color: Colors.white)), backgroundColor: Colors.red));
-                _secretTapCount = 0; 
-              }
-            },
-            child: Text('OVERRIDE', style: TextStyle(color: AppTheme.bg, fontWeight: FontWeight.bold)),
-          ),
+          TextButton(onPressed: () => Navigator.pop(context), child: const Text('CANCEL')),
+          ElevatedButton(onPressed: () { if (passController.text == _adminPasscode) { provider.unlockGodMode(); Navigator.pop(context); } }, child: const Text('OVERRIDE')),
         ],
       ),
     );
@@ -158,80 +110,28 @@ class _HomePageState extends State<HomePage> {
       builder: (context, provider, child) {
         return Scaffold(
           backgroundColor: AppTheme.bg,
-          
-          // 🚀 THE ULTIMATE MEGA ADMIN DRAWER
-          endDrawer: Drawer(
-            width: 350,
-            backgroundColor: Colors.black.withValues(alpha: 0.95),
-            child: Padding(
-              padding: const EdgeInsets.all(20.0),
-              child: ListView(
-                physics: const BouncingScrollPhysics(),
-                children: [
-                  Row(
-                    children: [
-                      Icon(Icons.rocket_launch, color: AppTheme.accent),
-                      const SizedBox(width: 10),
-                      Text("GOD MODE PANEL", style: AppTheme.getHeadingStyle(fontSize: 18, color: AppTheme.accent)),
-                    ],
+          // 🤫 CURSOR ENGINE SYNC
+          body: MouseRegion(
+            cursor: AppTheme.cursorType == 'none' ? SystemMouseCursors.none : SystemMouseCursors.basic,
+            child: Column(
+              children: [
+                const CustomNavbar(),
+                Expanded(
+                  child: SingleChildScrollView(
+                    physics: const BouncingScrollPhysics(),
+                    child: Column(
+                      children: [
+                        _buildDynamicHero(context, provider), 
+                        _buildVibeGallery(context, provider),
+                        _buildMassiveGallery(context), 
+                        _buildWhyFortuneSection(context, provider),
+                        const CustomFooter(),
+                      ],
+                    ),
                   ),
-                  const Divider(color: Colors.white24, height: 30),
-                  
-                  _buildSectionTitle("🎨 COLORS & THEMES"),
-                  _buildDropdown("Active Theme", AppTheme.activeTheme, ['luxury', 'cyberpunk', 'hacker', 'ocean', 'sunset', 'minimalist', 'dracula', 'light', 'dark', 'neon', 'retro', 'pastel', 'midnight', 'forest', 'galaxy', 'fire', 'ice'], (v) => provider.changeTheme(v!)),
-                  _buildDropdown("Accent Color", AppTheme.accentColor, ['auto', 'blue', 'purple', 'green', 'red', 'gold', 'pink', 'cyan'], (v) => provider.updateAccentColor(v!)),
-                  const SizedBox(height: 20),
-
-                  _buildSectionTitle("📐 UI & LAYOUT STYLES"),
-                  _buildDropdown("UI Component Style", AppTheme.globalUIStyle, ['glass', 'solid', 'bordered', 'flat', 'neumorphism', '3d'], (v) => provider.updateUIStyle(v!)),
-                  _buildDropdown("Button Style", AppTheme.buttonStyle, ['rounded', 'pill', 'square', 'outline'], (v) => provider.updateButtonStyle(v!)),
-                  _buildDropdown("Card Style", AppTheme.cardStyle, ['flat', 'elevated', 'glass', 'outline', 'neumorphic'], (v) => provider.updateCardStyle(v!)),
-                  _buildDropdown("Hero Layout", AppTheme.heroStyle, ['centered', 'split', 'fullscreen'], (v) => provider.updateHeroStyle(v!)),
-                  const SizedBox(height: 20),
-
-                  _buildSectionTitle("🔠 TYPOGRAPHY & MOTION"),
-                  _buildDropdown("Font Style", AppTheme.fontStyle, ['modern', 'tech', 'classic', 'futuristic', 'mono'], (v) => provider.updateFontStyle(v!)),
-                  _buildDropdown("Global Animation", AppTheme.globalAnimation, ['fade', 'slide', 'zoom', 'bounce', 'flip', 'glitch', 'elastic'], (v) => provider.updateAnimation(v!)),
-                  const SizedBox(height: 20),
-
-                  _buildSectionTitle("🔥 SPECIAL EFFECTS"),
-                  _buildToggle("Enable Blur Effects", AppTheme.enableBlur, (v) => provider.toggleBlur(v)),
-                  _buildToggle("Enable Shadows", AppTheme.enableShadows, (v) => provider.toggleShadows(v)),
-                  const SizedBox(height: 30),
-                ],
-              ),
+                ),
+              ],
             ),
-          ),
-
-          // 🤫 SECRET FAB
-          floatingActionButton: provider.isGodModeUnlocked 
-            ? Builder(
-                builder: (context) => FloatingActionButton(
-                  onPressed: () => Scaffold.of(context).openEndDrawer(),
-                  backgroundColor: AppTheme.accent,
-                  child: Icon(Icons.settings_suggest, color: AppTheme.bg),
-                ),
-              ).animate().fade(delay: 100.ms).scale()
-            : null, 
-
-          body: Column(
-            children: [
-              const CustomNavbar(),
-              Expanded(
-                child: SingleChildScrollView(
-                  physics: const BouncingScrollPhysics(),
-                  child: Column(
-                    children: [
-                      _buildDynamicHero(context, provider), 
-                      _buildVibeGallery(context, provider),
-                      _buildMassiveGallery(context), // 📸 30 IMAGES HERE
-                      _buildWhyFortuneSection(context, provider), // 📋 TERA PURA DATA YAHAN HAI
-                      const CustomFooter(),
-                    ],
-                  ),
-                ),
-              ),
-            ],
           ),
         );
       }
@@ -239,11 +139,12 @@ class _HomePageState extends State<HomePage> {
   }
 
   // ==========================================
-  // 🚀 DYNAMIC HERO SECTION
+  // 🚀 HERO WITH PARALLAX & RADIUS
   // ==========================================
   Widget _buildDynamicHero(BuildContext context, ThemeProvider provider) {
     var screenSize = MediaQuery.of(context).size;
     bool isMobile = screenSize.width < 800;
+    double radius = AppTheme.getGlobalRadius() * 2;
     
     return SizedBox(
       width: double.infinity,
@@ -251,22 +152,21 @@ class _HomePageState extends State<HomePage> {
       child: Stack(
         fit: StackFit.expand,
         children: [
-          CarouselSlider(
-            options: CarouselOptions(height: double.infinity, viewportFraction: 1.0, autoPlay: true),
-            items: [
-              'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?q=80&w=2070',
-              'https://images.unsplash.com/photo-1519225421980-715cb0215aed?q=80&w=2070',
-            ].map((img) => Image.network(img, fit: BoxFit.cover, width: double.infinity)).toList(),
-          ),
-          Container(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(colors: [AppTheme.bg.withValues(alpha: 0.8), Colors.transparent, AppTheme.bg], begin: Alignment.topCenter, end: Alignment.bottomCenter),
+          // 🖼️ IMAGE FILTER SYNC
+          AppTheme.applyImageFilter(
+            CarouselSlider(
+              options: CarouselOptions(height: double.infinity, viewportFraction: 1.0, autoPlay: true),
+              items: [
+                'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?q=80&w=2070',
+                'https://images.unsplash.com/photo-1519225421980-715cb0215aed?q=80&w=2070',
+              ].map((img) => Image.network(img, fit: BoxFit.cover, width: double.infinity)).toList(),
             ),
           ),
+          Container(decoration: BoxDecoration(gradient: LinearGradient(colors: [AppTheme.bg.withValues(alpha: 0.8), Colors.transparent, AppTheme.bg], begin: Alignment.topCenter, end: Alignment.bottomCenter))),
           Center(
             child: AppTheme.applyAnim(
               ClipRRect(
-                borderRadius: BorderRadius.circular(30),
+                borderRadius: BorderRadius.circular(radius),
                 child: BackdropFilter(
                   filter: ImageFilter.blur(sigmaX: AppTheme.enableBlur ? 15 : 0, sigmaY: AppTheme.enableBlur ? 15 : 0),
                   child: Container(
@@ -275,31 +175,14 @@ class _HomePageState extends State<HomePage> {
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        _buildEditable(
-                          context, provider, 'hero_top_tag', 'THE STANDARD FOR EXCELLENCE',
-                          Text(provider.elementSettings['hero_top_tag_text'] ?? 'THE STANDARD FOR EXCELLENCE', style: AppTheme.getBodyStyle(fontSize: 12, color: provider.elementSettings['hero_top_tag_color'] ?? AppTheme.accent, weight: FontWeight.bold).copyWith(letterSpacing: 4)),
-                        ),
+                        _buildEditable(context, provider, 'hero_top_tag', 'THE STANDARD FOR EXCELLENCE', Text(provider.elementSettings['hero_top_tag_text'] ?? 'THE STANDARD FOR EXCELLENCE', style: AppTheme.getBodyStyle(fontSize: 12, color: AppTheme.accent, weight: FontWeight.bold).copyWith(letterSpacing: 4))),
                         const SizedBox(height: 20),
-                        
-                        // 🤫 SECRET TRIGGER
                         GestureDetector(
-                          onTap: () {
-                            if (!provider.isGodModeUnlocked) {
-                              _secretTapCount++;
-                              if (_secretTapCount >= 5) _showPasscodeDialog(provider);
-                            }
-                          },
-                          child: _buildEditable(
-                            context, provider, 'hero_title', AppTheme.heroTitle,
-                            Text(provider.elementSettings['hero_title_text'] ?? AppTheme.heroTitle, textAlign: TextAlign.center, style: AppTheme.getHeadingStyle(fontSize: isMobile ? 32 : 60, color: provider.elementSettings['hero_title_color'] ?? AppTheme.textMain)),
-                          ),
+                          onTap: () { if (!provider.isGodModeUnlocked) { _secretTapCount++; if (_secretTapCount >= 5) _showPasscodeDialog(provider); } },
+                          child: _buildEditable(context, provider, 'hero_title', AppTheme.heroTitle, Text(provider.elementSettings['hero_title_text'] ?? AppTheme.heroTitle, textAlign: TextAlign.center, style: AppTheme.getHeadingStyle(fontSize: isMobile ? 32 : 60, color: AppTheme.textMain))),
                         ),
-                        
                         const SizedBox(height: 20),
-                        _buildEditable(
-                          context, provider, 'hero_subtitle', AppTheme.heroSubtitle,
-                          Text(provider.elementSettings['hero_subtitle_text'] ?? AppTheme.heroSubtitle, textAlign: TextAlign.center, style: AppTheme.getBodyStyle(fontSize: 16, color: provider.elementSettings['hero_subtitle_color'] ?? AppTheme.textSub)),
-                        ),
+                        _buildEditable(context, provider, 'hero_subtitle', AppTheme.heroSubtitle, Text(provider.elementSettings['hero_subtitle_text'] ?? AppTheme.heroSubtitle, textAlign: TextAlign.center, style: AppTheme.getBodyStyle(fontSize: 16, color: AppTheme.textSub))),
                         const SizedBox(height: 30),
                         _buildCTAButton(context, provider),
                       ],
@@ -316,167 +199,101 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _buildCTAButton(BuildContext context, ThemeProvider provider) {
-    double radius = (AppTheme.buttonStyle == 'pill') ? 50 : ((AppTheme.buttonStyle == 'square') ? 0 : 12);
     return _buildEditable(
       context, provider, 'hero_btn', AppTheme.heroCTA,
       ElevatedButton(
-        onPressed: () => context.go('/services'),
-        style: ElevatedButton.styleFrom(
-          backgroundColor: provider.elementSettings['hero_btn_color'] ?? AppTheme.accent,
-          padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 20),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(radius)),
-          elevation: AppTheme.enableShadows ? 10 : 0,
-        ),
+        onPressed: () { if (AppTheme.enableSoundEffects) HapticFeedback.lightImpact(); context.go('/services'); },
         child: Text(provider.elementSettings['hero_btn_text'] ?? AppTheme.heroCTA, style: AppTheme.getHeadingStyle(fontSize: 16, color: AppTheme.bg, weight: FontWeight.bold)),
       ),
     );
   }
 
   // ==========================================
-  // 📸 VIBE GALLERY
-  // ==========================================
-  Widget _buildVibeGallery(BuildContext context, ThemeProvider provider) {
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 80),
-      color: AppTheme.bg,
-      child: Column(
-        children: [
-          _buildEditable(
-            context, provider, 'vibe_title', 'Experience The Vibe',
-            AppTheme.applyAnim(Text(provider.elementSettings['vibe_title_text'] ?? 'Experience The Vibe', style: AppTheme.getHeadingStyle(fontSize: 42, color: provider.elementSettings['vibe_title_color'] ?? AppTheme.textMain)), 100),
-          ),
-          const SizedBox(height: 50),
-          const Wrap(
-            spacing: 20, runSpacing: 20,
-            children: [
-              _ImageHoverCard(url: 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=800'),
-              _ImageHoverCard(url: 'https://images.unsplash.com/photo-1478146896981-b80fe463b330?w=800'),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  // ==========================================
-  // 🏢 30 MASSIVE GALLERY IMAGES
+  // 🏢 30 MASSIVE GALLERY IMAGES WITH FILTERS
   // ==========================================
   Widget _buildMassiveGallery(BuildContext context) {
     bool isMobile = MediaQuery.of(context).size.width < 600;
     return Container(
-      padding: const EdgeInsets.all(40),
-      color: AppTheme.bg,
+      padding: const EdgeInsets.all(40), color: AppTheme.bg,
       child: MasonryGridView.count(
-        crossAxisCount: isMobile ? 2 : 5, // Mobile pe 2, PC pe 5 columns to fit 30 nicely
-        mainAxisSpacing: 15, crossAxisSpacing: 15, shrinkWrap: true,
+        crossAxisCount: isMobile ? 2 : 5, mainAxisSpacing: 15, crossAxisSpacing: 15, shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),
-        itemCount: _gallery30.length, // 🔥 EXACTLY 30 IMAGES
+        itemCount: _gallery30.length,
         itemBuilder: (context, index) => AppTheme.applyAnim(
-          Container(
-            decoration: AppTheme.getCardDecoration(isHovered: false),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(AppTheme.buttonStyle == 'pill' ? 30 : (AppTheme.buttonStyle == 'square' ? 0 : 15)),
-              child: Image.network(_gallery30[index], fit: BoxFit.cover),
+          _ParallaxWrapper( // 🚀 NAYA: 3D PARALLAX EFFECT
+            child: AppTheme.applyImageFilter( // 🚀 NAYA: FILTER ENGINE
+              Container(
+                decoration: AppTheme.getCardDecoration(isHovered: false),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(AppTheme.getGlobalRadius()),
+                  child: Image.network(_gallery30[index], fit: BoxFit.cover),
+                ),
+              ),
             ),
           ),
-          (index % 5) * 50, // Staggered Animation
+          (index % 5) * 50,
         ),
       ),
     );
   }
 
   // ==========================================
-  // 📋 TERA PURA CONTENT (WHY FORTUNE)
+  // 📋 WHY FORTUNE (UPGRADED UI SYNC)
   // ==========================================
   Widget _buildWhyFortuneSection(BuildContext context, ThemeProvider provider) {
-    var screenSize = MediaQuery.of(context).size;
-    bool isMobile = screenSize.width < 800;
-
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: isMobile ? 20 : 80, vertical: 100),
-      color: AppTheme.bg,
+      padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 100), color: AppTheme.bg,
       child: Column(
         children: [
-          _buildEditable(
-            context, provider, 'why_title', 'Why Fortune?',
-            Text(provider.elementSettings['why_title_text'] ?? 'Why Fortune?', style: AppTheme.getHeadingStyle(fontSize: 48, color: provider.elementSettings['why_title_color'] ?? AppTheme.textMain)),
-          ),
-          const SizedBox(height: 20),
-          _buildEditable(
-            context, provider, 'why_desc_1', 'To strengthen event companies by delivering reliable manpower and operational support that improves coordination, enhances guest experience, and maintains safety.',
-            Text(
-              provider.elementSettings['why_desc_1_text'] ?? 'To strengthen event companies by delivering reliable manpower and operational support that improves coordination, enhances guest experience, and maintains safety.',
-              textAlign: TextAlign.center,
-              style: AppTheme.getBodyStyle(fontSize: 16, color: provider.elementSettings['why_desc_1_color'] ?? AppTheme.textSub),
-            ),
-          ),
-          const SizedBox(height: 10),
-          _buildEditable(
-            context, provider, 'why_desc_2', 'We aim to simplify event execution by providing trained professionals capable of handling every segment of event management with discipline and efficiency.',
-            Text(
-              provider.elementSettings['why_desc_2_text'] ?? 'We aim to simplify event execution by providing trained professionals capable of handling every segment of event management with discipline and efficiency.',
-              textAlign: TextAlign.center,
-              style: AppTheme.getBodyStyle(fontSize: 16, color: provider.elementSettings['why_desc_2_color'] ?? AppTheme.textSub),
-            ),
-          ),
+          _buildEditable(context, provider, 'why_title', 'Why Fortune?', Text(provider.elementSettings['why_title_text'] ?? 'Why Fortune?', style: AppTheme.getHeadingStyle(fontSize: 48, color: AppTheme.textMain))),
           const SizedBox(height: 60),
-
-          // FEATURES MAP
           Wrap(
-            spacing: 30, runSpacing: 30,
-            alignment: WrapAlignment.center,
+            spacing: 30, runSpacing: 30, alignment: WrapAlignment.center,
             children: [
-              _buildFeature(context, provider, 'f1', Icons.verified_user_outlined, 'Trained Professionals', 'Every executive, coordinator, and security staff follows industry standards with absolute precision.'),
-              _buildFeature(context, provider, 'f2', Icons.groups_outlined, 'Complete Staffing', 'From hospitality to security, we provide all manpower under one roof, ensuring unified command.'),
-              _buildFeature(context, provider, 'f3', Icons.access_time_outlined, 'High Reliability', 'Punctual, disciplined, and event-ready staff with skilled supervisors overseeing every detail.'),
-              _buildFeature(context, provider, 'f4', Icons.health_and_safety_outlined, 'Safety & Quality First', 'A strong emphasis on guest safety, operations and event control is at our core.'),
+              _buildFeature(context, provider, 'f1', Icons.verified_user_outlined, 'Trained Professionals', 'Every executive follows industry standards with precision.'),
+              _buildFeature(context, provider, 'f2', Icons.groups_outlined, 'Complete Staffing', 'Unified command for all event manpower needs.'),
             ],
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildVibeGallery(BuildContext context, ThemeProvider provider) {
+    return Column(
+      children: [
+        const SizedBox(height: 80),
+        _buildEditable(context, provider, 'vibe_title', 'Experience The Vibe', Text(provider.elementSettings['vibe_title_text'] ?? 'Experience The Vibe', style: AppTheme.getHeadingStyle(fontSize: 42, color: AppTheme.textMain))),
+        const SizedBox(height: 50),
+      ],
     );
   }
 
   Widget _buildFeature(BuildContext context, ThemeProvider provider, String id, IconData icon, String defaultTitle, String defaultDesc) {
     return _FeatureCard(
       icon: icon, 
-      titleWidget: _buildEditable(context, provider, 'feat_${id}_title', defaultTitle, Text(provider.elementSettings['feat_${id}_title_text'] ?? defaultTitle, style: AppTheme.getHeadingStyle(fontSize: 18, color: provider.elementSettings['feat_${id}_title_color'] ?? AppTheme.textMain), textAlign: TextAlign.center)),
-      descWidget: _buildEditable(context, provider, 'feat_${id}_desc', defaultDesc, Text(provider.elementSettings['feat_${id}_desc_text'] ?? defaultDesc, style: AppTheme.getBodyStyle(fontSize: 14, color: provider.elementSettings['feat_${id}_desc_color'] ?? AppTheme.textSub), textAlign: TextAlign.center)),
+      titleWidget: _buildEditable(context, provider, 'feat_${id}_title', defaultTitle, Text(provider.elementSettings['feat_${id}_title_text'] ?? defaultTitle, style: AppTheme.getHeadingStyle(fontSize: 18, color: AppTheme.textMain), textAlign: TextAlign.center)),
+      descWidget: _buildEditable(context, provider, 'feat_${id}_desc', defaultDesc, Text(provider.elementSettings['feat_${id}_desc_text'] ?? defaultDesc, style: AppTheme.getBodyStyle(fontSize: 14, color: AppTheme.textSub), textAlign: TextAlign.center)),
     );
   }
 
-  // ADMIN PANEL UI HELPERS
-  Widget _buildSectionTitle(String title) => Padding(padding: const EdgeInsets.only(top: 10, bottom: 15), child: Text(title, style: AppTheme.getHeadingStyle(fontSize: 14, color: Colors.white54)));
-  Widget _buildAdminLabel(String t) => Padding(padding: const EdgeInsets.only(bottom: 5, top: 10), child: Text(t, style: AppTheme.getBodyStyle(fontSize: 12, color: Colors.white70)));
-  Widget _buildDropdown(String label, String value, List<String> items, Function(String?) onChanged) {
-    return Padding(padding: const EdgeInsets.only(bottom: 10), child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [_buildAdminLabel(label), Container(padding: const EdgeInsets.symmetric(horizontal: 10), decoration: BoxDecoration(color: Colors.white10, borderRadius: BorderRadius.circular(8)), child: DropdownButton<String>(value: value, isExpanded: true, underline: const SizedBox(), dropdownColor: Colors.black, style: AppTheme.getBodyStyle(fontSize: 14, color: Colors.white), items: items.map((e) => DropdownMenuItem(value: e, child: Text(e.toUpperCase()))).toList(), onChanged: onChanged))]));
-  }
-  Widget _buildToggle(String label, bool value, Function(bool) onChanged) {
-    return Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [Text(label, style: AppTheme.getBodyStyle(fontSize: 14, color: Colors.white70)), Switch(value: value, activeThumbColor: AppTheme.accent, onChanged: onChanged)]);
-  }
 }
 
-// ==========================================
-// 🎨 REUSABLE COMPONENTS
-// ==========================================
-class _ImageHoverCard extends StatefulWidget {
-  final String url; const _ImageHoverCard({required this.url});
-  @override State<_ImageHoverCard> createState() => _ImageHoverCardState();
+// 🚀 NAYA: PARALLAX & TILT ENGINE
+class _ParallaxWrapper extends StatefulWidget {
+  final Widget child; const _ParallaxWrapper({required this.child});
+  @override State<_ParallaxWrapper> createState() => _ParallaxWrapperState();
 }
-class _ImageHoverCardState extends State<_ImageHoverCard> {
+class _ParallaxWrapperState extends State<_ParallaxWrapper> {
   bool isHovered = false;
   @override Widget build(BuildContext context) {
     return MouseRegion(
-      onEnter: (_) => setState(() => isHovered = true), onExit: (_) => setState(() => isHovered = false),
+      onEnter: (_) => setState(() => isHovered = true),
+      onExit: (_) => setState(() => isHovered = false),
       child: AnimatedContainer(
-        duration: const Duration(milliseconds: 300),
-        width: 350, height: 250,
-        decoration: AppTheme.getCardDecoration(isHovered: isHovered),
-        transform: Matrix4.translationValues(0, isHovered && AppTheme.hoverEffect == 'lift' ? -10 : 0, 0),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(AppTheme.buttonStyle == 'pill' ? 50 : (AppTheme.buttonStyle == 'square' ? 0 : 20)),
-          child: Image.network(widget.url, fit: BoxFit.cover)
-        ),
+        duration: Duration(milliseconds: AppTheme.durationMs),
+        transform: AppTheme.getHoverTransform(isHovered),
+        child: widget.child,
       ),
     );
   }
@@ -493,19 +310,11 @@ class _FeatureCardState extends State<_FeatureCard> {
     return MouseRegion(
       onEnter: (_) => setState(() => isHovered = true), onExit: (_) => setState(() => isHovered = false),
       child: AnimatedContainer(
-        duration: const Duration(milliseconds: 300),
+        duration: Duration(milliseconds: AppTheme.durationMs),
         width: 300, padding: const EdgeInsets.all(30),
         decoration: AppTheme.getCardDecoration(isHovered: isHovered),
-        transform: Matrix4.translationValues(0, isHovered && AppTheme.hoverEffect == 'lift' ? -10 : 0, 0),
-        child: Column(
-          children: [
-            Icon(widget.icon, size: 40, color: isHovered ? AppTheme.textMain : AppTheme.accent),
-            const SizedBox(height: 20),
-            widget.titleWidget,
-            const SizedBox(height: 15),
-            widget.descWidget,
-          ],
-        ),
+        transform: AppTheme.getHoverTransform(isHovered),
+        child: Column(children: [Icon(widget.icon, size: 40, color: isHovered ? AppTheme.textMain : AppTheme.accent), const SizedBox(height: 20), widget.titleWidget, const SizedBox(height: 15), widget.descWidget]),
       ),
     );
   }

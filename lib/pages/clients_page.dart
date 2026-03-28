@@ -1,13 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter/services.dart';
 
 import '../widgets/custom_navbar.dart';
 import '../widgets/custom_footer.dart';
 import '../theme/app_theme.dart'; // 🔥 THEME ENGINE IMPORTED
 import '../theme/theme_provider.dart'; // 🚀 GOD MODE MEMORY
 
-class ClientsPage extends StatelessWidget {
+class ClientsPage extends StatefulWidget {
   const ClientsPage({super.key});
+
+  @override
+  State<ClientsPage> createState() => _ClientsPageState();
+}
+
+class _ClientsPageState extends State<ClientsPage> {
+  // Card-wise hover state management for interactive transforms
+  int? hoveredIndex;
 
   // ==========================================
   // 🛠️ THE MINI-EDITOR (CLICK-TO-EDIT POPUP)
@@ -21,7 +30,10 @@ class ClientsPage extends StatelessWidget {
       context: context,
       builder: (ctx) => AlertDialog(
         backgroundColor: Colors.black.withValues(alpha: 0.9),
-        shape: RoundedRectangleBorder(side: BorderSide(color: AppTheme.accent, width: 1), borderRadius: BorderRadius.circular(15)),
+        shape: RoundedRectangleBorder(
+          side: BorderSide(color: AppTheme.accent, width: 1), 
+          borderRadius: BorderRadius.circular(AppTheme.getGlobalRadius())
+        ),
         title: Text("✏️ Edit Object", style: AppTheme.getHeadingStyle(fontSize: 18, color: Colors.white)),
         content: Column(
           mainAxisSize: MainAxisSize.min,
@@ -32,13 +44,7 @@ class ClientsPage extends StatelessWidget {
               style: const TextStyle(color: Colors.white),
               maxLines: 3,
               minLines: 1,
-              decoration: InputDecoration(
-                labelText: "Text Content",
-                labelStyle: const TextStyle(color: Colors.white54),
-                filled: true,
-                fillColor: Colors.white10,
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
-              ),
+              decoration: AppTheme.getFormInputDecoration("Text Content"),
               onChanged: (val) => provider.updateElement('${elementKey}_text', val),
             ),
             const SizedBox(height: 20),
@@ -53,7 +59,10 @@ class ClientsPage extends StatelessWidget {
                 Colors.redAccent, Colors.greenAccent, Colors.purpleAccent, Colors.orangeAccent
               ].map((c) => 
                 GestureDetector(
-                  onTap: () => provider.updateElement('${elementKey}_color', c),
+                  onTap: () {
+                    if (AppTheme.enableSoundEffects) HapticFeedback.selectionClick();
+                    provider.updateElement('${elementKey}_color', c);
+                  },
                   child: Container(
                     width: 30, height: 30,
                     decoration: BoxDecoration(shape: BoxShape.circle, color: c, border: Border.all(color: Colors.white38)),
@@ -123,24 +132,24 @@ class ClientsPage extends StatelessWidget {
       'Private Concierge Services',
     ];
 
-    // 🚀 ENGINE SYNC: Wrapped in Consumer
     return Consumer<ThemeProvider>(
       builder: (context, provider, child) {
         return Scaffold(
-          // 🎨 ENGINE SYNC: Dynamic Background
           backgroundColor: provider.elementSettings['clients_bg_color'] ?? AppTheme.bg, 
           body: Column(
             children: [
               const CustomNavbar(),
               Expanded(
                 child: SingleChildScrollView(
-                  physics: const BouncingScrollPhysics(),
+                  physics: AppTheme.scrollEffect == 'smooth' 
+                      ? const BouncingScrollPhysics() 
+                      : const ClampingScrollPhysics(),
                   child: Column(
                     children: [
                       Padding(
                         padding: EdgeInsets.symmetric(
                           horizontal: isMobile ? 20 : 80,
-                          vertical: 80, // Premium spacing
+                          vertical: 80, 
                         ),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.center,
@@ -205,26 +214,37 @@ class ClientsPage extends StatelessWidget {
     );
   }
 
-  // Stylish Client Name Card with UI Style Engine
   Widget _buildClientChip(BuildContext context, ThemeProvider provider, String defaultName, int index) {
+    bool isThisHovered = hoveredIndex == index;
+    
+    // 🚀 ENGINE SYNC: Calculation for staggered animation based on speed
+    int staggeredDelay = (index * (AppTheme.transitionSpeed == 'fast' ? 50 : 100)) + 400;
+
     return AppTheme.applyAnim(
-      Container(
-        padding: const EdgeInsets.symmetric(horizontal: 35, vertical: 20),
-        decoration: AppTheme.getCardDecoration(isHovered: false),
-        // 🚀 3. EDITABLE CLIENT CHIP
-        child: _buildEditable(
-          context, provider, 'client_$index', defaultName,
-          Text(
-            (provider.elementSettings['client_${index}_text'] ?? defaultName).toString().toUpperCase(),
-            style: AppTheme.getBodyStyle(
-              fontSize: 14,
-              weight: FontWeight.bold,
-              color: provider.elementSettings['client_${index}_color'] ?? AppTheme.textMain, 
-            ).copyWith(letterSpacing: 2.0),
+      MouseRegion(
+        cursor: AppTheme.cursorType == 'none' ? SystemMouseCursors.none : SystemMouseCursors.click,
+        onEnter: (_) => setState(() => hoveredIndex = index),
+        onExit: (_) => setState(() => hoveredIndex = null),
+        child: AnimatedContainer(
+          duration: Duration(milliseconds: AppTheme.durationMs),
+          transform: AppTheme.getHoverTransform(isThisHovered),
+          padding: const EdgeInsets.symmetric(horizontal: 35, vertical: 20),
+          decoration: AppTheme.getCardDecoration(isHovered: isThisHovered),
+          child: _buildEditable(
+            context, provider, 'client_$index', defaultName,
+            Text(
+              (provider.elementSettings['client_${index}_text'] ?? defaultName).toString().toUpperCase(),
+              style: AppTheme.getBodyStyle(
+                fontSize: 14,
+                weight: FontWeight.bold,
+                color: provider.elementSettings['client_${index}_color'] ?? 
+                      (isThisHovered && AppTheme.globalUIStyle == 'solid' ? AppTheme.bg : AppTheme.textMain), 
+              ).copyWith(letterSpacing: 2.0),
+            ),
           ),
         ),
       ),
-      (index * 100) + 400, // Staggered delay for smooth entrance
+      staggeredDelay,
     );
   }
 }

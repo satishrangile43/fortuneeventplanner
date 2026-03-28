@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 
 import '../widgets/custom_navbar.dart';
 import '../widgets/custom_footer.dart';
-import '../theme/app_theme.dart'; // 🔥 ASLI SHAKTI
+import '../theme/app_theme.dart'; // 🔥 THEME ENGINE IMPORTED
 import '../theme/theme_provider.dart'; // 🚀 GOD MODE MEMORY
 
 class AboutPage extends StatelessWidget {
@@ -21,7 +21,10 @@ class AboutPage extends StatelessWidget {
       context: context,
       builder: (ctx) => AlertDialog(
         backgroundColor: Colors.black.withValues(alpha: 0.9),
-        shape: RoundedRectangleBorder(side: BorderSide(color: AppTheme.accent, width: 1), borderRadius: BorderRadius.circular(15)),
+        shape: RoundedRectangleBorder(
+          side: BorderSide(color: AppTheme.accent, width: 1), 
+          borderRadius: BorderRadius.circular(AppTheme.getGlobalRadius()) // 🚀 ENGINE SYNC
+        ),
         title: Text("✏️ Edit Object", style: AppTheme.getHeadingStyle(fontSize: 18, color: Colors.white)),
         content: Column(
           mainAxisSize: MainAxisSize.min,
@@ -30,15 +33,9 @@ class AboutPage extends StatelessWidget {
             TextField(
               controller: textCtrl,
               style: const TextStyle(color: Colors.white),
-              maxLines: 4, // 🚀 Quote thoda lamba ho sakta hai
+              maxLines: 3,
               minLines: 1,
-              decoration: InputDecoration(
-                labelText: "Text Content",
-                labelStyle: const TextStyle(color: Colors.white54),
-                filled: true,
-                fillColor: Colors.white10,
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
-              ),
+              decoration: AppTheme.getFormInputDecoration("Text Content"), // 🚀 ENGINE SYNC
               onChanged: (val) => provider.updateElement('${elementKey}_text', val),
             ),
             const SizedBox(height: 20),
@@ -72,7 +69,10 @@ class AboutPage extends StatelessWidget {
                 },
                 icon: const Icon(Icons.refresh, color: Colors.white, size: 16),
                 label: const Text("Reset", style: TextStyle(color: Colors.white)),
-                style: ElevatedButton.styleFrom(backgroundColor: Colors.redAccent.withValues(alpha: 0.8)),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.redAccent.withValues(alpha: 0.8),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppTheme.getGlobalRadius())), // 🚀 ENGINE SYNC
+                ),
               ),
             )
           ],
@@ -99,7 +99,7 @@ class AboutPage extends StatelessWidget {
         decoration: BoxDecoration(
           border: Border.all(color: Colors.pinkAccent, width: 2, style: BorderStyle.solid), 
           color: Colors.pinkAccent.withValues(alpha: 0.1),
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: BorderRadius.circular(AppTheme.getGlobalRadius()), // 🚀 ENGINE SYNC
         ),
         padding: const EdgeInsets.all(4),
         child: child,
@@ -112,111 +112,235 @@ class AboutPage extends StatelessWidget {
     var screenSize = MediaQuery.of(context).size;
     bool isMobile = screenSize.width < 800;
 
-    // 🚀 ENGINE SYNC: Provider Wrapper
     return Consumer<ThemeProvider>(
       builder: (context, provider, child) {
         return Scaffold(
-          // 🎨 ENGINE SYNC: Dynamic Background with Global Override Support
-          backgroundColor: provider.elementSettings['about_bg_color'] ?? AppTheme.bg,
-          body: Column(
-            children: [
-              const CustomNavbar(),
-              Expanded(
-                child: SingleChildScrollView(
-                  physics: const BouncingScrollPhysics(),
-                  child: Column(
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: isMobile ? 20 : 100,
-                          vertical: 80,
-                        ),
-                        child: Column(
-                          children: [
-                            // 🚀 1. EDITABLE PAGE TITLE
-                            _buildEditable(
-                              context, provider, 'about_title', 'About Fortune',
-                              AppTheme.applyAnim(
-                                Text(
-                                  provider.elementSettings['about_title_text'] ?? 'About Fortune',
-                                  style: AppTheme.getHeadingStyle(
-                                    fontSize: isMobile ? 36 : 56,
-                                    weight: FontWeight.bold,
-                                    color: provider.elementSettings['about_title_color'] ?? AppTheme.textMain,
+          backgroundColor: provider.elementSettings['artist_bg_color'] ?? AppTheme.bg,
+          body: MouseRegion(
+            // 🚀 ENGINE SYNC: Custom Cursor Type
+            cursor: AppTheme.cursorType == 'none' ? SystemMouseCursors.none : SystemMouseCursors.basic,
+            child: Column(
+              children: [
+                const CustomNavbar(),
+                
+                Expanded(
+                  child: SingleChildScrollView(
+                    physics: const BouncingScrollPhysics(),
+                    child: Column(
+                      children: [
+                        // --- PAGE HEADER ---
+                        Container(
+                          width: double.infinity,
+                          padding: EdgeInsets.symmetric(
+                            horizontal: isMobile ? 20 : 80,
+                            vertical: 80,
+                          ),
+                          decoration: BoxDecoration(
+                            color: AppTheme.enableGradients ? null : AppTheme.cardBg.withValues(alpha: 0.3),
+                            gradient: AppTheme.enableGradients ? LinearGradient(
+                              colors: [
+                                AppTheme.activeTheme == 'luxury' 
+                                    ? Colors.deepPurple.shade900 
+                                    : AppTheme.cardBg.withValues(alpha: 0.8), 
+                                AppTheme.bg
+                              ],
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                            ) : null,
+                          ),
+                          child: Column(
+                            children: [
+                              _buildEditable(
+                                context, provider, 'artist_title', 'Artist & Talent Management',
+                                AppTheme.applyAnim(
+                                  Text(
+                                    provider.elementSettings['artist_title_text'] ?? 'Artist & Talent Management',
+                                    textAlign: TextAlign.center,
+                                    style: AppTheme.getHeadingStyle(
+                                      fontSize: isMobile ? 32 : 56,
+                                      weight: FontWeight.bold,
+                                      color: provider.elementSettings['artist_title_color'] ?? AppTheme.textMain, 
+                                    ),
                                   ),
-                                ),
-                                100,
-                              ),
-                            ),
-                            
-                            const SizedBox(height: 50),
-                            
-                            // --- Main Quote / Vision Container ---
-                            AppTheme.applyAnim(
-                              Container(
-                                padding: EdgeInsets.all(isMobile ? 30 : 50),
-                                // 🚀 ENGINE SYNC: UI Style Engine 
-                                decoration: AppTheme.getCardDecoration(isHovered: false),
-                                child: Column(
-                                  children: [
-                                    Icon(
-                                      Icons.format_quote_rounded, 
-                                      size: 60, 
-                                      color: AppTheme.accent.withValues(alpha: 0.6)
-                                    ),
-                                    const SizedBox(height: 30),
-                                    
-                                    // 🚀 2. EDITABLE QUOTE
-                                    _buildEditable(
-                                      context, provider, 'about_quote', 'To strengthen event companies by delivering reliable manpower and operational support that improves coordination, enhances guest experience, and maintains safety.',
-                                      Text(
-                                        provider.elementSettings['about_quote_text'] ?? 'To strengthen event companies by delivering reliable manpower and operational support that improves coordination, enhances guest experience, and maintains safety.',
-                                        textAlign: TextAlign.center,
-                                        style: AppTheme.getBodyStyle(
-                                          fontSize: isMobile ? 18 : 24,
-                                          weight: FontWeight.w500,
-                                          color: provider.elementSettings['about_quote_color'] ?? AppTheme.textMain,
-                                        ).copyWith(height: 1.6),
-                                      ),
-                                    ),
-                                    
-                                    const SizedBox(height: 40),
-                                    Divider(
-                                      color: AppTheme.accent.withValues(alpha: 0.2), 
-                                      indent: 50, 
-                                      endIndent: 50
-                                    ),
-                                    const SizedBox(height: 40),
-                                    
-                                    // 🚀 3. EDITABLE DESCRIPTION
-                                    _buildEditable(
-                                      context, provider, 'about_desc', 'We aim to simplify event execution by providing trained professionals capable of handling every segment of event management with discipline and efficiency.',
-                                      Text(
-                                        provider.elementSettings['about_desc_text'] ?? 'We aim to simplify event execution by providing trained professionals capable of handling every segment of event management with discipline and efficiency.',
-                                        textAlign: TextAlign.center,
-                                        style: AppTheme.getBodyStyle(
-                                          fontSize: isMobile ? 14 : 17,
-                                          color: provider.elementSettings['about_desc_color'] ?? AppTheme.textSub,
-                                        ).copyWith(height: 1.8),
-                                      ),
-                                    ),
-                                  ],
+                                  100,
                                 ),
                               ),
-                              300,
-                            ),
-                          ],
+                              
+                              const SizedBox(height: 15),
+                              
+                              _buildEditable(
+                                context, provider, 'artist_subtitle', 'SEAMLESS COORDINATION & SPECIALIZED SECURITY FOR VIPS',
+                                AppTheme.applyAnim(
+                                  Text(
+                                    provider.elementSettings['artist_subtitle_text'] ?? 'SEAMLESS COORDINATION & SPECIALIZED SECURITY FOR VIPS',
+                                    textAlign: TextAlign.center,
+                                    style: AppTheme.getBodyStyle(
+                                      fontSize: isMobile ? 12 : 16,
+                                      weight: FontWeight.w600,
+                                      color: provider.elementSettings['artist_subtitle_color'] ?? AppTheme.accent, 
+                                    ).copyWith(letterSpacing: 3.0),
+                                  ),
+                                  300,
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-                      const CustomFooter(),
-                    ],
+
+                        // --- MAIN CONTENT CARDS ---
+                        Padding(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: isMobile ? 20 : 80,
+                            vertical: 60,
+                          ),
+                          child: Wrap(
+                            spacing: 40,
+                            runSpacing: 40,
+                            alignment: WrapAlignment.center,
+                            children: [
+                              _buildArtistCard(
+                                context, provider, 'talent',
+                                title: 'Talent Coordination',
+                                icon: Icons.mic_external_on_outlined,
+                                description: 'We provide seamless coordination between artists and event organizers ensuring all technical and hospitality riders are met with precision.',
+                                features: [
+                                  'Artist Liaison & Shadowing',
+                                  'Technical Rider Management',
+                                  'Hospitality & Travel Coordination',
+                                ],
+                                delay: 400,
+                              ),
+                              _buildArtistCard(
+                                context, provider, 'crowd',
+                                title: 'Crowd Control',
+                                icon: Icons.groups_outlined,
+                                description: 'Specialized security and crowd management for artist zones, ensuring a safe and controlled environment for talent and guests alike.',
+                                features: [
+                                  'Backstage Security',
+                                  'Green Room Management',
+                                  'Entry/Exit Point Control',
+                                  'VVIP Zone Security',
+                                ],
+                                delay: 600,
+                              ),
+                            ],
+                          ),
+                        ),
+
+                        const CustomFooter(),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         );
       }
     );
   }
+
+  Widget _buildArtistCard(BuildContext context, ThemeProvider provider, String id, {
+    required String title,
+    required IconData icon,
+    required String description,
+    required List<String> features,
+    required int delay,
+  }) {
+    bool isCardHovered = false; // Local state managed by MouseRegion inside State
+    
+    return AppTheme.applyAnim(
+      StatefulBuilder(
+        builder: (context, setCardState) {
+          return MouseRegion(
+            onEnter: (_) => setCardState(() => isCardHovered = true),
+            onExit: (_) => setCardState(() => isCardHovered = false),
+            // 🚀 ENGINE SYNC: Custom Cursor
+            cursor: AppTheme.cursorType == 'none' ? SystemMouseCursors.none : SystemMouseCursors.click,
+            child: AnimatedContainer(
+              duration: Duration(milliseconds: AppTheme.durationMs), // 🚀 ENGINE SYNC: Duration
+              width: 450, 
+              padding: const EdgeInsets.all(40),
+              // 🚀 ENGINE SYNC: UI Style & Shape
+              decoration: AppTheme.getCardDecoration(isHovered: isCardHovered),
+              // 🚀 ENGINE SYNC: Hover Transform (Tilt/Scale/Lift)
+              transform: AppTheme.getHoverTransform(isCardHovered),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(15),
+                    decoration: BoxDecoration(
+                      color: AppTheme.accent.withValues(alpha: 0.1),
+                      shape: BoxShape.circle,
+                    ),
+                    child: Icon(icon, size: 35, color: AppTheme.accent),
+                  ),
+                  const SizedBox(height: 25),
+                  
+                  _buildEditable(
+                    context, provider, 'artist_card_${id}_title', title,
+                    Text(
+                      provider.elementSettings['artist_card_${id}_title_text'] ?? title,
+                      style: AppTheme.getHeadingStyle(
+                        fontSize: 28,
+                        weight: FontWeight.bold,
+                        color: provider.elementSettings['artist_card_${id}_title_color'] ?? AppTheme.textMain,
+                      ),
+                    ),
+                  ),
+                  
+                  const SizedBox(height: 15),
+                  
+                  _buildEditable(
+                    context, provider, 'artist_card_${id}_desc', description,
+                    Text(
+                      provider.elementSettings['artist_card_${id}_desc_text'] ?? description,
+                      style: AppTheme.getBodyStyle(
+                        fontSize: 15,
+                        color: provider.elementSettings['artist_card_${id}_desc_color'] ?? AppTheme.textSub,
+                      ).copyWith(height: 1.6),
+                    ),
+                  ),
+                  
+                  const SizedBox(height: 30),
+                  Divider(color: AppTheme.accent.withValues(alpha: 0.2)),
+                  const SizedBox(height: 25),
+                  
+                  ...features.asMap().entries.map((entry) {
+                    int idx = entry.key;
+                    String feature = entry.value;
+                    return Padding(
+                      padding: const EdgeInsets.only(bottom: 15.0),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Icon(Icons.star_rounded, size: 20, color: AppTheme.accent), 
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: _buildEditable(
+                              context, provider, 'artist_card_${id}_feat_$idx', feature,
+                              Text(
+                                provider.elementSettings['artist_card_${id}_feat_${idx}_text'] ?? feature,
+                                style: AppTheme.getBodyStyle(
+                                  fontSize: 15,
+                                  weight: FontWeight.w500,
+                                  color: provider.elementSettings['artist_card_${id}_feat_${idx}_color'] ?? AppTheme.textMain,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  }),
+                ],
+              ),
+            ),
+          );
+        }
+      ),
+      delay,
+    );
+  }  
 }

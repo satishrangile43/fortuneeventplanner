@@ -5,97 +5,159 @@ import 'dart:math' as math;
 
 class AppTheme {
   // ==========================================
-  // 🧠 GLOBAL DESIGN SYSTEM (ULTRA CONTROL)
+  // 🧠 GLOBAL DESIGN SYSTEM (ULTRA GOD CONTROL)
   // ==========================================
 
-  // 🎨 THEMES
+  // 🎨 THEMES & COLORS
   static String activeTheme = 'light'; 
-
-  // 🌈 ACCENT COLOR CONTROL
   static String accentColor = 'auto'; 
+  static String imageFilter = 'none'; // 🆕 NAYA: Grayscale, Sepia, etc.
 
   // ✨ ANIMATIONS
   static String globalAnimation = 'zoom'; 
+  static String transitionSpeed = 'normal'; // 🆕 NAYA: Slow, Normal, Fast
 
-  // 🧊 UI STYLE
+  // 🧊 UI STYLE & SHAPES
   static String globalUIStyle = 'flat'; 
-
-  // 📐 LAYOUT STYLE
   static String layoutStyle = 'modern';
-
-  // 🔘 BUTTON STYLE
   static String buttonStyle = 'rounded';
+  static String cardStyle = 'elevated';
+  static String borderStyle = 'rounded'; // 🆕 NAYA: Sharp, Rounded, Squircle
 
-  // 🔠 FONT STYLE
+  // 🔠 FONTS & BACKGROUND
   static String fontStyle = 'modern';
-
-  // 🌌 BACKGROUND STYLE
   static String backgroundStyle = 'plain';
 
-  // 🧩 CARD STYLE
-  static String cardStyle = 'elevated';
-
-  // 🌟 HOVER EFFECT
+  // 🌟 EFFECTS & 3D
   static String hoverEffect = 'lift';
-
-  // 🔥 SPECIAL EFFECTS (WOW FACTOR)
+  static String parallaxIntensity = 'low'; // 🆕 NAYA: Off, Low, High
   static bool enableGlow = false;
   static bool enableBlur = false;
   static bool enableShadows = true;
   static bool enableGradients = true;
   static bool enableParticles = false;
+  
+  // 🖱️ CURSOR
+  static String cursorType = 'dot'; // 🆕 NAYA: Dot, Ring, None
   static bool enableCursorEffect = false;
 
-  // ⚡ SCROLL EFFECTS
+  // ⚡ SCROLL & RESPONSIVE
   static String scrollEffect = 'smooth';
-
-  // 📱 RESPONSIVE BEHAVIOR
   static String mobileLayout = 'adaptive';
 
-  // 🎯 HERO SECTION CONTROL
+  // 🎯 HEADER, FOOTER & FORMS (🆕 NAYE OPTIONS)
   static String heroStyle = 'centered';
+  static String navbarStyle = 'sticky'; // sticky, floating, hidden
+  static String footerStyle = 'expanded'; // minimal, expanded
+  static String formInputStyle = 'filled'; // filled, outlined, underlined
+  
   static String heroTitle = "Simplifying Event\nExecution With Precision";
   static String heroSubtitle = "Plan smarter. Execute faster. Impress everyone.";
   static String heroCTA = "Get Started";
 
-  // 🎬 LOADER STYLE
+  // 🎬 LOADER, SOUND & ALERTS (🆕 NAYE OPTIONS)
   static String loaderStyle = 'spinner';
-
-  // 🔊 SOUND EFFECTS
+  static String soundPack = 'clicky'; // clicky, futuristic, minimal
   static bool enableSoundEffects = false;
+  static String toastStyle = 'floating'; // floating, glass, banner
 
-  // 🌙 DARK MODE AUTO SWITCH
+  // 🌙 ADVANCED SETTINGS
   static bool autoDarkMode = true;
-
-  // 🔐 ADVANCED SETTINGS
   static bool enableAIThemeSwitch = false; 
   static bool enablePerformanceMode = false; 
 
   // ==========================================
-  // ✨ 1. GLOBAL ANIMATION ENGINE
+  // ⏳ 1. GLOBAL TRANSITION SPEED LOGIC (NAYA)
+  // ==========================================
+  static int get durationMs {
+    if (enablePerformanceMode) return 0;
+    switch (transitionSpeed) {
+      case 'fast': return 300;
+      case 'slow': return 1000;
+      case 'normal': default: return 600;
+    }
+  }
+
+  // ==========================================
+  // ✨ 2. GLOBAL ANIMATION ENGINE (UPGRADED)
   // ==========================================
   static Widget applyAnim(Widget child, int delayMs) {
     if (enablePerformanceMode) return child; 
 
-    var anim = child.animate(delay: delayMs.ms).fade(duration: 600.ms);
+    // 🚀 ENGINE SYNC: Dynamic Speed Apply Kiya
+    var anim = child.animate(delay: delayMs.ms).fade(duration: durationMs.ms);
     
     switch (globalAnimation) {
       case 'slide': return anim.slideY(begin: 0.3, end: 0, curve: Curves.easeOut);
       case 'zoom': return anim.scale(begin: const Offset(0.8, 0.8), curve: Curves.easeOutBack);
       case 'glitch': return anim.shakeX(amount: 3).then().shimmer(); 
       case 'bounce': return anim.slideY(begin: 0.5, end: 0, curve: Curves.bounceOut);
-      case 'elastic': return anim.scale(begin: const Offset(0.5, 0.5), curve: Curves.elasticOut, duration: 1000.ms);
+      case 'elastic': return anim.scale(begin: const Offset(0.5, 0.5), curve: Curves.elasticOut, duration: (durationMs * 1.5).ms);
       case 'flip': return anim.custom(builder: (c, v, child) => Transform(transform: Matrix4.identity()..rotateY(v), child: child));
       case 'fade': default: return anim;
     }
   }
 
   // ==========================================
-  // 📐 2. GLOBAL UI STYLE & CARD ENGINE
+  // 🖼️ 3. IMAGE FILTERS ENGINE (NAYA)
+  // ==========================================
+  static Widget applyImageFilter(Widget child) {
+    if (imageFilter == 'none') return child;
+
+    ColorFilter filter;
+    switch (imageFilter) {
+      case 'grayscale':
+        filter = const ColorFilter.matrix([
+          0.2126, 0.7152, 0.0722, 0, 0,
+          0.2126, 0.7152, 0.0722, 0, 0,
+          0.2126, 0.7152, 0.0722, 0, 0,
+          0, 0, 0, 1, 0,
+        ]);
+        break;
+      case 'sepia':
+        filter = const ColorFilter.matrix([
+          0.393, 0.769, 0.189, 0, 0,
+          0.349, 0.686, 0.168, 0, 0,
+          0.272, 0.534, 0.131, 0, 0,
+          0, 0, 0, 1, 0,
+        ]);
+        break;
+      case 'high-contrast':
+        filter = const ColorFilter.matrix([
+          2.0, 0, 0, 0, -50.0,
+          0, 2.0, 0, 0, -50.0,
+          0, 0, 2.0, 0, -50.0,
+          0, 0, 0, 1, 0,
+        ]);
+        break;
+      default:
+        return child;
+    }
+    return ColorFiltered(colorFilter: filter, child: child);
+  }
+
+  // ==========================================
+  // 📏 4. GLOBAL RADIUS & BORDER ENGINE (NAYA)
+  // ==========================================
+  static double getGlobalRadius() {
+    // Ye borderStyle panel se control hoga
+    switch (borderStyle) {
+      case 'sharp': return 0.0;
+      case 'squircle': return 30.0; // Higher radius for squircle look
+      case 'rounded': default: return 15.0;
+    }
+  }
+
+  // ==========================================
+  // 📐 5. GLOBAL UI STYLE & CARD ENGINE
   // ==========================================
   static BoxDecoration getCardDecoration({bool isHovered = false}) {
-    double radius = (buttonStyle == 'pill') ? 50 : ((buttonStyle == 'square') ? 0 : 20);
+    double radius = getGlobalRadius(); 
     
+    // Button override checks
+    if (buttonStyle == 'pill') radius = 50;
+    if (buttonStyle == 'square') radius = 0;
+
     // 🔥 GLOW EFFECT LOGIC
     List<BoxShadow> currentShadows = [];
     if (isHovered && enableGlow) {
@@ -133,7 +195,7 @@ class AppTheme {
       case 'flat':
         return BoxDecoration(
           color: isHovered ? accent : cardBg,
-          borderRadius: BorderRadius.circular(0), 
+          borderRadius: BorderRadius.circular(0), // Flat strictly means no borders
           border: Border.all(color: isHovered ? accent : Colors.white24, width: 1),
         );
       case 'glass':
@@ -148,7 +210,7 @@ class AppTheme {
   }
 
   // ==========================================
-  // 🌟 3. HOVER TRANSFORM ENGINE (REAL PHYSICS)
+  // 🌟 6. HOVER TRANSFORM ENGINE (REAL PHYSICS)
   // ==========================================
   static Matrix4 getHoverTransform(bool isHovered) {
     if (!isHovered || hoverEffect == 'none') return Matrix4.identity();
@@ -157,10 +219,8 @@ class AppTheme {
       case 'lift': 
         return Matrix4.translationValues(0, -10, 0);
       case 'scale': 
-        // 🚀 FIXED: Using diagonal3Values to avoid deprecation and argument errors
         return Matrix4.diagonal3Values(1.05, 1.05, 1.0);
       case 'tilt': 
-        // 🚀 FIXED: Properly chaining rotation and multiplication for scaling
         return Matrix4.identity()
           ..rotateZ(math.pi / 60)
           ..multiply(Matrix4.diagonal3Values(1.02, 1.02, 1.0));
@@ -172,39 +232,46 @@ class AppTheme {
   }
 
   // ==========================================
-  // 🔘 4. BUTTON STYLE ENGINE
+  // 📝 7. FORM INPUT ENGINE (NAYA)
   // ==========================================
-  static ButtonStyle getCustomButtonStyle() {
-    double radius = (buttonStyle == 'pill') ? 50 : ((buttonStyle == 'square') ? 0 : 12);
+  static InputDecoration getFormInputDecoration(String hint) {
+    double radius = getGlobalRadius();
     
-    if (buttonStyle == 'ghost') {
-      return TextButton.styleFrom(
-        foregroundColor: accent,
-        padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 20),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(radius)),
-      );
-    } else if (buttonStyle == 'outline') {
-      return OutlinedButton.styleFrom(
-        foregroundColor: accent,
-        side: BorderSide(color: accent, width: 2),
-        padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 20),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(radius)),
-      );
+    switch (formInputStyle) {
+      case 'outlined':
+        return InputDecoration(
+          hintText: hint,
+          hintStyle: getBodyStyle(fontSize: 14, color: textSub.withValues(alpha: 0.5)),
+          filled: false,
+          contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+          enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(radius), borderSide: BorderSide(color: textSub.withValues(alpha: 0.3))),
+          focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(radius), borderSide: BorderSide(color: accent, width: 2)),
+        );
+      case 'underlined':
+        return InputDecoration(
+          hintText: hint,
+          hintStyle: getBodyStyle(fontSize: 14, color: textSub.withValues(alpha: 0.5)),
+          filled: false,
+          contentPadding: const EdgeInsets.symmetric(horizontal: 0, vertical: 15),
+          enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: textSub.withValues(alpha: 0.3))),
+          focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: accent, width: 2)),
+        );
+      case 'filled':
+      default:
+        return InputDecoration(
+          hintText: hint,
+          hintStyle: getBodyStyle(fontSize: 14, color: textSub.withValues(alpha: 0.5)),
+          filled: true,
+          fillColor: cardBg,
+          contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+          enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(radius), borderSide: BorderSide.none),
+          focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(radius), borderSide: BorderSide(color: accent, width: 2)),
+        );
     }
-    
-    // Default / Rounded / Pill
-    return ElevatedButton.styleFrom(
-      backgroundColor: accent,
-      foregroundColor: textMain, // Using textMain to ensure contrast
-      padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 20),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(radius)),
-      elevation: enableShadows ? 10 : 0,
-      shadowColor: accent.withValues(alpha: 0.5),
-    );
   }
 
   // ==========================================
-  // 🌌 5. BACKGROUND ENGINE
+  // 🌌 8. BACKGROUND ENGINE
   // ==========================================
   static BoxDecoration getBackgroundDecoration() {
     if (backgroundStyle == 'gradient' && enableGradients) {
@@ -228,7 +295,7 @@ class AppTheme {
   }
 
   // ==========================================
-  // 🔠 6. FONT ENGINE
+  // 🔠 9. FONT ENGINE
   // ==========================================
   static TextStyle getHeadingStyle({required double fontSize, Color? color, FontWeight? weight}) {
     Color finalColor = color ?? textMain;
@@ -248,7 +315,7 @@ class AppTheme {
   }
 
   // ==========================================
-  // 🎨 7. COLOR PALETTE ENGINE
+  // 🎨 10. COLOR PALETTE ENGINE
   // ==========================================
   static Color get bg {
     switch (activeTheme) {
@@ -326,7 +393,7 @@ class AppTheme {
   }
 
   // ==========================================
-  // 💼 8. GLOBAL SERVICES DATA
+  // 💼 11. GLOBAL SERVICES DATA
   // ==========================================
   static List<Map<String, dynamic>> servicesData = [
     {

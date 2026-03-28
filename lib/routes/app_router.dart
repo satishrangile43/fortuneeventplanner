@@ -19,7 +19,8 @@ CustomTransitionPage _buildPageWithTransition(Widget page, GoRouterState state) 
   return CustomTransitionPage(
     key: state.pageKey,
     child: page,
-    transitionDuration: const Duration(milliseconds: 600), // 🚀 STANDARD DURATION
+    // 🚀 ENGINE SYNC: Dynamic Duration applied from AppTheme
+    transitionDuration: Duration(milliseconds: AppTheme.durationMs),
     transitionsBuilder: (context, animation, secondaryAnimation, child) {
       
       // 🚀 PERFORMANCE MODE Check: Low-end devices ke liye animations band

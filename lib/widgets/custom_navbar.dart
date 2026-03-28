@@ -10,92 +10,113 @@ class CustomNavbar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // 🚀 ENGINE SYNC: Check Navbar Style (Hidden, Sticky, Floating)
+    if (AppTheme.navbarStyle == 'hidden') {
+      return const SizedBox.shrink(); // Hide the navbar completely
+    }
+
     return ResponsiveBuilder(
       builder: (context, sizingInformation) {
         bool isMobile = sizingInformation.isMobile;
+        
+        // 🚀 ENGINE SYNC: Floating Navbar Logic
+        bool isFloating = AppTheme.navbarStyle == 'floating';
+        double marginValue = isFloating ? (isMobile ? 15.0 : 30.0) : 0.0;
+        double radiusValue = isFloating ? AppTheme.getGlobalRadius() : 0.0;
 
-        return ClipRRect( 
-          child: BackdropFilter(
-            // 🚀 ENGINE SYNC: Blur effect Admin Panel se toggle hoga
-            filter: ImageFilter.blur(
-              sigmaX: AppTheme.enableBlur ? 20 : 0.001, 
-              sigmaY: AppTheme.enableBlur ? 20 : 0.001
-            ),
-            child: Container(
-              padding: EdgeInsets.symmetric(
-                  horizontal: isMobile ? 20 : 60, vertical: isMobile ? 15 : 20),
-              decoration: BoxDecoration(
-                // 🚀 ENGINE SYNC: UI Style ke hisab se background transparency
-                color: AppTheme.globalUIStyle == 'solid' 
-                    ? AppTheme.bg 
-                    : AppTheme.bg.withValues(alpha: 0.85), 
-                border: Border(
-                  bottom: BorderSide(
-                    color: AppTheme.textMain.withValues(alpha: 0.1),
-                    width: 1,
-                  ),
-                ),
-                // 🚀 ENGINE SYNC: Shadow toggle
-                boxShadow: AppTheme.enableShadows ? [
-                  BoxShadow(color: Colors.black.withValues(alpha: 0.2), blurRadius: 10, offset: const Offset(0, 5))
-                ] : [],
+        return Container(
+          // Floating margin apply karna hai ya nahi
+          margin: EdgeInsets.only(top: marginValue, left: marginValue, right: marginValue),
+          child: ClipRRect( 
+            borderRadius: BorderRadius.circular(radiusValue), // 🚀 ENGINE SYNC: Border Radius apply
+            child: BackdropFilter(
+              // 🚀 ENGINE SYNC: Blur effect Admin Panel se toggle hoga
+              filter: ImageFilter.blur(
+                sigmaX: AppTheme.enableBlur ? 20 : 0.001, 
+                sigmaY: AppTheme.enableBlur ? 20 : 0.001
               ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  // 1. BRAND LOGO 
-                  InkWell(
-                    onTap: () => context.go('/'),
-                    hoverColor: Colors.transparent,
-                    splashColor: Colors.transparent,
-                    highlightColor: Colors.transparent,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        // 🚀 ENGINE SYNC: Heading Font Engine
-                        Text(
-                          'FORTUNE',
-                          style: AppTheme.getHeadingStyle(
-                            fontSize: isMobile ? 22 : 28,
-                            color: AppTheme.textMain,
-                            weight: FontWeight.bold,
-                          ).copyWith(letterSpacing: 2.0),
-                        ),
-                        // 🚀 ENGINE SYNC: Body Font Engine
-                        Text(
-                          'EVENT PLANNER',
-                          style: AppTheme.getBodyStyle(
-                            fontSize: isMobile ? 8 : 10,
-                            color: AppTheme.accent,
-                            weight: FontWeight.bold,
-                          ).copyWith(letterSpacing: 4.0),
-                        ),
-                      ],
-                    ),
-                  ),
-
-                  if (isMobile) const SizedBox(width: 15),
-
-                  // 2. NAVIGATION LINKS
-                  if (!isMobile)
-                    // Desktop
-                    Row(
-                      children: _getNavItems(context),
-                    )
-                  else
-                    // Mobile Smooth Slide
-                    Expanded(
-                      child: SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
-                        physics: const BouncingScrollPhysics(),
-                        child: Row(
-                          children: _getNavItems(context),
+              child: Container(
+                padding: EdgeInsets.symmetric(
+                    horizontal: isMobile ? 20 : (isFloating ? 40 : 60), vertical: isMobile ? 15 : 20),
+                decoration: BoxDecoration(
+                  // 🚀 ENGINE SYNC: UI Style ke hisab se background transparency
+                  color: AppTheme.globalUIStyle == 'solid' 
+                      ? AppTheme.bg 
+                      : AppTheme.bg.withValues(alpha: 0.85), 
+                  border: isFloating 
+                    ? Border.all(color: AppTheme.textMain.withValues(alpha: 0.1), width: 1) // Full border for floating
+                    : Border(
+                        bottom: BorderSide(
+                          color: AppTheme.textMain.withValues(alpha: 0.1),
+                          width: 1,
                         ),
                       ),
+                  // 🚀 ENGINE SYNC: Border radius wapas yahan lagana zaroori hai container ki shakal ke liye
+                  borderRadius: BorderRadius.circular(radiusValue),
+                  // 🚀 ENGINE SYNC: Shadow toggle
+                  boxShadow: AppTheme.enableShadows ? [
+                    BoxShadow(color: Colors.black.withValues(alpha: 0.2), blurRadius: 10, offset: const Offset(0, 5))
+                  ] : [],
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    // 1. BRAND LOGO 
+                    InkWell(
+                      // 🚀 ENGINE SYNC: Custom Cursor Type
+                      mouseCursor: AppTheme.cursorType == 'none' ? SystemMouseCursors.none : SystemMouseCursors.click,
+                      onTap: () => context.go('/'),
+                      hoverColor: Colors.transparent,
+                      splashColor: Colors.transparent,
+                      highlightColor: Colors.transparent,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          // 🚀 ENGINE SYNC: Heading Font Engine
+                          Text(
+                            'FORTUNE',
+                            style: AppTheme.getHeadingStyle(
+                              fontSize: isMobile ? 22 : 28,
+                              color: AppTheme.textMain,
+                              weight: FontWeight.bold,
+                            ).copyWith(letterSpacing: 2.0),
+                          ),
+                          // 🚀 ENGINE SYNC: Body Font Engine
+                          Text(
+                            'EVENT PLANNER',
+                            style: AppTheme.getBodyStyle(
+                              fontSize: isMobile ? 8 : 10,
+                              color: AppTheme.accent,
+                              weight: FontWeight.bold,
+                            ).copyWith(letterSpacing: 4.0),
+                          ),
+                        ],
+                      ),
                     ),
-                ],
+
+                    if (isMobile) const SizedBox(width: 15),
+
+                    // 2. NAVIGATION LINKS
+                    if (!isMobile)
+                      // Desktop
+                      Row(
+                        children: _getNavItems(context),
+                      )
+                    else
+                      // Mobile Smooth Slide
+                      Expanded(
+                        child: SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          physics: const BouncingScrollPhysics(),
+                          child: Row(
+                            children: _getNavItems(context),
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
               ),
             ),
           ),
@@ -147,7 +168,8 @@ class _NavBarItemState extends State<_NavBarItem> {
       child: MouseRegion(
         onEnter: (_) => setState(() => isHovered = true),
         onExit: (_) => setState(() => isHovered = false),
-        cursor: SystemMouseCursors.click,
+        // 🚀 ENGINE SYNC: Custom Cursor Type
+        cursor: AppTheme.cursorType == 'none' ? SystemMouseCursors.none : SystemMouseCursors.click,
         child: GestureDetector(
           onTap: () => context.go(widget.path),
           child: Column(
@@ -155,7 +177,7 @@ class _NavBarItemState extends State<_NavBarItem> {
             children: [
               // 🚀 ENGINE SYNC: Body Font Engine & Dynamic Color
               AnimatedDefaultTextStyle(
-                duration: const Duration(milliseconds: 250),
+                duration: Duration(milliseconds: AppTheme.durationMs), // 🚀 ENGINE SYNC: Speed control
                 style: AppTheme.getBodyStyle(
                   fontSize: 14,
                   color: (isHovered || isActive) ? AppTheme.accent : AppTheme.textSub,
@@ -167,7 +189,7 @@ class _NavBarItemState extends State<_NavBarItem> {
               
               // Hover Underline Indicator
               AnimatedContainer(
-                duration: const Duration(milliseconds: 250),
+                duration: Duration(milliseconds: AppTheme.durationMs), // 🚀 ENGINE SYNC: Speed control
                 width: (isHovered || isActive) ? 20 : 0,
                 height: 2,
                 decoration: BoxDecoration(

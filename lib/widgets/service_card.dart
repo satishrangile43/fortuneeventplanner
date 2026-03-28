@@ -1,7 +1,8 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
-import '../theme/app_theme.dart'; // 🎨 Global Theme Engine (Ab yahi sab control karega)
+import '../theme/app_theme.dart'; // 🎨 Global Theme Engine Linked
 
 class ServiceCard extends StatefulWidget {
   final String title;
@@ -25,11 +26,15 @@ class _ServiceCardState extends State<ServiceCard> {
   bool isHovered = false;
 
   void _showGallery(BuildContext context) {
+    // 🔊 ENGINE SYNC: Sound/Haptic feedback trigger
+    if (AppTheme.enableSoundEffects) HapticFeedback.lightImpact();
+
     showGeneralDialog(
       context: context,
       barrierDismissible: true,
       barrierLabel: 'Gallery',
-      transitionDuration: const Duration(milliseconds: 400),
+      // 🚀 ENGINE SYNC: Global Transition Speed se link kar diya!
+      transitionDuration: Duration(milliseconds: AppTheme.durationMs),
       pageBuilder: (context, animation, secondaryAnimation) {
         return BackdropFilter(
           // 🚀 ENGINE SYNC: Blur toggle ke hisaab se chalega
@@ -61,7 +66,10 @@ class _ServiceCardState extends State<ServiceCard> {
                       ),
                       IconButton(
                         icon: Icon(Icons.close, color: AppTheme.textMain, size: 30), 
-                        onPressed: () => Navigator.of(context).pop(),
+                        onPressed: () {
+                          if (AppTheme.enableSoundEffects) HapticFeedback.selectionClick();
+                          Navigator.of(context).pop();
+                        },
                       ),
                     ],
                   ),
@@ -77,12 +85,18 @@ class _ServiceCardState extends State<ServiceCard> {
                         return Container(
                           margin: const EdgeInsets.only(right: 20),
                           width: MediaQuery.of(context).size.width * 0.5,
+                          // 🚀 ENGINE SYNC: Border Radius Admin panel se chalega
                           decoration: BoxDecoration(
-                            // 🚀 ENGINE SYNC: Border Radius synced with ButtonStyle
-                            borderRadius: BorderRadius.circular(AppTheme.buttonStyle == 'square' ? 0 : 15),
-                            image: DecorationImage(
-                              image: NetworkImage(widget.images[index]),
-                              fit: BoxFit.cover,
+                            borderRadius: BorderRadius.circular(AppTheme.getGlobalRadius()),
+                          ),
+                          // 🚀 ENGINE SYNC: Image Filters (Grayscale, Sepia) yahan apply honge!
+                          child: AppTheme.applyImageFilter(
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(AppTheme.getGlobalRadius()),
+                              child: Image.network(
+                                widget.images[index],
+                                fit: BoxFit.cover,
+                              ),
                             ),
                           ),
                         );
@@ -114,6 +128,8 @@ class _ServiceCardState extends State<ServiceCard> {
     // 🚀 ENGINE SYNC: Global Animation Engine Apply Kiya
     return AppTheme.applyAnim(
       MouseRegion(
+        // 🚀 ENGINE SYNC: Custom Cursor Type
+        cursor: AppTheme.cursorType == 'none' ? SystemMouseCursors.none : SystemMouseCursors.click,
         onEnter: (_) => setState(() => isHovered = true),
         onExit: (_) => setState(() => isHovered = false),
         child: AnimatedContainer(
@@ -125,12 +141,8 @@ class _ServiceCardState extends State<ServiceCard> {
           // 🚀 ENGINE SYNC: Hover hone par UI Engine apne aap design badlega
           decoration: AppTheme.getCardDecoration(isHovered: isHovered),
           
-          // 🚀 ENGINE SYNC: Admin Panel se "Hover Effect" jo set hoga wahi chalega
-          transform: Matrix4.translationValues(
-            0, 
-            (isHovered && AppTheme.hoverEffect == 'lift') ? -10 : 0, 
-            0
-          ),
+          // 🚀 ENGINE SYNC: Admin Panel ka "Hover Effect" aur "Parallax" yahan se trigger hoga!
+          transform: AppTheme.getHoverTransform(isHovered),
           
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -158,7 +170,7 @@ class _ServiceCardState extends State<ServiceCard> {
               // Explore More Button
               Align(
                 alignment: Alignment.bottomRight,
-                child: InkWell(
+                child: GestureDetector(
                   onTap: () => _showGallery(context),
                   child: AnimatedContainer(
                     duration: const Duration(milliseconds: 300),
@@ -166,8 +178,8 @@ class _ServiceCardState extends State<ServiceCard> {
                     decoration: BoxDecoration(
                       color: isHovered ? AppTheme.bg : Colors.transparent,
                       border: Border.all(color: isHovered ? AppTheme.bg : AppTheme.accent),
-                      // 🚀 ENGINE SYNC: Pill/Rounded/Square mode se link kiya
-                      borderRadius: BorderRadius.circular(AppTheme.buttonStyle == 'square' ? 0 : 30),
+                      // 🚀 ENGINE SYNC: Button ya Border Style par react karega
+                      borderRadius: BorderRadius.circular(AppTheme.buttonStyle == 'pill' ? 50 : AppTheme.getGlobalRadius()),
                     ),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
