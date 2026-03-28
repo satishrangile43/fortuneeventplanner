@@ -39,6 +39,8 @@ class ThemeProvider extends ChangeNotifier {
   // ==========================================
   void changeTheme(String newTheme) {
     AppTheme.activeTheme = newTheme;
+    // 🧠 SMART LOGIC: Auto-adjust autoDarkMode toggle if manually forced
+    AppTheme.autoDarkMode = false; 
     notifyListeners();
   }
 
@@ -72,6 +74,16 @@ class ThemeProvider extends ChangeNotifier {
   // ==========================================
   void updateUIStyle(String newStyle) {
     AppTheme.globalUIStyle = newStyle;
+    
+    // 🧠 SMART LOGIC: If Glassmorphism is selected, Blur MUST be true for the effect to work
+    if (newStyle == 'glass' && !AppTheme.enablePerformanceMode) {
+      AppTheme.enableBlur = true;
+    }
+    // 🧠 SMART LOGIC: If Neumorphism is selected, Shadows MUST be true
+    if (newStyle == 'neumorphic') {
+      AppTheme.enableShadows = true;
+    }
+    
     notifyListeners();
   }
 
@@ -106,6 +118,12 @@ class ThemeProvider extends ChangeNotifier {
 
   void updateBackgroundStyle(String newBackground) {
     AppTheme.backgroundStyle = newBackground;
+    
+    // 🧠 SMART LOGIC: If mesh or gradient background is selected, turn on gradients
+    if (newBackground == 'mesh' || newBackground == 'gradient') {
+      AppTheme.enableGradients = true;
+    }
+    
     notifyListeners();
   }
 
@@ -239,7 +257,7 @@ class ThemeProvider extends ChangeNotifier {
   }
 
   // ==========================================
-  // 🌙 9. ADVANCED & PERFORMANCE
+  // 🌙 9. ADVANCED & PERFORMANCE (SMART ENGINE)
   // ==========================================
   void toggleAutoDarkMode(bool value) {
     AppTheme.autoDarkMode = value;
@@ -253,58 +271,69 @@ class ThemeProvider extends ChangeNotifier {
 
   void togglePerformanceMode(bool value) {
     AppTheme.enablePerformanceMode = value;
+    
+    // 🧠 SMART LOGIC: Auto-disable Heavy Rendering for Max FPS
+    if (value) {
+      AppTheme.enableBlur = false;
+      AppTheme.enableParticles = false;
+      AppTheme.enableGlow = false;
+      AppTheme.parallaxIntensity = 'none';
+      AppTheme.scrollEffect = 'smooth';
+      AppTheme.transitionSpeed = 'fast'; // Faster transitions = less frame drops
+    }
+    
     notifyListeners();
   }
 
   // ==========================================
-  // 🛠️ 10. MASTER RESET (Clears Everything)
+  // 🛠️ 10. MASTER RESET (THE GOD TIER PRESET)
   // ==========================================
   void resetToDefault() {
     isSelectionMode = false;
     elementSettings.clear(); 
     
-    // Core
-    AppTheme.activeTheme = 'light';
+    // 🧠 Core: Dark/Light Adaptive
+    AppTheme.activeTheme = 'dark'; // Dark theme defaults look more premium
     AppTheme.accentColor = 'auto';
     AppTheme.imageFilter = 'none';
     
-    // UI & Motion
-    AppTheme.globalAnimation = 'zoom';
+    // 🧠 UI & Motion: Buttery Smooth & Modern
+    AppTheme.globalAnimation = 'fade'; // Fade is smoother than zoom out of the box
     AppTheme.transitionSpeed = 'normal';
-    AppTheme.globalUIStyle = 'flat';
+    AppTheme.globalUIStyle = 'glass'; // Glassmorphism is top-tier trend
     AppTheme.layoutStyle = 'modern';
-    AppTheme.buttonStyle = 'rounded';
+    AppTheme.buttonStyle = 'pill'; // Pill buttons give a sleek SaaS look
     AppTheme.cardStyle = 'elevated';
-    AppTheme.borderStyle = 'rounded';
+    AppTheme.borderStyle = 'squircle'; // Apple-like smooth corners
     AppTheme.fontStyle = 'modern';
-    AppTheme.backgroundStyle = 'plain';
+    AppTheme.backgroundStyle = 'gradient'; // Richer background
     
-    // Effects
-    AppTheme.hoverEffect = 'lift';
-    AppTheme.parallaxIntensity = 'low';
-    AppTheme.enableGlow = false;
-    AppTheme.enableBlur = false;
+    // 🧠 Effects: Balanced Depth
+    AppTheme.hoverEffect = 'parallax'; // 3D feel
+    AppTheme.parallaxIntensity = 'medium';
+    AppTheme.enableGlow = true; // Subtle glowing accents
+    AppTheme.enableBlur = true; // Required for glass UI
     AppTheme.enableShadows = true;
     AppTheme.enableGradients = true;
-    AppTheme.enableParticles = false;
-    AppTheme.enableCursorEffect = false;
-    AppTheme.cursorType = 'dot';
+    AppTheme.enableParticles = false; // Off by default to save battery
+    AppTheme.enableCursorEffect = true;
+    AppTheme.cursorType = 'ring'; // Premium cursor for web
     
-    // Layout & Components
-    AppTheme.scrollEffect = 'smooth';
+    // 🧠 Layout & Components
+    AppTheme.scrollEffect = 'bouncy'; // iOS style bounce
     AppTheme.mobileLayout = 'adaptive';
     AppTheme.heroStyle = 'centered';
-    AppTheme.navbarStyle = 'sticky';
+    AppTheme.navbarStyle = 'floating'; // Floating navbars look luxurious
     AppTheme.footerStyle = 'expanded';
     AppTheme.formInputStyle = 'filled';
     AppTheme.loaderStyle = 'spinner';
     
-    // Sounds & Alerts
-    AppTheme.enableSoundEffects = false;
+    // 🧠 Sounds & Alerts
+    AppTheme.enableSoundEffects = true; // Micro-interactions feel alive
     AppTheme.soundPack = 'clicky';
-    AppTheme.toastStyle = 'floating';
+    AppTheme.toastStyle = 'glass'; // Matches global UI style
     
-    // System
+    // 🧠 System
     AppTheme.autoDarkMode = true;
     AppTheme.enablePerformanceMode = false;
     

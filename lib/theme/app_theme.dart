@@ -7,47 +7,47 @@ class AppTheme {
   // ==========================================
   // 🧠 GLOBAL DESIGN SYSTEM (ULTRA GOD CONTROL)
   // ==========================================
-
+  
   // 🎨 THEMES & COLORS
-  static String activeTheme = 'light'; 
+  static String activeTheme = 'dark'; 
   static String accentColor = 'auto'; 
-  static String imageFilter = 'none'; // 🆕 NAYA: Grayscale, Sepia, etc.
+  static String imageFilter = 'none'; // Grayscale, Sepia, High-Contrast
 
   // ✨ ANIMATIONS
-  static String globalAnimation = 'zoom'; 
-  static String transitionSpeed = 'normal'; // 🆕 NAYA: Slow, Normal, Fast
+  static String globalAnimation = 'fade'; 
+  static String transitionSpeed = 'normal'; // Slow, Normal, Fast
 
   // 🧊 UI STYLE & SHAPES
-  static String globalUIStyle = 'flat'; 
+  static String globalUIStyle = 'glass'; 
   static String layoutStyle = 'modern';
-  static String buttonStyle = 'rounded';
+  static String buttonStyle = 'pill';
   static String cardStyle = 'elevated';
-  static String borderStyle = 'rounded'; // 🆕 NAYA: Sharp, Rounded, Squircle
+  static String borderStyle = 'squircle'; // Sharp, Rounded, Squircle
 
   // 🔠 FONTS & BACKGROUND
   static String fontStyle = 'modern';
-  static String backgroundStyle = 'plain';
+  static String backgroundStyle = 'gradient';
 
   // 🌟 EFFECTS & 3D
-  static String hoverEffect = 'lift';
-  static String parallaxIntensity = 'low'; // 🆕 NAYA: Off, Low, High
-  static bool enableGlow = false;
-  static bool enableBlur = false;
+  static String hoverEffect = 'scale';
+  static String parallaxIntensity = 'low'; // Off, Low, High
+  static bool enableGlow = true;
+  static bool enableBlur = true;
   static bool enableShadows = true;
   static bool enableGradients = true;
   static bool enableParticles = false;
   
   // 🖱️ CURSOR
-  static String cursorType = 'dot'; // 🆕 NAYA: Dot, Ring, None
-  static bool enableCursorEffect = false;
+  static String cursorType = 'Dot'; // Dot, Ring, None (Custom Engine handling)
+  static bool enableCursorEffect = true;
 
   // ⚡ SCROLL & RESPONSIVE
-  static String scrollEffect = 'smooth';
+  static String scrollEffect = 'bouncy';
   static String mobileLayout = 'adaptive';
 
-  // 🎯 HEADER, FOOTER & FORMS (🆕 NAYE OPTIONS)
+  // 🎯 HEADER, FOOTER & FORMS 
   static String heroStyle = 'centered';
-  static String navbarStyle = 'sticky'; // sticky, floating, hidden
+  static String navbarStyle = 'floating'; // sticky, floating, hidden
   static String footerStyle = 'expanded'; // minimal, expanded
   static String formInputStyle = 'filled'; // filled, outlined, underlined
   
@@ -55,11 +55,11 @@ class AppTheme {
   static String heroSubtitle = "Plan smarter. Execute faster. Impress everyone.";
   static String heroCTA = "Get Started";
 
-  // 🎬 LOADER, SOUND & ALERTS (🆕 NAYE OPTIONS)
+  // 🎬 LOADER, SOUND & ALERTS 
   static String loaderStyle = 'spinner';
-  static String soundPack = 'clicky'; // clicky, futuristic, minimal
-  static bool enableSoundEffects = false;
-  static String toastStyle = 'floating'; // floating, glass, banner
+  static String soundPack = 'clicky'; // clicky, heavy, light
+  static bool enableSoundEffects = true;
+  static String toastStyle = 'glass'; // floating, glass, banner
 
   // 🌙 ADVANCED SETTINGS
   static bool autoDarkMode = true;
@@ -67,42 +67,48 @@ class AppTheme {
   static bool enablePerformanceMode = false; 
 
   // ==========================================
-  // ⏳ 1. GLOBAL TRANSITION SPEED LOGIC (NAYA)
+  // 🧠 SMART HELPER: Theme Detectors
+  // ==========================================
+  static bool get isDarkTheme => 
+      activeTheme != 'light' && activeTheme != 'minimalist' && activeTheme != 'ice';
+
+  // ==========================================
+  // ⏳ 1. GLOBAL TRANSITION SPEED LOGIC (ULTRA SMOOTH)
   // ==========================================
   static int get durationMs {
-    if (enablePerformanceMode) return 0;
+    if (enablePerformanceMode) return 0; // Instant for slow devices
     switch (transitionSpeed) {
-      case 'fast': return 300;
-      case 'slow': return 1000;
-      case 'normal': default: return 600;
+      case 'fast': return 200; // Snappy
+      case 'slow': return 800; // Cinematic
+      case 'normal': default: return 450; // Perfect balance
     }
   }
 
   // ==========================================
-  // ✨ 2. GLOBAL ANIMATION ENGINE (UPGRADED)
+  // ✨ 2. GLOBAL ANIMATION ENGINE (BUTTER SMOOTH CURVES)
   // ==========================================
   static Widget applyAnim(Widget child, int delayMs) {
     if (enablePerformanceMode) return child; 
 
-    // 🚀 ENGINE SYNC: Dynamic Speed Apply Kiya
-    var anim = child.animate(delay: delayMs.ms).fade(duration: durationMs.ms);
+    // 🚀 ENGINE SYNC: EaseOutCubic gives that premium Apple-like deceleration
+    var anim = child.animate(delay: delayMs.ms).fade(duration: durationMs.ms, curve: Curves.easeOutCubic);
     
     switch (globalAnimation) {
-      case 'slide': return anim.slideY(begin: 0.3, end: 0, curve: Curves.easeOut);
-      case 'zoom': return anim.scale(begin: const Offset(0.8, 0.8), curve: Curves.easeOutBack);
-      case 'glitch': return anim.shakeX(amount: 3).then().shimmer(); 
-      case 'bounce': return anim.slideY(begin: 0.5, end: 0, curve: Curves.bounceOut);
-      case 'elastic': return anim.scale(begin: const Offset(0.5, 0.5), curve: Curves.elasticOut, duration: (durationMs * 1.5).ms);
-      case 'flip': return anim.custom(builder: (c, v, child) => Transform(transform: Matrix4.identity()..rotateY(v), child: child));
+      case 'slide': return anim.slideY(begin: 0.15, end: 0, curve: Curves.easeOutCubic); // Softer slide
+      case 'zoom': return anim.scale(begin: const Offset(0.9, 0.9), curve: Curves.easeOutBack); // Premium pop
+      case 'glitch': return anim.shakeX(amount: 2).then().shimmer(duration: 800.ms); 
+      case 'bounce': return anim.slideY(begin: 0.3, end: 0, curve: Curves.easeOutBack);
+      case 'elastic': return anim.scale(begin: const Offset(0.8, 0.8), curve: Curves.elasticOut, duration: (durationMs * 1.5).ms);
+      case 'flip': return anim.custom(builder: (c, v, child) => Transform(transform: Matrix4.identity()..setEntry(3, 2, 0.001)..rotateY(v * math.pi / 2), alignment: Alignment.center, child: child));
       case 'fade': default: return anim;
     }
   }
 
   // ==========================================
-  // 🖼️ 3. IMAGE FILTERS ENGINE (NAYA)
+  // 🖼️ 3. IMAGE FILTERS ENGINE
   // ==========================================
   static Widget applyImageFilter(Widget child) {
-    if (imageFilter == 'none') return child;
+    if (imageFilter == 'none' || enablePerformanceMode) return child;
 
     ColorFilter filter;
     switch (imageFilter) {
@@ -124,9 +130,9 @@ class AppTheme {
         break;
       case 'high-contrast':
         filter = const ColorFilter.matrix([
-          2.0, 0, 0, 0, -50.0,
-          0, 2.0, 0, 0, -50.0,
-          0, 0, 2.0, 0, -50.0,
+          1.5, 0, 0, 0, -20.0,
+          0, 1.5, 0, 0, -20.0,
+          0, 0, 1.5, 0, -20.0,
           0, 0, 0, 1, 0,
         ]);
         break;
@@ -137,42 +143,49 @@ class AppTheme {
   }
 
   // ==========================================
-  // 📏 4. GLOBAL RADIUS & BORDER ENGINE (NAYA)
+  // 📏 4. GLOBAL RADIUS & BORDER ENGINE
   // ==========================================
   static double getGlobalRadius() {
-    // Ye borderStyle panel se control hoga
     switch (borderStyle) {
       case 'sharp': return 0.0;
-      case 'squircle': return 30.0; // Higher radius for squircle look
-      case 'rounded': default: return 15.0;
+      case 'squircle': return 24.0; // Perfect squircle ratio
+      case 'rounded': default: return 12.0;
     }
   }
 
   // ==========================================
-  // 📐 5. GLOBAL UI STYLE & CARD ENGINE
+  // 📐 5. GLOBAL UI STYLE & CARD ENGINE (ADAPTIVE)
   // ==========================================
   static BoxDecoration getCardDecoration({bool isHovered = false}) {
     double radius = getGlobalRadius(); 
     
-    // Button override checks
     if (buttonStyle == 'pill') radius = 50;
     if (buttonStyle == 'square') radius = 0;
 
-    // 🔥 GLOW EFFECT LOGIC
+    // 🟢 FIX: Adaptive borders (Light mode me blackish border, Dark me whitish)
+    Color adaptiveBorderColor = isDarkTheme ? Colors.white.withValues(alpha: 0.08) : Colors.black.withValues(alpha: 0.05);
+
+    // 🔥 PREMIUM SHADOWS & GLOW
     List<BoxShadow> currentShadows = [];
     if (isHovered && enableGlow) {
-      currentShadows.add(BoxShadow(color: accent.withValues(alpha: 0.6), blurRadius: 25, spreadRadius: 2));
-    } else if (isHovered && enableShadows) {
-      currentShadows.add(BoxShadow(color: accent.withValues(alpha: 0.2), blurRadius: 20, offset: const Offset(0, 10)));
+      currentShadows.add(BoxShadow(color: accent.withValues(alpha: 0.4), blurRadius: 30, spreadRadius: 0)); // Sleek glow
+    } else if (enableShadows) {
+      // 🟢 FIX: Soft, realistic resting shadow
+      currentShadows.add(BoxShadow(
+        color: Colors.black.withValues(alpha: isDarkTheme ? 0.4 : 0.08), 
+        blurRadius: isHovered ? 25 : 15, 
+        offset: Offset(0, isHovered ? 12 : 6),
+        spreadRadius: isHovered ? -2 : -4, // Negative spread gives a very premium floating effect
+      ));
     }
 
     if (globalUIStyle == 'neumorphism' || cardStyle == 'neumorphic') {
         return BoxDecoration(
-          color: bg,
+          color: cardBg,
           borderRadius: BorderRadius.circular(radius),
           boxShadow: [
-            BoxShadow(color: Colors.black.withValues(alpha: 0.2), offset: const Offset(5, 5), blurRadius: 10),
-            BoxShadow(color: Colors.white.withValues(alpha: 0.05), offset: const Offset(-5, -5), blurRadius: 10),
+            BoxShadow(color: isDarkTheme ? Colors.black.withValues(alpha: 0.5) : Colors.black.withValues(alpha: 0.1), offset: const Offset(6, 6), blurRadius: 12),
+            BoxShadow(color: isDarkTheme ? Colors.white.withValues(alpha: 0.05) : Colors.white, offset: const Offset(-6, -6), blurRadius: 12),
             ...currentShadows,
           ],
         );
@@ -181,91 +194,99 @@ class AppTheme {
     switch (globalUIStyle) {
       case 'solid':
         return BoxDecoration(
-          color: isHovered && hoverEffect != 'none' ? accent : cardBg,
+          color: isHovered && hoverEffect != 'none' ? cardBg.withValues(alpha: 0.9) : cardBg,
           borderRadius: BorderRadius.circular(radius),
           boxShadow: currentShadows,
         );
       case 'bordered':
         return BoxDecoration(
-          color: isHovered ? accent.withValues(alpha: 0.1) : Colors.transparent,
+          color: isHovered ? accent.withValues(alpha: 0.05) : Colors.transparent,
           borderRadius: BorderRadius.circular(radius),
-          border: Border.all(color: isHovered ? accent : accent.withValues(alpha: 0.3), width: 2),
+          border: Border.all(color: isHovered ? accent : adaptiveBorderColor, width: 1.5),
           boxShadow: currentShadows,
         );
       case 'flat':
         return BoxDecoration(
-          color: isHovered ? accent : cardBg,
-          borderRadius: BorderRadius.circular(0), // Flat strictly means no borders
-          border: Border.all(color: isHovered ? accent : Colors.white24, width: 1),
+          color: isHovered ? accent.withValues(alpha: 0.1) : cardBg,
+          borderRadius: BorderRadius.circular(0), 
+          border: Border.all(color: adaptiveBorderColor, width: 1),
         );
       case 'glass':
       default:
         return BoxDecoration(
-          color: isHovered ? accent.withValues(alpha: 0.2) : cardBg.withValues(alpha: enableBlur ? 0.6 : 0.9),
+          // 🟢 FIX: Glass color adapts perfectly to light/dark themes
+          color: isHovered ? accent.withValues(alpha: 0.15) : cardBg.withValues(alpha: enableBlur ? (isDarkTheme ? 0.4 : 0.7) : 0.9),
           borderRadius: BorderRadius.circular(radius),
-          border: Border.all(color: isHovered ? accent : Colors.white10, width: isHovered ? 2 : 1),
+          border: Border.all(color: isHovered ? accent.withValues(alpha: 0.5) : adaptiveBorderColor, width: 1.5),
           boxShadow: currentShadows,
         );
     }
   }
 
   // ==========================================
-  // 🌟 6. HOVER TRANSFORM ENGINE (REAL PHYSICS)
+  // 🌟 6. HOVER TRANSFORM ENGINE (PHYSICS UPGRADED)
   // ==========================================
   static Matrix4 getHoverTransform(bool isHovered) {
-    if (!isHovered || hoverEffect == 'none') return Matrix4.identity();
+    if (!isHovered || hoverEffect == 'none' || enablePerformanceMode) return Matrix4.identity();
     
     switch (hoverEffect) {
       case 'lift': 
-        return Matrix4.translationValues(0, -10, 0);
+        return Matrix4.translationValues(0, -6, 0); // 🟢 FIX: Softer, more natural lift
       case 'scale': 
-        return Matrix4.diagonal3Values(1.05, 1.05, 1.0);
+        return Matrix4.diagonal3Values(1.03, 1.03, 1.0); // 🟢 FIX: Less aggressive scale
       case 'tilt': 
+        // 🟢 SUPER FIX: True 3D CSS-like tilt effect with correct Vector scaling
         return Matrix4.identity()
-          ..rotateZ(math.pi / 60)
-          ..multiply(Matrix4.diagonal3Values(1.02, 1.02, 1.0));
+          ..setEntry(3, 2, 0.001) // Perspective
+          ..rotateX(-0.02)
+          ..rotateY(0.02)
+          ..multiply(Matrix4.diagonal3Values(1.02, 1.02, 1.0)); // ✅ YAHAN FIX KIYA HAI
       case 'glow': 
-        return Matrix4.identity(); // Glow is handled in decoration
+        return Matrix4.identity(); // Handled by BoxDecoration shadow
       default: 
         return Matrix4.identity();
     }
   }
 
   // ==========================================
-  // 📝 7. FORM INPUT ENGINE (NAYA)
+  // 📝 7. FORM INPUT ENGINE (PREMIUM FOCUS)
   // ==========================================
   static InputDecoration getFormInputDecoration(String hint) {
     double radius = getGlobalRadius();
+    Color adaptiveBorder = isDarkTheme ? Colors.white.withValues(alpha: 0.1) : Colors.black.withValues(alpha: 0.1);
     
     switch (formInputStyle) {
       case 'outlined':
         return InputDecoration(
           hintText: hint,
-          hintStyle: getBodyStyle(fontSize: 14, color: textSub.withValues(alpha: 0.5)),
+          hintStyle: getBodyStyle(fontSize: 14, color: textSub.withValues(alpha: 0.6)),
           filled: false,
-          contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-          enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(radius), borderSide: BorderSide(color: textSub.withValues(alpha: 0.3))),
+          contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
+          enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(radius), borderSide: BorderSide(color: adaptiveBorder)),
           focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(radius), borderSide: BorderSide(color: accent, width: 2)),
+          errorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(radius), borderSide: BorderSide(color: Colors.redAccent.shade400, width: 1)),
         );
       case 'underlined':
         return InputDecoration(
           hintText: hint,
-          hintStyle: getBodyStyle(fontSize: 14, color: textSub.withValues(alpha: 0.5)),
+          hintStyle: getBodyStyle(fontSize: 14, color: textSub.withValues(alpha: 0.6)),
           filled: false,
           contentPadding: const EdgeInsets.symmetric(horizontal: 0, vertical: 15),
-          enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: textSub.withValues(alpha: 0.3))),
+          enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: adaptiveBorder)),
           focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: accent, width: 2)),
+          errorBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.redAccent.shade400, width: 1)),
         );
       case 'filled':
       default:
         return InputDecoration(
           hintText: hint,
-          hintStyle: getBodyStyle(fontSize: 14, color: textSub.withValues(alpha: 0.5)),
+          hintStyle: getBodyStyle(fontSize: 14, color: textSub.withValues(alpha: 0.6)),
           filled: true,
-          fillColor: cardBg,
-          contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-          enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(radius), borderSide: BorderSide.none),
+          fillColor: isDarkTheme ? Colors.white.withValues(alpha: 0.03) : Colors.black.withValues(alpha: 0.03), // 🟢 FIX: Subtle fill contrast
+          contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
+          enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(radius), borderSide: BorderSide(color: adaptiveBorder, width: 1)),
           focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(radius), borderSide: BorderSide(color: accent, width: 2)),
+          errorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(radius), borderSide: BorderSide(color: Colors.redAccent.shade400, width: 1)),
         );
     }
   }
@@ -274,24 +295,26 @@ class AppTheme {
   // 🌌 8. BACKGROUND ENGINE
   // ==========================================
   static BoxDecoration getBackgroundDecoration() {
-    if (backgroundStyle == 'gradient' && enableGradients) {
+    if (enablePerformanceMode || !enableGradients) return BoxDecoration(color: bg);
+
+    if (backgroundStyle == 'gradient') {
       return BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [bg, cardBg, bg.withValues(alpha: 0.8)],
+          colors: [bg, cardBg.withValues(alpha: 0.5), bg.withValues(alpha: 0.8)], // Smoother blend
         ),
       );
-    } else if (backgroundStyle == 'mesh' && enableGradients) {
+    } else if (backgroundStyle == 'mesh') {
       return BoxDecoration(
         gradient: RadialGradient(
-          center: Alignment.center,
-          radius: 1.5,
+          center: Alignment.topLeft,
+          radius: 2.0,
           colors: [cardBg, bg],
         ),
       );
     }
-    return BoxDecoration(color: bg); // Default plain
+    return BoxDecoration(color: bg); 
   }
 
   // ==========================================
@@ -300,95 +323,106 @@ class AppTheme {
   static TextStyle getHeadingStyle({required double fontSize, Color? color, FontWeight? weight}) {
     Color finalColor = color ?? textMain;
     switch (fontStyle) {
-      case 'futuristic': return GoogleFonts.orbitron(fontSize: fontSize, color: finalColor, fontWeight: weight ?? FontWeight.bold);
-      case 'classic': return GoogleFonts.playfairDisplay(fontSize: fontSize, color: finalColor, fontWeight: weight ?? FontWeight.bold);
-      case 'mono': return GoogleFonts.spaceMono(fontSize: fontSize, color: finalColor, fontWeight: weight ?? FontWeight.bold);
-      case 'tech': return GoogleFonts.titilliumWeb(fontSize: fontSize, color: finalColor, fontWeight: weight ?? FontWeight.bold);
-      default: return GoogleFonts.poppins(fontSize: fontSize, color: finalColor, fontWeight: weight ?? FontWeight.bold);
+      case 'futuristic': return GoogleFonts.orbitron(fontSize: fontSize, color: finalColor, fontWeight: weight ?? FontWeight.w800);
+      case 'classic': return GoogleFonts.playfairDisplay(fontSize: fontSize, color: finalColor, fontWeight: weight ?? FontWeight.w700);
+      case 'mono': return GoogleFonts.spaceMono(fontSize: fontSize, color: finalColor, fontWeight: weight ?? FontWeight.w700);
+      case 'tech': return GoogleFonts.titilliumWeb(fontSize: fontSize, color: finalColor, fontWeight: weight ?? FontWeight.w700);
+      default: return GoogleFonts.inter(fontSize: fontSize, color: finalColor, fontWeight: weight ?? FontWeight.w800); // 🟢 FIX: Inter looks far more premium than Poppins for SaaS
     }
   }
 
   static TextStyle getBodyStyle({required double fontSize, Color? color, FontWeight? weight}) {
      Color finalColor = color ?? textSub;
      if(fontStyle == 'mono') return GoogleFonts.spaceMono(fontSize: fontSize, color: finalColor, fontWeight: weight ?? FontWeight.normal);
-     return GoogleFonts.poppins(fontSize: fontSize, color: finalColor, fontWeight: weight ?? FontWeight.normal);
+     return GoogleFonts.inter(fontSize: fontSize, color: finalColor, fontWeight: weight ?? FontWeight.w500); // 🟢 FIX: Inter for high legibility
   }
 
   // ==========================================
-  // 🎨 10. COLOR PALETTE ENGINE
+  // 🎨 10. COLOR PALETTE ENGINE (HARMONIZED)
   // ==========================================
   static Color get bg {
     switch (activeTheme) {
-      case 'light': return const Color(0xFFF5F5F7);
-      case 'dark': return const Color(0xFF0A0A0C);
-      case 'ocean': return const Color(0xFF0F172A);
-      case 'sunset': return const Color(0xFF2D130A);
+      case 'light': return const Color(0xFFF9FAFB); // Sleek modern white
+      case 'dark': return const Color(0xFF09090B); // Pure pitch zinc
+      case 'ocean': return const Color(0xFF020617);
+      case 'sunset': return const Color(0xFF1E0E08);
       case 'hacker': return const Color(0xFF000000);
-      case 'cyberpunk': return const Color(0xFF0F0728);
+      case 'cyberpunk': return const Color(0xFF0D031D);
       case 'dracula': return const Color(0xFF282A36);
-      case 'minimalist': return const Color(0xFFFAFAFA);
-      case 'midnight': return const Color(0xFF020617);
-      case 'forest': return const Color(0xFF061A14);
-      case 'galaxy': return const Color(0xFF0B0118);
-      case 'fire': return const Color(0xFF1A0500);
+      case 'minimalist': return const Color(0xFFFFFFFF);
+      case 'midnight': return const Color(0xFF000000);
+      case 'forest': return const Color(0xFF02120A);
+      case 'galaxy': return const Color(0xFF04010A);
+      case 'fire': return const Color(0xFF140200);
       case 'ice': return const Color(0xFFF0F9FF);
-      case 'luxury': 
-      default: return Colors.black;
+      case 'luxury': default: return const Color(0xFF0A0A0A);
+    }
+  }
+
+  static Color get cardBg {
+    // 🟢 FIX: Perfectly harmonized card backgrounds that match `bg`
+    switch (activeTheme) {
+      case 'light': return const Color(0xFFFFFFFF);
+      case 'dark': return const Color(0xFF18181B); // Slightly elevated zinc
+      case 'ocean': return const Color(0xFF0F172A);
+      case 'sunset': return const Color(0xFF2E150C);
+      case 'hacker': return const Color(0xFF051008);
+      case 'cyberpunk': return const Color(0xFF1B0B3B);
+      case 'dracula': return const Color(0xFF44475A);
+      case 'minimalist': return const Color(0xFFF4F4F5);
+      case 'midnight': return const Color(0xFF0F0F11);
+      case 'forest': return const Color(0xFF062416);
+      case 'galaxy': return const Color(0xFF0E0324);
+      case 'fire': return const Color(0xFF2B0700);
+      case 'ice': return const Color(0xFFFFFFFF);
+      case 'luxury': default: return const Color(0xFF141414);
     }
   }
 
   static Color get accent {
     if (accentColor != 'auto') {
+      // 🟢 FIX: Premium custom hex codes instead of basic Material accents
       switch (accentColor) {
-        case 'blue': return Colors.blueAccent;
-        case 'purple': return Colors.purpleAccent;
-        case 'green': return Colors.greenAccent;
-        case 'red': return Colors.redAccent;
-        case 'gold': return const Color(0xFFD6A762);
-        case 'pink': return Colors.pinkAccent;
-        case 'cyan': return Colors.cyanAccent;
+        case 'blue': return const Color(0xFF3B82F6);
+        case 'purple': return const Color(0xFFA855F7);
+        case 'green': return const Color(0xFF22C55E);
+        case 'red': return const Color(0xFFEF4444);
+        case 'gold': return const Color(0xFFEAB308);
+        case 'pink': return const Color(0xFFEC4899);
+        case 'cyan': return const Color(0xFF06B6D4);
       }
     }
 
     switch (activeTheme) {
-      case 'light': return const Color(0xFF007AFF);
-      case 'dark': return const Color(0xFF22C55E);
+      case 'light': return const Color(0xFF2563EB);
+      case 'dark': return const Color(0xFF3B82F6); // Soft blue looks great on dark
       case 'ocean': return const Color(0xFF0EA5E9);
       case 'sunset': return const Color(0xFFF97316);
-      case 'hacker': return const Color(0xFF4ADE80);
-      case 'cyberpunk': return const Color(0xFF06B6D4);
+      case 'hacker': return const Color(0xFF22C55E);
+      case 'cyberpunk': return const Color(0xFFD946EF); // Neon pink
       case 'dracula': return const Color(0xFFFF79C6);
-      case 'minimalist': return const Color(0xFF111111);
+      case 'minimalist': return const Color(0xFF18181B);
       case 'fire': return const Color(0xFFFF4500);
-      case 'ice': return const Color(0xFF00D4FF);
-      case 'neon': return const Color(0xFFF0ABFC);
-      case 'luxury': 
-      default: return const Color(0xFFD6A762); // Gold
+      case 'ice': return const Color(0xFF00B4D8);
+      case 'luxury': default: return const Color(0xFFD4AF37); // True Gold
     }
   }
 
   static Color get textMain {
-    switch (activeTheme) {
-      case 'light': case 'minimalist': case 'ice': return const Color(0xFF1D1D1F);
-      case 'hacker': return const Color(0xFF4ADE80);
-      default: return Colors.white; 
+    if (isDarkTheme) {
+      if (activeTheme == 'hacker') return const Color(0xFF4ADE80);
+      return const Color(0xFFFAFAFA); // Almost white
+    } else {
+      return const Color(0xFF09090B); // Almost black
     }
   }
 
   static Color get textSub {
-    switch (activeTheme) {
-      case 'light': case 'minimalist': case 'ice': return const Color(0xFF6E6E73);
-      case 'hacker': return const Color(0xFF22C55E);
-      default: return Colors.white54;
-    }
-  }
-
-  static Color get cardBg {
-    switch (activeTheme) {
-      case 'light': case 'minimalist': case 'ice': return Colors.white;
-      case 'dracula': return const Color(0xFF44475A);
-      case 'luxury':
-      default: return const Color(0xFF111111);
+    if (isDarkTheme) {
+      if (activeTheme == 'hacker') return const Color(0xFF22C55E);
+      return const Color(0xFFA1A1AA); // Elegant Zinc-400
+    } else {
+      return const Color(0xFF71717A); // Elegant Zinc-500
     }
   }
 
