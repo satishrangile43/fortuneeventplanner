@@ -10,7 +10,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  
+  flutter_launcher_icons: ^0.14.4
+  flutter_native_splash: ^2.4.4
   # --- CORE UI & NAVIGATION ---
   cupertino_icons: ^1.0.8
   google_fonts: ^6.2.1
@@ -42,8 +43,28 @@ dev_dependencies:
 flutter:
   uses-material-design: true
 
-  # --- ASSETS SECTION ---
-  assets:
-    - assets/images/
-    - assets/images/icons/
-    - assets/animations/ # Lottie files ke liye naya folder
+  # ==========================================
+# 📱 APP ICON CONFIGURATION
+# ==========================================
+flutter_launcher_icons:
+  android: "launcher_icon"
+  ios: true
+  web:
+    generate: true
+    image_path: "assets/images/logo.png" # 👈 Make sure logo.png is here
+    background_color: "#000000"
+    theme_color: "#D6A762"
+  image_path: "assets/images/logo.png"
+  min_sdk_android: 21
+  adaptive_icon_background: "#000000" # Tera theme dark hai toh black sahi rahega
+  adaptive_icon_foreground: "assets/images/logo.png"
+
+# ==========================================
+# 💦 SPLASH SCREEN CONFIGURATION
+# ==========================================
+flutter_native_splash:
+  color: "#000000"
+  image: "assets/images/logo.png"
+  android: true
+  ios: true
+  web: true

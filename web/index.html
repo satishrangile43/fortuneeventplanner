@@ -2,45 +2,138 @@
 <html>
 <head>
   <!--
-    If you are serving your web app in a path other than the root, change the
-    href value below to reflect the base path you are serving from.
-
-    The path provided below has to start and end with a slash "/" in order for
-    it to work correctly.
-
-    For more details:
-    * https://developer.mozilla.org/en-US/docs/Web/HTML/Element/base
-
-    This is a placeholder for base href that will be replaced by the value of
-    the `--base-href` argument provided to `flutter build`.
+    Fortune Event Planner - Premium Web Experience
+    Engineered for Excellence.
   -->
   <base href="$FLUTTER_BASE_HREF">
 
   <meta charset="UTF-8">
   <meta content="IE=Edge" http-equiv="X-UA-Compatible">
-  <meta name="description" content="A new Flutter project.">
+  
+  <!-- SEO & Social Sharing Upgrade -->
+  <title>Fortune Event Planner | Elite Staffing & Security</title>
+  <meta name="description" content="Premium event management, professional manpower, and elite security services tailored for high-end events.">
+  <meta name="keywords" content="Event Staffing, Bouncers Indore, Wedding Planners, Fortune Event Planner, Security Services">
+  <meta name="author" content="Fortune Event Planner">
+
+  <!-- Open Graph / Facebook (For Premium Link Previews) -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Fortune Event Planner | Elite Staffing">
+  <meta property="og:description" content="Comprehensive event management and operational support tailored to your needs.">
+  <meta property="og:image" content="assets/images/logo.png">
 
   <!-- iOS meta tags & icons -->
   <meta name="mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black">
-  <meta name="apple-mobile-web-app-title" content="event">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Fortune Event">
   <link rel="apple-touch-icon" href="icons/Icon-192.png">
 
   <!-- Favicon -->
-  <link rel="icon" type="image/png" href="favicon.png"/>
+  <link rel="icon" type="image/png" href="favicon.png">
 
-  <title>event</title>
   <link rel="manifest" href="manifest.json">
+
+  <style id="splash-screen-style">
+    html {
+      height: 100%;
+      background-color: #000000; /* Dark Base */
+    }
+
+    body {
+      margin: 0;
+      min-height: 100%;
+      background-color: #000000;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .center {
+      margin: 0;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      -ms-transform: translate(-50%, -50%);
+      transform: translate(-50%, -50%);
+      transition: opacity 0.5s ease-in-out;
+    }
+
+    /* Premium Loading Bar */
+    .loading-container {
+      position: absolute;
+      top: 65%;
+      width: 200px;
+      height: 2px;
+      background: rgba(214, 167, 98, 0.1); /* Subtle Accent Alpha */
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .loading-bar {
+      width: 0%;
+      height: 100%;
+      background: #D6A762; /* Fortune Accent Color */
+      box-shadow: 0 0 15px #D6A762;
+      animation: load 2s infinite ease-in-out;
+    }
+
+    @keyframes load {
+      0% { width: 0%; left: 0; }
+      50% { width: 100%; left: 0; }
+      100% { width: 0%; left: 100%; }
+    }
+
+    .contain {
+      display: block;
+      width: 100%; height: 100%;
+      object-fit: contain;
+    }
+
+    /* Animation for Logo */
+    .fade-in {
+      animation: fadeIn 1.2s ease-in forwards;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translate(-50%, -55%); }
+      to { opacity: 1; transform: translate(-50%, -50%); }
+    }
+  </style>
+
+  <script id="splash-screen-script">
+    function removeSplashFromWeb() {
+      const splash = document.getElementById("splash");
+      const loader = document.getElementById("loader");
+      if (splash) splash.style.opacity = "0";
+      if (loader) loader.style.opacity = "0";
+      
+      setTimeout(() => {
+        splash?.remove();
+        loader?.remove();
+        document.body.style.background = "transparent";
+      }, 500);
+    }
+  </script>
+  
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport">
 </head>
 <body>
-  <!--
-    You can customize the "flutter_bootstrap.js" script.
-    This is useful to provide a custom configuration to the Flutter loader
-    or to give the user feedback during the initialization process.
+  
+  <!-- Main Splash Logo -->
+  <picture id="splash">
+      <source srcset="splash/img/light-1x.png 1x, splash/img/light-2x.png 2x, splash/img/light-3x.png 3x, splash/img/light-4x.png 4x" media="(prefers-color-scheme: light)">
+      <source srcset="splash/img/dark-1x.png 1x, splash/img/dark-2x.png 2x, splash/img/dark-3x.png 3x, splash/img/dark-4x.png 4x" media="(prefers-color-scheme: dark)">
+      <img class="center fade-in" aria-hidden="true" src="splash/img/light-1x.png" alt="Fortune Logo" style="width: 180px;">
+  </picture>
 
-    For more details:
-    * https://docs.flutter.dev/platform-integration/web/initialization
-  -->
-  <script src="flutter_bootstrap.js" async></script>
+  <!-- Elegant Loader -->
+  <div id="loader" class="loading-container">
+    <div class="loading-bar"></div>
+  </div>
+
+  <script src="flutter_bootstrap.js" async=""></script>
+
 </body>
 </html>
