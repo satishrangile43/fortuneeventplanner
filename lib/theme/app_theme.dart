@@ -1,50 +1,41 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'dart:math' as math;
 
 class AppTheme {
   // ==========================================
   // 🧠 GLOBAL DESIGN SYSTEM (ULTRA CONTROL)
   // ==========================================
 
-  // 🎨 THEMES (Visual Personality)
-  // Options: 'luxury', 'cyberpunk', 'hacker', 'ocean', 'sunset', 'minimalist', 'dracula', 'light', 'dark', 'neon', 'retro', 'pastel', 'midnight', 'forest', 'galaxy', 'fire', 'ice'
+  // 🎨 THEMES
   static String activeTheme = 'light'; 
 
   // 🌈 ACCENT COLOR CONTROL
-  // Options: 'auto', 'blue', 'purple', 'green', 'red', 'gold', 'pink', 'cyan'
   static String accentColor = 'auto'; 
 
-  // ✨ ANIMATIONS (Global Motion Style)
-  // Options: 'fade', 'slide', 'zoom', 'bounce', 'rotate', 'flip', 'glitch', 'wave', 'pulse', 'elastic'
+  // ✨ ANIMATIONS
   static String globalAnimation = 'zoom'; 
 
-  // 🧊 UI STYLE (Component Feel)
-  // Options: 'glass', 'solid', 'bordered', 'flat', 'neumorphism', 'softUI', '3d', 'gradient'
+  // 🧊 UI STYLE
   static String globalUIStyle = 'flat'; 
 
   // 📐 LAYOUT STYLE
-  // Options: 'modern', 'classic', 'compact', 'spacious', 'grid', 'asymmetric'
   static String layoutStyle = 'modern';
 
   // 🔘 BUTTON STYLE
-  // Options: 'rounded', 'pill', 'square', 'ghost', 'gradient', 'outline'
   static String buttonStyle = 'rounded';
 
   // 🔠 FONT STYLE
-  // Options: 'modern', 'tech', 'classic', 'futuristic', 'handwritten', 'mono'
   static String fontStyle = 'modern';
 
   // 🌌 BACKGROUND STYLE
-  // Options: 'plain', 'gradient', 'mesh', 'animated', 'particles', 'stars', 'waves', 'noise'
   static String backgroundStyle = 'plain';
 
   // 🧩 CARD STYLE
-  // Options: 'flat', 'elevated', 'glass', 'outline', 'neumorphic'
   static String cardStyle = 'elevated';
 
   // 🌟 HOVER EFFECT
-  // Options: 'none', 'lift', 'glow', 'scale', 'tilt', 'shadow'
   static String hoverEffect = 'lift';
 
   // 🔥 SPECIAL EFFECTS (WOW FACTOR)
@@ -56,22 +47,18 @@ class AppTheme {
   static bool enableCursorEffect = false;
 
   // ⚡ SCROLL EFFECTS
-  // Options: 'smooth', 'snap', 'parallax', 'reveal', 'none'
   static String scrollEffect = 'smooth';
 
   // 📱 RESPONSIVE BEHAVIOR
-  // Options: 'adaptive', 'stacked', 'compact', 'minimal'
   static String mobileLayout = 'adaptive';
 
   // 🎯 HERO SECTION CONTROL
-  // Options: 'centered', 'split', 'fullscreen', 'minimal', 'video'
   static String heroStyle = 'centered';
   static String heroTitle = "Simplifying Event\nExecution With Precision";
   static String heroSubtitle = "Plan smarter. Execute faster. Impress everyone.";
   static String heroCTA = "Get Started";
 
   // 🎬 LOADER STYLE
-  // Options: 'spinner', 'dots', 'pulse', 'bars', 'custom'
   static String loaderStyle = 'spinner';
 
   // 🔊 SOUND EFFECTS
@@ -88,7 +75,7 @@ class AppTheme {
   // ✨ 1. GLOBAL ANIMATION ENGINE
   // ==========================================
   static Widget applyAnim(Widget child, int delayMs) {
-    if (enablePerformanceMode) return child; // Optimization
+    if (enablePerformanceMode) return child; 
 
     var anim = child.animate(delay: delayMs.ms).fade(duration: 600.ms);
     
@@ -104,12 +91,19 @@ class AppTheme {
   }
 
   // ==========================================
-  // 📐 2. GLOBAL UI STYLE ENGINE (Component Layout)
+  // 📐 2. GLOBAL UI STYLE & CARD ENGINE
   // ==========================================
   static BoxDecoration getCardDecoration({bool isHovered = false}) {
     double radius = (buttonStyle == 'pill') ? 50 : ((buttonStyle == 'square') ? 0 : 20);
+    
+    // 🔥 GLOW EFFECT LOGIC
+    List<BoxShadow> currentShadows = [];
+    if (isHovered && enableGlow) {
+      currentShadows.add(BoxShadow(color: accent.withValues(alpha: 0.6), blurRadius: 25, spreadRadius: 2));
+    } else if (isHovered && enableShadows) {
+      currentShadows.add(BoxShadow(color: accent.withValues(alpha: 0.2), blurRadius: 20, offset: const Offset(0, 10)));
+    }
 
-    // Neumorphism specific styling
     if (globalUIStyle == 'neumorphism' || cardStyle == 'neumorphic') {
         return BoxDecoration(
           color: bg,
@@ -117,6 +111,7 @@ class AppTheme {
           boxShadow: [
             BoxShadow(color: Colors.black.withValues(alpha: 0.2), offset: const Offset(5, 5), blurRadius: 10),
             BoxShadow(color: Colors.white.withValues(alpha: 0.05), offset: const Offset(-5, -5), blurRadius: 10),
+            ...currentShadows,
           ],
         );
     }
@@ -124,15 +119,16 @@ class AppTheme {
     switch (globalUIStyle) {
       case 'solid':
         return BoxDecoration(
-          color: isHovered && hoverEffect != 'none' ? accent : cardBg.withValues(alpha: 1.0),
+          color: isHovered && hoverEffect != 'none' ? accent : cardBg,
           borderRadius: BorderRadius.circular(radius),
-          boxShadow: isHovered && enableShadows ? [BoxShadow(color: accent.withValues(alpha: 0.4), blurRadius: 20, offset: const Offset(0, 10))] : [],
+          boxShadow: currentShadows,
         );
       case 'bordered':
         return BoxDecoration(
           color: isHovered ? accent.withValues(alpha: 0.1) : Colors.transparent,
           borderRadius: BorderRadius.circular(radius),
           border: Border.all(color: isHovered ? accent : accent.withValues(alpha: 0.3), width: 2),
+          boxShadow: currentShadows,
         );
       case 'flat':
         return BoxDecoration(
@@ -146,13 +142,93 @@ class AppTheme {
           color: isHovered ? accent.withValues(alpha: 0.2) : cardBg.withValues(alpha: enableBlur ? 0.6 : 0.9),
           borderRadius: BorderRadius.circular(radius),
           border: Border.all(color: isHovered ? accent : Colors.white10, width: isHovered ? 2 : 1),
-          boxShadow: isHovered && enableShadows ? [BoxShadow(color: accent.withValues(alpha: 0.15), blurRadius: 30, offset: const Offset(0, 10))] : [],
+          boxShadow: currentShadows,
         );
     }
   }
 
   // ==========================================
-  // 🔠 3. FONT ENGINE
+  // 🌟 3. HOVER TRANSFORM ENGINE (REAL PHYSICS)
+  // ==========================================
+  static Matrix4 getHoverTransform(bool isHovered) {
+    if (!isHovered || hoverEffect == 'none') return Matrix4.identity();
+    
+    switch (hoverEffect) {
+      case 'lift': 
+        return Matrix4.translationValues(0, -10, 0);
+      case 'scale': 
+        // 🚀 FIXED: Using diagonal3Values to avoid deprecation and argument errors
+        return Matrix4.diagonal3Values(1.05, 1.05, 1.0);
+      case 'tilt': 
+        // 🚀 FIXED: Properly chaining rotation and multiplication for scaling
+        return Matrix4.identity()
+          ..rotateZ(math.pi / 60)
+          ..multiply(Matrix4.diagonal3Values(1.02, 1.02, 1.0));
+      case 'glow': 
+        return Matrix4.identity(); // Glow is handled in decoration
+      default: 
+        return Matrix4.identity();
+    }
+  }
+
+  // ==========================================
+  // 🔘 4. BUTTON STYLE ENGINE
+  // ==========================================
+  static ButtonStyle getCustomButtonStyle() {
+    double radius = (buttonStyle == 'pill') ? 50 : ((buttonStyle == 'square') ? 0 : 12);
+    
+    if (buttonStyle == 'ghost') {
+      return TextButton.styleFrom(
+        foregroundColor: accent,
+        padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 20),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(radius)),
+      );
+    } else if (buttonStyle == 'outline') {
+      return OutlinedButton.styleFrom(
+        foregroundColor: accent,
+        side: BorderSide(color: accent, width: 2),
+        padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 20),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(radius)),
+      );
+    }
+    
+    // Default / Rounded / Pill
+    return ElevatedButton.styleFrom(
+      backgroundColor: accent,
+      foregroundColor: textMain, // Using textMain to ensure contrast
+      padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 20),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(radius)),
+      elevation: enableShadows ? 10 : 0,
+      shadowColor: accent.withValues(alpha: 0.5),
+    );
+  }
+
+  // ==========================================
+  // 🌌 5. BACKGROUND ENGINE
+  // ==========================================
+  static BoxDecoration getBackgroundDecoration() {
+    if (backgroundStyle == 'gradient' && enableGradients) {
+      return BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [bg, cardBg, bg.withValues(alpha: 0.8)],
+        ),
+      );
+    } else if (backgroundStyle == 'mesh' && enableGradients) {
+      return BoxDecoration(
+        gradient: RadialGradient(
+          center: Alignment.center,
+          radius: 1.5,
+          colors: [cardBg, bg],
+        ),
+      );
+    }
+    return BoxDecoration(color: bg); // Default plain
+  }
+
+  // ==========================================
+  // 🔠 6. FONT ENGINE
   // ==========================================
   static TextStyle getHeadingStyle({required double fontSize, Color? color, FontWeight? weight}) {
     Color finalColor = color ?? textMain;
@@ -172,7 +248,7 @@ class AppTheme {
   }
 
   // ==========================================
-  // 🎨 4. COLOR PALETTE ENGINE
+  // 🎨 7. COLOR PALETTE ENGINE
   // ==========================================
   static Color get bg {
     switch (activeTheme) {
@@ -250,7 +326,7 @@ class AppTheme {
   }
 
   // ==========================================
-  // 💼 5. GLOBAL SERVICES DATA (ALL 8 SERVICES)
+  // 💼 8. GLOBAL SERVICES DATA
   // ==========================================
   static List<Map<String, dynamic>> servicesData = [
     {

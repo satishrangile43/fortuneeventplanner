@@ -27,7 +27,7 @@ CustomTransitionPage _buildPageWithTransition(Widget page, GoRouterState state) 
         return child; 
       }
 
-      // 🚀 MASTER CONTROL PANEL: Check karo konsi animation select hui hai
+      // 🚀 MASTER CONTROL PANEL: Dynamic Routing Animations
       switch (AppTheme.globalAnimation) {
         case 'slide':
           return SlideTransition(
@@ -81,10 +81,35 @@ CustomTransitionPage _buildPageWithTransition(Widget page, GoRouterState state) 
             child: child,
           );
 
-        case 'fade':
-        case 'glitch': 
-        case 'wave':
+        // 🔥 NAYE UPGRADED EFFECTS JODE GAYE HAIN 🔥
         case 'pulse':
+          return ScaleTransition(
+            scale: Tween<double>(begin: 1.05, end: 1.0)
+                .animate(CurvedAnimation(parent: animation, curve: Curves.easeInOut)),
+            child: FadeTransition(
+              opacity: Tween<double>(begin: 0.0, end: 1.0).animate(CurvedAnimation(parent: animation, curve: Curves.easeIn)),
+              child: child,
+            ),
+          );
+          
+        case 'wave':
+          return SlideTransition(
+            position: Tween<Offset>(begin: const Offset(0.1, 0.0), end: Offset.zero)
+                .animate(CurvedAnimation(parent: animation, curve: Curves.elasticOut)),
+            child: FadeTransition(opacity: animation, child: child),
+          );
+          
+        case 'glitch':
+          return SlideTransition(
+            position: Tween<Offset>(begin: const Offset(0.05, 0.0), end: Offset.zero)
+                .animate(CurvedAnimation(parent: animation, curve: Curves.bounceIn)),
+            child: FadeTransition(
+              opacity: Tween<double>(begin: 0.5, end: 1.0).animate(animation),
+              child: child,
+            ),
+          );
+
+        case 'fade':
         default:
           // Default smooth fade effect
           return FadeTransition(

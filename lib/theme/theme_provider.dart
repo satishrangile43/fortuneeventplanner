@@ -3,7 +3,40 @@ import 'app_theme.dart';
 
 class ThemeProvider extends ChangeNotifier {
   // ==========================================
-  // 🎨 THEMES & COLORS
+  // 🚀 THE NEW REAL ENGINE (GRANULAR CONTROL)
+  // ==========================================
+  
+  // 🔓 God Mode Active Switch (Jab ye true hoga, tabhi screen pe click karke edit hoga)
+  bool isSelectionMode = false; 
+
+  // 🎯 Map to store individual object customizations (Ye global theme ko override karega)
+  // Example: {'home_hero_title_color': Color(0xFFFF0000), 'service_card_glow': true}
+  Map<String, dynamic> elementSettings = {};
+
+  void toggleSelectionMode() {
+    isSelectionMode = !isSelectionMode;
+    notifyListeners();
+  }
+
+  // Kisi bhi specific object ka data update karne ke liye
+  void updateElement(String key, dynamic value) {
+    elementSettings[key] = value;
+    notifyListeners();
+  }
+
+  // Agar custom setting hatani ho aur wapas default theme par aana ho
+  void clearElementSetting(String key) {
+    elementSettings.remove(key);
+    notifyListeners();
+  }
+bool isGodModeUnlocked = false; 
+
+  void unlockGodMode() {
+    isGodModeUnlocked = true;
+    notifyListeners();
+  }
+  // ==========================================
+  // 🎨 THEMES & COLORS (GLOBAL)
   // ==========================================
   void changeTheme(String newTheme) {
     AppTheme.activeTheme = newTheme;
@@ -165,9 +198,12 @@ class ThemeProvider extends ChangeNotifier {
   }
 
   // ==========================================
-  // 🛠️ MASTER RESET
+  // 🛠️ MASTER RESET (Upgraded for Real Engine)
   // ==========================================
   void resetToDefault() {
+    isSelectionMode = false;
+    elementSettings.clear(); // 🧹 Clear all individual custom edits
+    
     AppTheme.activeTheme = 'light';
     AppTheme.accentColor = 'auto';
     AppTheme.globalAnimation = 'zoom';

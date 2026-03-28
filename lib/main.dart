@@ -90,8 +90,74 @@ class FortuneEventApp extends StatelessWidget {
           
           themeMode: currentMode, 
           routerConfig: appRouter,
+
+          // ==========================================
+          // 🚀 THE GLOBAL GOD BAR (SLIM PATTI) - RULE #4
+          // ==========================================
+          builder: (context, routerChild) {
+            return Stack(
+              children: [
+                routerChild!, // Actual Website Pages
+                
+                // 🕵️‍♂️ RULE 5: Hidden from public. Unlock hone par dikhegi!
+                if (themeProvider.isGodModeUnlocked)
+                  Positioned(
+                    bottom: 0,
+                    left: 0,
+                    right: 0,
+                    child: Material(
+                      color: Colors.transparent,
+                      child: AnimatedContainer(
+                        duration: const Duration(milliseconds: 300),
+                        curve: Curves.easeInOut,
+                        height: themeProvider.isSelectionMode ? 60 : 6, // 6px jab choti ho
+                        decoration: BoxDecoration(
+                          color: AppTheme.accent,
+                          boxShadow: [
+                            BoxShadow(color: AppTheme.accent.withValues(alpha: 0.5), blurRadius: 10, offset: const Offset(0, -2))
+                          ]
+                        ),
+                        child: themeProvider.isSelectionMode
+                            ? _buildExpandedGodBar(themeProvider)
+                            : GestureDetector(
+                                onTap: () => themeProvider.toggleSelectionMode(), // Expand on Tap
+                                child: Container(color: Colors.transparent), // Clickable area
+                              ),
+                      ),
+                    ),
+                  ),
+              ],
+            );
+          },
         );
       },
+    );
+  }
+
+  // 🎛️ EXPANDED GOD BAR UI
+  Widget _buildExpandedGodBar(ThemeProvider provider) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Row(
+            children: [
+              const Icon(Icons.rocket_launch, color: Colors.black, size: 20),
+              const SizedBox(width: 10),
+              Text(
+                "GOD MODE ACTIVE: CLICK ANY TEXT/BUTTON TO EDIT", 
+                style: AppTheme.getBodyStyle(fontSize: 14, color: Colors.black, weight: FontWeight.bold)
+              ),
+            ],
+          ),
+          TextButton.icon(
+            onPressed: () => provider.toggleSelectionMode(), // Wapas slim
+            icon: const Icon(Icons.keyboard_arrow_down, color: Colors.black),
+            label: const Text("HIDE", style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
+          )
+        ],
+      ),
     );
   }
 }

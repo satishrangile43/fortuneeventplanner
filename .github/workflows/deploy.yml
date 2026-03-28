@@ -1,21 +1,50 @@
-name: Deploy to GitHub Pages
+name: 🚀 Deploy Fortune Event Planner to GH Pages
 
 on:
   push:
     branches:
       - main
+  # 🛠️ NAYA FEATURE: Ab tu GitHub website se manual bhi deploy chalu kar sakta hai
+  workflow_dispatch: 
+
+# 🔐 NAYA FEATURE: GitHub ki latest security requirements ke liye permissions
+permissions:
+  contents: write
 
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v3
-      - uses: subosito/flutter-action@v2
+      # 1. Source code uthao (Latest v4)
+      - name: 📥 Checkout Repository
+        uses: actions/checkout@v4
+
+      # 2. Flutter Setup with Caching (Super Fast Builds)
+      - name: ⚙️ Setup Flutter
+        uses: subosito/flutter-action@v2
         with:
           channel: 'stable'
-      - run: flutter build web --release --base-href /fortuneeventplanner/
-      - name: Deploy
-        uses: peaceiris/actions-gh-pages@v3
+          cache: true # Agli baar build jaldi hoga
+
+      # 3. Purana kachra saaf karo aur nayi dependencies lao
+      - name: 📦 Install Dependencies
+        run: |
+          flutter clean
+          flutter pub get
+
+      # 4. Build Flutter Web (CanvasKit engine for smooth animations)
+      - name: 🛠️ Build Flutter Web
+        run: flutter build web --release --web-renderer canvaskit --base-href /fortuneeventplanner/
+
+      # 5. 🚨 THE MAGIC FIX FOR GOROUTER (404 Error Fix) 🚨
+      - name: 🔀 Fix Routing for GoRouter
+        run: cp build/web/index.html build/web/404.html
+
+      # 6. Final Deployment
+      - name: 🚀 Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4 # Updated to v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./build/web
+          force_orphan: true # Git history clean rakhega gh-pages branch ki
