@@ -35,6 +35,11 @@ class _ServiceCardState extends State<ServiceCard> {
       }
     }
 
+    // 📱 ADDED: Responsive Variables for Gallery Dialog
+    double screenWidth = MediaQuery.of(context).size.width;
+    double screenHeight = MediaQuery.of(context).size.height;
+    bool isMobile = screenWidth < 600;
+
     showGeneralDialog(
       context: context,
       barrierDismissible: true,
@@ -52,9 +57,10 @@ class _ServiceCardState extends State<ServiceCard> {
             child: Material( // 🟢 FIX: Material wrapper added for clean text rendering in Dialogs
               color: Colors.transparent,
               child: Container(
-                width: MediaQuery.of(context).size.width > 800 ? MediaQuery.of(context).size.width * 0.6 : MediaQuery.of(context).size.width * 0.9, // 🟢 FIX: Responsive Width
-                height: MediaQuery.of(context).size.height * 0.7,
-                padding: const EdgeInsets.all(30),
+                // 📱 UPDATED: Mobile aur Desktop dono ke liye perfect widths aur heights set ki hain
+                width: isMobile ? screenWidth * 0.95 : (screenWidth > 800 ? screenWidth * 0.6 : screenWidth * 0.9),
+                height: isMobile ? screenHeight * 0.85 : screenHeight * 0.7,
+                padding: EdgeInsets.all(isMobile ? 20 : 30), // Mobile pe padding thodi kam kar di taaki space bache
                 
                 // 🚀 ENGINE SYNC & 🟢 COLOR FIX: Base color solid kiya taaki blur pe text padhne mein aaye
                 decoration: AppTheme.getCardDecoration(isHovered: false).copyWith(
@@ -69,16 +75,20 @@ class _ServiceCardState extends State<ServiceCard> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         // 🚀 ENGINE SYNC: Dynamic Font Engine
-                        Text(
-                          widget.title,
-                          style: AppTheme.getHeadingStyle(
-                            fontSize: 28, 
-                            color: AppTheme.textMain
-                          ).copyWith(decoration: TextDecoration.none),
+                        // 📱 UPDATED: Expanded add kiya taaki lambe titles mobile screen se bahar na bhaagein
+                        Expanded(
+                          child: Text(
+                            widget.title,
+                            style: AppTheme.getHeadingStyle(
+                              fontSize: isMobile ? 22 : 28, // Mobile pe font thoda adjust kiya
+                              color: AppTheme.textMain
+                            ).copyWith(decoration: TextDecoration.none),
+                            overflow: TextOverflow.ellipsis, // Text bada hua to ... aayega, error nahi
+                          ),
                         ),
                         // 🟢 FIX: Better Close Button with Hover logic via Material/InkWell style
                         IconButton(
-                          icon: Icon(Icons.close_rounded, color: AppTheme.textMain, size: 32), 
+                          icon: Icon(Icons.close_rounded, color: AppTheme.textMain, size: isMobile ? 28 : 32), 
                           splashRadius: 24,
                           hoverColor: Colors.redAccent.withValues(alpha: 0.2),
                           onPressed: () {
@@ -100,7 +110,8 @@ class _ServiceCardState extends State<ServiceCard> {
                         itemBuilder: (context, index) {
                           return Container(
                             margin: const EdgeInsets.only(right: 25, bottom: 10, top: 10), // 🟢 FIX: Proper padding for shadow spread
-                            width: MediaQuery.of(context).size.width > 800 ? 400 : MediaQuery.of(context).size.width * 0.7,
+                            // 📱 UPDATED: Mobile me gallery image screen ke hisaab se width legi
+                            width: isMobile ? screenWidth * 0.75 : (screenWidth > 800 ? 400 : screenWidth * 0.7),
                             // 🚀 ENGINE SYNC: Border Radius Admin panel se chalega
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(AppTheme.getGlobalRadius()),
@@ -144,95 +155,116 @@ class _ServiceCardState extends State<ServiceCard> {
 
   @override
   Widget build(BuildContext context) {
+    // 📱 ADDED: Responsive Variables for the Main Card
+    double screenWidth = MediaQuery.of(context).size.width;
+    bool isMobile = screenWidth < 400; // Small screen detection
+
     // 🚀 ENGINE SYNC: Global Animation Engine Apply Kiya
     return AppTheme.applyAnim(
-      MouseRegion(
-        // 🚀 ENGINE SYNC: Custom Cursor Type
-        cursor: AppTheme.cursorType == 'none' ? SystemMouseCursors.none : SystemMouseCursors.click,
-        onEnter: (_) {
-          setState(() => isHovered = true);
-          if (AppTheme.enableSoundEffects && AppTheme.soundPack == 'clicky') HapticFeedback.selectionClick();
+      // 📱 ADDED: GestureDetector taaki Mobile users jab card pe tap karein toh Hover jaisa effect aaye
+      GestureDetector(
+        onTapDown: (_) {
+          if (isMobile) setState(() => isHovered = true);
         },
-        onExit: (_) => setState(() => isHovered = false),
-        child: AnimatedContainer(
-          duration: Duration(milliseconds: AppTheme.transitionSpeed == 'fast' ? 150 : 300),
-          width: 320,
-          height: 350, 
-          padding: const EdgeInsets.all(30),
-          
-          // 🚀 ENGINE SYNC & 🟢 FIX: Hover hone par UI Engine apne aap design badlega, added premium shadow glow
-          decoration: AppTheme.getCardDecoration(isHovered: isHovered).copyWith(
-            borderRadius: BorderRadius.circular(AppTheme.borderStyle == 'sharp' ? 0 : AppTheme.getGlobalRadius()),
-            boxShadow: AppTheme.enableShadows && isHovered ? [BoxShadow(color: AppTheme.accent.withValues(alpha: 0.3), blurRadius: 25, spreadRadius: 2)] : [],
-          ),
-          
-          // 🚀 ENGINE SYNC: Admin Panel ka "Hover Effect" aur "Parallax" yahan se trigger hoga!
-          transform: AppTheme.getHoverTransform(isHovered),
-          
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // 🚀 ENGINE SYNC & 🟢 COLOR FIX: Heading Font
-              Text(
-                widget.title,
-                style: AppTheme.getHeadingStyle(
-                  fontSize: 24, 
-                  // 🟢 FIX: Hover par text invisible na ho, balki theme ke according glow/pop kare
-                  color: isHovered ? (AppTheme.enableGlow ? AppTheme.accent : AppTheme.textMain) : AppTheme.textMain
+        onTapUp: (_) {
+          if (isMobile) Future.delayed(const Duration(milliseconds: 200), () => setState(() => isHovered = false));
+        },
+        onTapCancel: () {
+          if (isMobile) setState(() => isHovered = false);
+        },
+        child: MouseRegion(
+          // 🚀 ENGINE SYNC: Custom Cursor Type
+          cursor: AppTheme.cursorType == 'none' ? SystemMouseCursors.none : SystemMouseCursors.click,
+          onEnter: (_) {
+            setState(() => isHovered = true);
+            if (AppTheme.enableSoundEffects && AppTheme.soundPack == 'clicky') HapticFeedback.selectionClick();
+          },
+          onExit: (_) => setState(() => isHovered = false),
+          child: AnimatedContainer(
+            duration: Duration(milliseconds: AppTheme.transitionSpeed == 'fast' ? 150 : 300),
+            // 📱 UPDATED: Hardcoded 320 hatakar screen size ke hisaab se adjust kar diya
+            width: isMobile ? screenWidth * 0.9 : 320,
+            // 📱 UPDATED: Mobile par height thodi badi di hai taaki text daba hua na lage
+            height: isMobile ? 380 : 350, 
+            padding: EdgeInsets.all(isMobile ? 20 : 30), // Padding thodi kam ki mobile ke liye
+            
+            // 🚀 ENGINE SYNC & 🟢 FIX: Hover hone par UI Engine apne aap design badlega, added premium shadow glow
+            decoration: AppTheme.getCardDecoration(isHovered: isHovered).copyWith(
+              borderRadius: BorderRadius.circular(AppTheme.borderStyle == 'sharp' ? 0 : AppTheme.getGlobalRadius()),
+              boxShadow: AppTheme.enableShadows && isHovered ? [BoxShadow(color: AppTheme.accent.withValues(alpha: 0.3), blurRadius: 25, spreadRadius: 2)] : [],
+            ),
+            
+            // 🚀 ENGINE SYNC: Admin Panel ka "Hover Effect" aur "Parallax" yahan se trigger hoga!
+            transform: AppTheme.getHoverTransform(isHovered),
+            
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // 🚀 ENGINE SYNC & 🟢 COLOR FIX: Heading Font
+                Text(
+                  widget.title,
+                  style: AppTheme.getHeadingStyle(
+                    fontSize: isMobile ? 22 : 24, // 📱 Responsive Font Size
+                    // 🟢 FIX: Hover par text invisible na ho, balki theme ke according glow/pop kare
+                    color: isHovered ? (AppTheme.enableGlow ? AppTheme.accent : AppTheme.textMain) : AppTheme.textMain
+                  ),
+                  maxLines: 2, // 📱 Taaki bohot bada title ho toh UI break na ho
+                  overflow: TextOverflow.ellipsis,
                 ),
-              ),
-              const SizedBox(height: 15),
-              // 🚀 ENGINE SYNC & 🟢 COLOR FIX: Body Font
-              Expanded(
-                child: Text(
-                  widget.description,
-                  style: AppTheme.getBodyStyle(
-                    fontSize: 14, 
-                    // 🟢 FIX: Hover par background color ke hisaab se readability break na ho
-                    color: isHovered ? AppTheme.textMain.withValues(alpha: 0.9) : AppTheme.textSub
-                  ).copyWith(height: 1.6),
+                const SizedBox(height: 15),
+                // 🚀 ENGINE SYNC & 🟢 COLOR FIX: Body Font
+                Expanded(
+                  child: Text(
+                    widget.description,
+                    style: AppTheme.getBodyStyle(
+                      fontSize: 14, 
+                      // 🟢 FIX: Hover par background color ke hisaab se readability break na ho
+                      color: isHovered ? AppTheme.textMain.withValues(alpha: 0.9) : AppTheme.textSub
+                    ).copyWith(height: 1.6),
+                    overflow: TextOverflow.fade, // 📱 Agar text overflow hoga toh slowly fade out hoga
+                  ),
                 ),
-              ),
-              
-              // 🟢 FIX: Explore More Button - Ultimate Contrast Edition
-              Align(
-                alignment: Alignment.bottomRight,
-                child: GestureDetector(
-                  onTap: () => _showGallery(context),
-                  child: AnimatedContainer(
-                    duration: Duration(milliseconds: AppTheme.transitionSpeed == 'fast' ? 150 : 300),
-                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-                    decoration: BoxDecoration(
-                      color: isHovered ? AppTheme.accent : Colors.transparent, // Solid fill on hover
-                      border: Border.all(color: AppTheme.accent, width: 1.5), // Fixed visible border
-                      // 🚀 ENGINE SYNC: Button ya Border Style par react karega
-                      borderRadius: BorderRadius.circular(AppTheme.buttonStyle == 'sharp' ? 0 : (AppTheme.buttonStyle == 'pill' ? 50 : AppTheme.getGlobalRadius())),
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        // 🚀 ENGINE SYNC: Body Font
-                        Text(
-                          'Explore More',
-                          style: AppTheme.getBodyStyle(
-                            fontSize: 13, 
-                            // 🟢 FIX: Solid contrast color on hover (e.g. black text on colored accent background)
-                            color: isHovered ? Colors.black : AppTheme.accent, 
-                            weight: FontWeight.bold
+                
+                // 🟢 FIX: Explore More Button - Ultimate Contrast Edition
+                Align(
+                  alignment: Alignment.bottomRight,
+                  child: GestureDetector(
+                    onTap: () => _showGallery(context),
+                    child: AnimatedContainer(
+                      duration: Duration(milliseconds: AppTheme.transitionSpeed == 'fast' ? 150 : 300),
+                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                      decoration: BoxDecoration(
+                        color: isHovered ? AppTheme.accent : Colors.transparent, // Solid fill on hover
+                        border: Border.all(color: AppTheme.accent, width: 1.5), // Fixed visible border
+                        // 🚀 ENGINE SYNC: Button ya Border Style par react karega
+                        borderRadius: BorderRadius.circular(AppTheme.buttonStyle == 'sharp' ? 0 : (AppTheme.buttonStyle == 'pill' ? 50 : AppTheme.getGlobalRadius())),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          // 🚀 ENGINE SYNC: Body Font
+                          Text(
+                            'Explore More',
+                            style: AppTheme.getBodyStyle(
+                              fontSize: 13, 
+                              // 🟢 FIX: Solid contrast color on hover (e.g. black text on colored accent background)
+                              color: isHovered ? Colors.black : AppTheme.accent, 
+                              weight: FontWeight.bold
+                            ),
                           ),
-                        ),
-                        const SizedBox(width: 8),
-                        Icon(
-                          Icons.image_search_rounded, // Smooth icon
-                          size: 18,
-                          color: isHovered ? Colors.black : AppTheme.accent, 
-                        ),
-                      ],
+                          const SizedBox(width: 8),
+                          Icon(
+                            Icons.image_search_rounded, // Smooth icon
+                            size: 18,
+                            color: isHovered ? Colors.black : AppTheme.accent, 
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

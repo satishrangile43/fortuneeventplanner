@@ -18,6 +18,9 @@ class _ClientsPageState extends State<ClientsPage> {
   // Card-wise hover state management for interactive transforms
   int? hoveredIndex;
 
+  // ==========================================
+  // 🔊 SOUND TRIGGER HELPER
+  // ==========================================
   void _triggerSound() {
     if (AppTheme.enableSoundEffects) {
       if (AppTheme.soundPack == 'heavy') {
@@ -48,82 +51,87 @@ class _ClientsPageState extends State<ClientsPage> {
           borderRadius: BorderRadius.circular(AppTheme.getGlobalRadius())
         ),
         title: Text("✏️ Edit Object", style: AppTheme.getHeadingStyle(fontSize: 18, color: Colors.white)),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            TextField(
-              controller: textCtrl,
-              style: const TextStyle(color: Colors.white, fontSize: 15),
-              maxLines: 4,
-              minLines: 1,
-              decoration: InputDecoration(
-                labelText: "Text Content",
-                labelStyle: const TextStyle(color: Colors.white54, fontSize: 13),
-                filled: true,
-                fillColor: Colors.white.withValues(alpha: 0.05), // 🟢 Soft fill
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(8), borderSide: BorderSide.none),
-                focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(8), borderSide: BorderSide(color: AppTheme.accent, width: 1)),
-                contentPadding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
+        
+        // 🛠️ FIX: Wrapped in SingleChildScrollView so Mobile Keyboard doesn't cause Pixel Overflow
+        content: SingleChildScrollView(
+          physics: const BouncingScrollPhysics(),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              TextField(
+                controller: textCtrl,
+                style: const TextStyle(color: Colors.white, fontSize: 15),
+                maxLines: 4,
+                minLines: 1,
+                decoration: InputDecoration(
+                  labelText: "Text Content",
+                  labelStyle: const TextStyle(color: Colors.white54, fontSize: 13),
+                  filled: true,
+                  fillColor: Colors.white.withValues(alpha: 0.05), // 🟢 Soft fill
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(8), borderSide: BorderSide.none),
+                  focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(8), borderSide: BorderSide(color: AppTheme.accent, width: 1)),
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
+                ),
+                onChanged: (val) => provider.updateElement('${elementKey}_text', val),
               ),
-              onChanged: (val) => provider.updateElement('${elementKey}_text', val),
-            ),
-            const SizedBox(height: 25),
-            
-            Text("Select Color:", style: AppTheme.getBodyStyle(fontSize: 13, color: Colors.white54, weight: FontWeight.w600)),
-            const SizedBox(height: 12),
-            Wrap(
-              spacing: 12,
-              runSpacing: 12,
-              children: [
-                Colors.white, Colors.black, AppTheme.accent, Colors.blueAccent, 
-                Colors.redAccent, Colors.greenAccent, Colors.purpleAccent, Colors.orangeAccent
-              ].map((c) => 
-                MouseRegion(
-                  cursor: AppTheme.cursorType == 'none' ? SystemMouseCursors.none : SystemMouseCursors.click,
-                  child: GestureDetector(
-                    onTap: () {
-                      _triggerSound();
-                      provider.updateElement('${elementKey}_color', c);
-                    },
-                    child: Container(
-                      width: 32, height: 32,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle, 
-                        color: c, 
-                        border: Border.all(color: Colors.white.withValues(alpha: 0.3), width: 1.5),
-                        boxShadow: provider.elementSettings['${elementKey}_color'] == c 
-                            ? [BoxShadow(color: c.withValues(alpha: 0.5), blurRadius: 10, spreadRadius: 2)] 
-                            : [],
+              const SizedBox(height: 25),
+              
+              Text("Select Color:", style: AppTheme.getBodyStyle(fontSize: 13, color: Colors.white54, weight: FontWeight.w600)),
+              const SizedBox(height: 12),
+              Wrap(
+                spacing: 12,
+                runSpacing: 12,
+                children: [
+                  Colors.white, Colors.black, AppTheme.accent, Colors.blueAccent, 
+                  Colors.redAccent, Colors.greenAccent, Colors.purpleAccent, Colors.orangeAccent
+                ].map((c) => 
+                  MouseRegion(
+                    cursor: AppTheme.cursorType == 'none' ? SystemMouseCursors.none : SystemMouseCursors.click,
+                    child: GestureDetector(
+                      onTap: () {
+                        _triggerSound();
+                        provider.updateElement('${elementKey}_color', c);
+                      },
+                      child: Container(
+                        width: 32, height: 32,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle, 
+                          color: c, 
+                          border: Border.all(color: Colors.white.withValues(alpha: 0.3), width: 1.5),
+                          boxShadow: provider.elementSettings['${elementKey}_color'] == c 
+                              ? [BoxShadow(color: c.withValues(alpha: 0.5), blurRadius: 10, spreadRadius: 2)] 
+                              : [],
+                        ),
                       ),
                     ),
                   ),
-                )
-              ).toList(),
-            ),
-            const SizedBox(height: 35),
+                ).toList(),
+              ),
+              const SizedBox(height: 35),
 
-            Center(
-              child: MouseRegion(
-                cursor: AppTheme.cursorType == 'none' ? SystemMouseCursors.none : SystemMouseCursors.click,
-                child: ElevatedButton.icon(
-                  onPressed: () {
-                    _triggerSound();
-                    provider.clearElementSetting('${elementKey}_text');
-                    provider.clearElementSetting('${elementKey}_color');
-                    Navigator.pop(ctx);
-                  },
-                  icon: const Icon(Icons.refresh, color: Colors.white, size: 16),
-                  label: const Text("Reset to Default", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.redAccent.withValues(alpha: 0.8),
-                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+              Center(
+                child: MouseRegion(
+                  cursor: AppTheme.cursorType == 'none' ? SystemMouseCursors.none : SystemMouseCursors.click,
+                  child: ElevatedButton.icon(
+                    onPressed: () {
+                      _triggerSound();
+                      provider.clearElementSetting('${elementKey}_text');
+                      provider.clearElementSetting('${elementKey}_color');
+                      Navigator.pop(ctx);
+                    },
+                    icon: const Icon(Icons.refresh, color: Colors.white, size: 16),
+                    label: const Text("Reset to Default", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.redAccent.withValues(alpha: 0.8),
+                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                    ),
                   ),
                 ),
-              ),
-            )
-          ],
+              )
+            ],
+          ),
         ),
         actions: [
           MouseRegion(
@@ -154,7 +162,7 @@ class _ClientsPageState extends State<ClientsPage> {
         child: Container(
           decoration: BoxDecoration(
             border: Border.all(color: Colors.pinkAccent, width: 2, style: BorderStyle.solid), 
-            color: Colors.pinkAccent.withValues(alpha: 0.05), // 🟢 Soft Highlight
+            color: Colors.pinkAccent.withValues(alpha: 0.05), // 🟢 Soft highlight
             borderRadius: BorderRadius.circular(8),
           ),
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4), // 🟢 Breathing room
@@ -199,6 +207,7 @@ class _ClientsPageState extends State<ClientsPage> {
                           : const ClampingScrollPhysics(), // ⚡ ENGINE SYNC: Scroll Style
                       child: Column(
                         children: [
+                          
                           // ==========================================
                           // --- PAGE HEADER SECTION ---
                           // ==========================================
@@ -317,7 +326,7 @@ class _ClientsPageState extends State<ClientsPage> {
           duration: Duration(milliseconds: AppTheme.transitionSpeed == 'fast' ? 150 : 300),
           curve: Curves.easeOutCubic,
           transform: AppTheme.getHoverTransform(isThisHovered),
-          padding: EdgeInsets.symmetric(horizontal: isMobile ? 25 : 40, vertical: isMobile ? 15 : 25), // 🟢 Bigger targets on desktop
+          padding: EdgeInsets.symmetric(horizontal: isMobile ? 20 : 40, vertical: isMobile ? 15 : 25), // 🟢 Bigger targets on desktop
           decoration: AppTheme.getCardDecoration(isHovered: isThisHovered).copyWith(
             borderRadius: BorderRadius.circular(AppTheme.borderStyle == 'sharp' ? 0 : AppTheme.getGlobalRadius() * 1.5), // 🟢 Pill/Oval style looks better for chips
             // 🟢 Add subtle glow on hover
@@ -341,15 +350,20 @@ class _ClientsPageState extends State<ClientsPage> {
                   ),
                 ),
                 const SizedBox(width: 15),
-                Text(
-                  (provider.elementSettings['client_${index}_text'] ?? defaultName).toString().toUpperCase(),
-                  style: AppTheme.getBodyStyle(
-                    fontSize: isMobile ? 12 : 14,
-                    weight: isThisHovered ? FontWeight.w800 : FontWeight.w600, // 🟢 Bolder on hover
-                    // 🟢 Proper inverted colors if 'solid' style is used
-                    color: provider.elementSettings['client_${index}_color'] ?? 
-                          (isThisHovered && AppTheme.globalUIStyle == 'solid' ? AppTheme.bg : AppTheme.textMain), 
-                  ).copyWith(letterSpacing: 2.0),
+                // 🛠️ FIX: Mobile Overflow Fix - Flexible wraps the text automatically if it gets too long
+                Flexible(
+                  child: Text(
+                    (provider.elementSettings['client_${index}_text'] ?? defaultName).toString().toUpperCase(),
+                    style: AppTheme.getBodyStyle(
+                      fontSize: isMobile ? 12 : 14,
+                      weight: isThisHovered ? FontWeight.w800 : FontWeight.w600, // 🟢 Bolder on hover
+                      // 🟢 Proper inverted colors if 'solid' style is used
+                      color: provider.elementSettings['client_${index}_color'] ?? 
+                            (isThisHovered && AppTheme.globalUIStyle == 'solid' ? AppTheme.bg : AppTheme.textMain), 
+                    ).copyWith(letterSpacing: 2.0),
+                    overflow: TextOverflow.visible, // 🛠️ Allow wrapping to next line if needed
+                    softWrap: true,
+                  ),
                 ),
               ],
             ),

@@ -44,6 +44,11 @@ class _FortuneEventAppState extends State<FortuneEventApp> {
   
   bool _isPanelOpen = false; // 🎛️ Controls the sliding Admin Panel
 
+  // 🚀 ADDED: Variables for Draggable Portable God Mode (Koi purana code delete nahi kiya)
+  double? _fabX; 
+  double? _fabY;
+  bool _isDragging = false; 
+
   void _triggerSound() {
     if (AppTheme.enableSoundEffects) {
       if (AppTheme.soundPack == 'heavy') {
@@ -185,13 +190,25 @@ class _FortuneEventAppState extends State<FortuneEventApp> {
           routerConfig: appRouter,
 
           builder: (context, routerChild) {
+            // 📱 ADDED: Responsive & Draggable Logic
+            double screenWidth = MediaQuery.of(context).size.width;
+            double screenHeight = MediaQuery.of(context).size.height;
+            bool isMobile = screenWidth < 500;
+            double panelWidth = isMobile ? screenWidth : 380; 
+
+            // 🚀 Default FAB Position (Agar drag nahi kiya toh niche right me rahega)
+            double currentFabX = _fabX ?? (screenWidth - 85);
+            double currentFabY = _fabY ?? (screenHeight - 100);
+
+            // 🚀 Check If FAB is on Left Side or Right Side of screen
+            bool isLeftHalf = currentFabX < (screenWidth / 2);
+
             return Stack(
               children: [
                 routerChild!, 
 
                 // ==========================================
-                // 🕵️‍♂️ GLOBAL SECRET TRIGGER (SCREEN KE TOP RIGHT CORNER PE HAI)
-                // 5 baar wahan tap/click karne se password screen khulegi
+                // 🕵️‍♂️ GLOBAL SECRET TRIGGER
                 // ==========================================
                 if (!themeProvider.isGodModeUnlocked)
                   Positioned(
@@ -207,19 +224,21 @@ class _FortuneEventAppState extends State<FortuneEventApp> {
                             _showGlobalPasscodeDialog(context, themeProvider);
                           }
                         },
-                        child: const SizedBox(width: 80, height: 80), // Tap Area (Top Right 80x80 px)
+                        child: const SizedBox(width: 80, height: 80), 
                       ),
                     ),
                   ),
 
-                // 🎛️ GLOBAL ADMIN PANEL (Right se slide hoke aayega)
+                // 🎛️ GLOBAL ADMIN PANEL (Slide hoke aane wala - PORTABLE VERSION)
                 if (themeProvider.isGodModeUnlocked)
                   AnimatedPositioned(
                     duration: const Duration(milliseconds: 500), 
                     curve: Curves.easeOutCubic, 
                     top: 0, bottom: 0,
-                    right: _isPanelOpen ? 0 : -380, 
-                    width: 380,
+                    // 🚀 ADDED: Agar button left me hai to left se khulega, varna right se
+                    left: isLeftHalf ? (_isPanelOpen ? 0 : -panelWidth) : null,
+                    right: !isLeftHalf ? (_isPanelOpen ? 0 : -panelWidth) : null, 
+                    width: panelWidth,
                     child: Material(
                       elevation: 30, 
                       color: Colors.black.withValues(alpha: 0.95), 
@@ -227,32 +246,57 @@ class _FortuneEventAppState extends State<FortuneEventApp> {
                     ),
                   ),
 
-                // 🚀 GLOBAL SETTINGS FAB (Floating Action Button)
+                // 🚀 GLOBAL SETTINGS FAB (PORTABLE DRAGGABLE BUTTON)
                 if (themeProvider.isGodModeUnlocked)
                   AnimatedPositioned(
-                    duration: const Duration(milliseconds: 500),
+                    // Agar drag kar raha hai to delay 0, varna smooth animation aayegi
+                    duration: _isDragging ? Duration.zero : const Duration(milliseconds: 500),
                     curve: Curves.easeOutCubic,
-                    bottom: 80, 
-                    right: _isPanelOpen ? 400 : 25, 
-                    child: MouseRegion(
-                      cursor: SystemMouseCursors.click,
-                      child: FloatingActionButton(
-                        backgroundColor: AppTheme.accent,
-                        elevation: AppTheme.enableShadows ? 15 : 0, 
-                        onPressed: () {
-                          _triggerSound();
-                          setState(() => _isPanelOpen = !_isPanelOpen);
-                        },
-                        child: Icon(
-                          _isPanelOpen ? Icons.close_rounded : Icons.dashboard_customize_rounded, 
-                          color: AppTheme.cardBg, 
-                          size: 28 
-                        ),
-                      ).animate().fade().scale(curve: Curves.easeOutBack), 
+                    
+                    // 🚀 Smart Lock System: Jab panel open hoga to button panel ke border pe chipak jayega
+                    top: currentFabY, 
+                    left: _isPanelOpen 
+                        ? (isLeftHalf 
+                            ? (isMobile ? screenWidth - 85 : panelWidth + 20) 
+                            : (isMobile ? 25 : screenWidth - panelWidth - 85)) 
+                        : currentFabX,
+
+                    child: GestureDetector(
+                      // 🚀 ADDED: Draggable Logic
+                      onPanStart: (details) => setState(() => _isDragging = true),
+                      onPanUpdate: (details) {
+                        if (_isPanelOpen) return; // Jab panel khula ho to drag disable ho jayega
+                        setState(() {
+                          _fabX = (_fabX ?? (screenWidth - 85)) + details.delta.dx;
+                          _fabY = (_fabY ?? (screenHeight - 100)) + details.delta.dy;
+
+                          // Button screen se bahar na bhage isliye clamp kiya hai
+                          _fabX = _fabX!.clamp(0.0, screenWidth - 60.0);
+                          _fabY = _fabY!.clamp(0.0, screenHeight - 80.0);
+                        });
+                      },
+                      onPanEnd: (details) => setState(() => _isDragging = false),
+                      
+                      child: MouseRegion(
+                        cursor: SystemMouseCursors.click,
+                        child: FloatingActionButton(
+                          backgroundColor: AppTheme.accent,
+                          elevation: AppTheme.enableShadows ? 15 : 0, 
+                          onPressed: () {
+                            _triggerSound();
+                            setState(() => _isPanelOpen = !_isPanelOpen);
+                          },
+                          child: Icon(
+                            _isPanelOpen ? Icons.close_rounded : Icons.dashboard_customize_rounded, 
+                            color: AppTheme.cardBg, 
+                            size: 28 
+                          ),
+                        ).animate().fade().scale(curve: Curves.easeOutBack), 
+                      ),
                     ),
                   ),
 
-                // 🕵️‍♂️ THE GLOBAL GOD BAR (Niche se aayega edit mode on karne ke liye)
+                // 🕵️‍♂️ THE GLOBAL GOD BAR
                 if (themeProvider.isGodModeUnlocked)
                   Positioned(
                     bottom: 0, left: 0, right: 0,
@@ -292,7 +336,6 @@ class _FortuneEventAppState extends State<FortuneEventApp> {
 
   // ==========================================
   // 🎛️ THE FIXED PRO GLOBAL ADMIN PANEL UI
-  // Panel ke andar jo Buttons/Pickers hain unki List
   // ==========================================
   Widget _buildGlobalAdminPanel(ThemeProvider provider) {
     return SafeArea(
@@ -379,7 +422,6 @@ class _FortuneEventAppState extends State<FortuneEventApp> {
   }
 
   // 🛠️ UI Helpers
-  // 🔴 FIXED: copyWith issue resolved in buildSectionTitle
   Widget _buildSectionTitle(String title) => Padding(
     padding: const EdgeInsets.only(bottom: 20), 
     child: Text(
@@ -541,17 +583,24 @@ class _FortuneEventAppState extends State<FortuneEventApp> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Row(
-            children: [
-              Icon(Icons.precision_manufacturing_rounded, color: AppTheme.cardBg, size: 24),
-              const SizedBox(width: 15),
-              // 🔴 FIXED: copyWith issue resolved here
-              Text(
-                "GOD MODE ACTIVE: CLICK ANY TEXT OR CARD TO EDIT", 
-                style: AppTheme.getBodyStyle(fontSize: 13, color: AppTheme.cardBg).copyWith(fontWeight: FontWeight.w900, letterSpacing: 1.0),
-              ),
-            ],
+          // 📱 ADDED: Expanded for mobile overflow protection
+          Expanded(
+            child: Row(
+              children: [
+                Icon(Icons.precision_manufacturing_rounded, color: AppTheme.cardBg, size: 24),
+                const SizedBox(width: 15),
+                // 📱 ADDED: Expanded + TextOverflow taaki mobile pe text screen ke bahar na jaaye
+                Expanded(
+                  child: Text(
+                    "GOD MODE ACTIVE: CLICK ANY TEXT OR CARD TO EDIT", 
+                    style: AppTheme.getBodyStyle(fontSize: 13, color: AppTheme.cardBg).copyWith(fontWeight: FontWeight.w900, letterSpacing: 1.0),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ],
+            ),
           ),
+          const SizedBox(width: 10), // Safe spacing
           MouseRegion(
             cursor: SystemMouseCursors.click,
             child: TextButton.icon(

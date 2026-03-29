@@ -23,9 +23,11 @@ CustomTransitionPage _buildPageWithTransition(Widget page, GoRouterState state) 
     transitionDuration: Duration(milliseconds: AppTheme.durationMs),
     // 🟢 FIX: Reverse duration bhi same rakhi taaki back aate waqt bhi smooth lage
     reverseTransitionDuration: Duration(milliseconds: AppTheme.durationMs),
+    // 🟢 OPTIMIZATION: maintainState true rakha hai taaki back aane par page load na ho, memory me rahe
+    maintainState: true,
     transitionsBuilder: (context, animation, secondaryAnimation, child) {
       
-      // 🚀 PERFORMANCE MODE Check: Low-end devices ke liye animations band
+      // 🚀 PERFORMANCE MODE Check: Low-end devices/Web ke liye animations band
       if (AppTheme.enablePerformanceMode) {
         return child; 
       }
@@ -171,8 +173,18 @@ CustomTransitionPage _buildPageWithTransition(Widget page, GoRouterState state) 
   );
 }
 
+// ==========================================
+// 🚀 APP ROUTER CONFIGURATION
+// ==========================================
 final GoRouter appRouter = GoRouter(
   initialLocation: '/',
+  
+  // 🟢 UPGRADE: Error Builder (Agar Desktop/Web user galat URL type kare, toh crash nahi hoga, seedha Home pe redirect ya error page dikhayega)
+  errorPageBuilder: (context, state) => _buildPageWithTransition(
+    const HomePage(), // Yahan tum ek alag se `Error404Page()` bhi bana ke daal sakte ho future me
+    state,
+  ),
+
   routes: [
     GoRoute(
       path: '/', 

@@ -12,6 +12,9 @@ import '../theme/theme_provider.dart'; // 🚀 GOD MODE MEMORY
 class ContactPage extends StatelessWidget {
   const ContactPage({super.key});
 
+  // ==========================================
+  // 🔊 SOUND TRIGGER HELPER
+  // ==========================================
   void _triggerSound() {
     if (AppTheme.enableSoundEffects) {
       if (AppTheme.soundPack == 'heavy') {
@@ -42,82 +45,87 @@ class ContactPage extends StatelessWidget {
           borderRadius: BorderRadius.circular(AppTheme.getGlobalRadius())
         ),
         title: Text("✏️ Edit Object", style: AppTheme.getHeadingStyle(fontSize: 18, color: Colors.white)),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            TextField(
-              controller: textCtrl,
-              style: const TextStyle(color: Colors.white, fontSize: 15),
-              maxLines: 4,
-              minLines: 1,
-              decoration: InputDecoration(
-                labelText: "Text Content",
-                labelStyle: const TextStyle(color: Colors.white54, fontSize: 13),
-                filled: true,
-                fillColor: Colors.white.withValues(alpha: 0.05), // 🟢 Soft fill
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(8), borderSide: BorderSide.none),
-                focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(8), borderSide: BorderSide(color: AppTheme.accent, width: 1)),
-                contentPadding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
+        
+        // 🛠️ FIX: Mobile Keyboard Overflow fix using SingleChildScrollView
+        content: SingleChildScrollView(
+          physics: const BouncingScrollPhysics(),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              TextField(
+                controller: textCtrl,
+                style: const TextStyle(color: Colors.white, fontSize: 15),
+                maxLines: 4,
+                minLines: 1,
+                decoration: InputDecoration(
+                  labelText: "Text Content",
+                  labelStyle: const TextStyle(color: Colors.white54, fontSize: 13),
+                  filled: true,
+                  fillColor: Colors.white.withValues(alpha: 0.05), // 🟢 Soft fill
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(8), borderSide: BorderSide.none),
+                  focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(8), borderSide: BorderSide(color: AppTheme.accent, width: 1)),
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
+                ),
+                onChanged: (val) => provider.updateElement('${elementKey}_text', val),
               ),
-              onChanged: (val) => provider.updateElement('${elementKey}_text', val),
-            ),
-            const SizedBox(height: 25),
-            
-            Text("Select Color:", style: AppTheme.getBodyStyle(fontSize: 13, color: Colors.white54, weight: FontWeight.w600)),
-            const SizedBox(height: 12),
-            Wrap(
-              spacing: 12,
-              runSpacing: 12,
-              children: [
-                Colors.white, Colors.black, AppTheme.accent, Colors.blueAccent, 
-                Colors.redAccent, Colors.greenAccent, Colors.purpleAccent, Colors.orangeAccent
-              ].map((c) => 
-                MouseRegion(
-                  cursor: AppTheme.cursorType == 'none' ? SystemMouseCursors.none : SystemMouseCursors.click,
-                  child: GestureDetector(
-                    onTap: () {
-                      _triggerSound();
-                      provider.updateElement('${elementKey}_color', c);
-                    },
-                    child: Container(
-                      width: 32, height: 32,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle, 
-                        color: c, 
-                        border: Border.all(color: Colors.white.withValues(alpha: 0.3), width: 1.5),
-                        boxShadow: provider.elementSettings['${elementKey}_color'] == c 
-                            ? [BoxShadow(color: c.withValues(alpha: 0.5), blurRadius: 10, spreadRadius: 2)] 
-                            : [],
+              const SizedBox(height: 25),
+              
+              Text("Select Color:", style: AppTheme.getBodyStyle(fontSize: 13, color: Colors.white54, weight: FontWeight.w600)),
+              const SizedBox(height: 12),
+              Wrap(
+                spacing: 12,
+                runSpacing: 12,
+                children: [
+                  Colors.white, Colors.black, AppTheme.accent, Colors.blueAccent, 
+                  Colors.redAccent, Colors.greenAccent, Colors.purpleAccent, Colors.orangeAccent
+                ].map((c) => 
+                  MouseRegion(
+                    cursor: AppTheme.cursorType == 'none' ? SystemMouseCursors.none : SystemMouseCursors.click,
+                    child: GestureDetector(
+                      onTap: () {
+                        _triggerSound();
+                        provider.updateElement('${elementKey}_color', c);
+                      },
+                      child: Container(
+                        width: 32, height: 32,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle, 
+                          color: c, 
+                          border: Border.all(color: Colors.white.withValues(alpha: 0.3), width: 1.5),
+                          boxShadow: provider.elementSettings['${elementKey}_color'] == c 
+                              ? [BoxShadow(color: c.withValues(alpha: 0.5), blurRadius: 10, spreadRadius: 2)] 
+                              : [],
+                        ),
                       ),
                     ),
                   ),
-                )
-              ).toList(),
-            ),
-            const SizedBox(height: 35),
+                ).toList(),
+              ),
+              const SizedBox(height: 35),
 
-            Center(
-              child: MouseRegion(
-                cursor: AppTheme.cursorType == 'none' ? SystemMouseCursors.none : SystemMouseCursors.click,
-                child: ElevatedButton.icon(
-                  onPressed: () {
-                    _triggerSound();
-                    provider.clearElementSetting('${elementKey}_text');
-                    provider.clearElementSetting('${elementKey}_color');
-                    Navigator.pop(ctx);
-                  },
-                  icon: const Icon(Icons.refresh, color: Colors.white, size: 16),
-                  label: const Text("Reset to Default", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.redAccent.withValues(alpha: 0.8),
-                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+              Center(
+                child: MouseRegion(
+                  cursor: AppTheme.cursorType == 'none' ? SystemMouseCursors.none : SystemMouseCursors.click,
+                  child: ElevatedButton.icon(
+                    onPressed: () {
+                      _triggerSound();
+                      provider.clearElementSetting('${elementKey}_text');
+                      provider.clearElementSetting('${elementKey}_color');
+                      Navigator.pop(ctx);
+                    },
+                    icon: const Icon(Icons.refresh, color: Colors.white, size: 16),
+                    label: const Text("Reset to Default", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.redAccent.withValues(alpha: 0.8),
+                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                    ),
                   ),
                 ),
-              ),
-            )
-          ],
+              )
+            ],
+          ),
         ),
         actions: [
           MouseRegion(
@@ -189,6 +197,9 @@ class ContactPage extends StatelessWidget {
                               vertical: isMobile ? 60 : 100, // 🟢 Better padding for breathing room
                             ),
                             child: isMobile
+                                // ==========================================
+                                // 📱 MOBILE VIEW
+                                // ==========================================
                                 ? Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
@@ -206,13 +217,25 @@ class ContactPage extends StatelessWidget {
                                       ),
                                     ],
                                   )
+                                // ==========================================
+                                // 💻 DESKTOP VIEW
+                                // ==========================================
                                 : Row(
                                     crossAxisAlignment: CrossAxisAlignment.start,
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween, // 🛠️ FIX: Distributes space perfectly
                                     children: [
-                                      Expanded(flex: 5, child: _buildContactInfo(context, provider, isMobile)), // 🟢 5:7 Ratio for Desktop
-                                      const SizedBox(width: 80),
+                                      // LEFT SIDE: Contact Info
                                       Expanded(
-                                        flex: 7,
+                                        flex: 5, 
+                                        child: Padding(
+                                          padding: const EdgeInsets.only(right: 40.0), // 🛠️ FIX: Prevent text from touching the form
+                                          child: _buildContactInfo(context, provider, isMobile),
+                                        )
+                                      ), 
+                                      
+                                      // RIGHT SIDE: Contact Form Box
+                                      Expanded(
+                                        flex: 6, // 🛠️ FIX: Slightly reduced form flex so it doesn't stretch too wide
                                         child: AppTheme.applyAnim(
                                           Container(
                                             padding: const EdgeInsets.all(50),
@@ -242,6 +265,9 @@ class ContactPage extends StatelessWidget {
     );
   }
 
+  // ==========================================
+  // 📝 CONTACT TEXT INFORMATION
+  // ==========================================
   Widget _buildContactInfo(BuildContext context, ThemeProvider provider, bool isMobile) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -292,7 +318,9 @@ class ContactPage extends StatelessWidget {
     );
   }
 
-  // 🟢 Completely Redesigned Premium Info Item
+  // ==========================================
+  // 🟢 PREMIUM INFO ITEM (HOVERABLE)
+  // ==========================================
   Widget _buildDetailItem(BuildContext context, ThemeProvider provider, String id, String badge, String title, String detail, int index) {
     int delayMultiplier = AppTheme.transitionSpeed == 'fast' ? 30 : (AppTheme.transitionSpeed == 'slow' ? 100 : 60);
     
@@ -363,6 +391,9 @@ class ContactPage extends StatelessWidget {
   }
 }
 
+// ==========================================
+// 🖱️ HOVER ANIMATION WRAPPER FOR CONTACTS
+// ==========================================
 class _ContactInfoHoverWrapper extends StatefulWidget {
   final Widget child;
   const _ContactInfoHoverWrapper({required this.child});

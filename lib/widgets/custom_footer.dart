@@ -49,119 +49,19 @@ class CustomFooter extends StatelessWidget {
               horizontal: isMobile ? 30 : 80,
               vertical: isMinimal ? 50 : 80, 
             ),
-            child: Wrap(
-              spacing: isMobile ? 40 : 80, 
-              runSpacing: 50,
-              // 🛠️ ALIGNMENT FIX: Added crossAxisAlignment so items align properly when wrapping to a new line
-              crossAxisAlignment: WrapCrossAlignment.start, 
-              alignment: isMinimal ? WrapAlignment.center : (isMobile ? WrapAlignment.start : WrapAlignment.spaceBetween),
-              children: [
-                
-                // ==========================================
-                // 1. BRAND SECTION
-                // ==========================================
-                AppTheme.applyAnim(
-                  SizedBox(
-                    width: isMobile ? double.infinity : (isMinimal ? double.infinity : 320),
-                    child: Column(
-                      crossAxisAlignment: isMinimal || (isMobile && isMinimal) ? CrossAxisAlignment.center : CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'FORTUNE',
-                          style: AppTheme.getHeadingStyle(
-                            fontSize: 32,
-                            color: AppTheme.textMain, 
-                            weight: FontWeight.bold,
-                          ).copyWith(letterSpacing: 4.0),
-                        ),
-                        Text(
-                          'EVENT PLANNER',
-                          style: AppTheme.getBodyStyle(
-                            fontSize: 12,
-                            color: AppTheme.accent, 
-                            weight: FontWeight.w600,
-                          ).copyWith(letterSpacing: 6.0),
-                        ),
-                        const SizedBox(height: 25),
-                        Text(
-                          'The Ultimate Event Management.\nDelivering premium execution and unified staffing solutions across the industry.',
-                          textAlign: isMinimal || (isMobile && isMinimal) ? TextAlign.center : TextAlign.left,
-                          style: AppTheme.getBodyStyle(
-                            color: AppTheme.textSub.withValues(alpha: 0.9),
-                            fontSize: 14,
-                          ).copyWith(height: 1.6),
-                        ),
-                      ],
-                    ),
-                  ),
-                  100, 
+            // 🛠️ FIX: Agar mobile hai to strictly Column do (for perfect vertical stack), warna Wrap do for desktop
+            child: isMobile 
+              ? Column(
+                  crossAxisAlignment: isMinimal ? CrossAxisAlignment.center : CrossAxisAlignment.start,
+                  children: _buildFooterContents(isMobile, isMinimal),
+                )
+              : Wrap(
+                  spacing: 80, 
+                  runSpacing: 50,
+                  crossAxisAlignment: WrapCrossAlignment.start, 
+                  alignment: isMinimal ? WrapAlignment.center : WrapAlignment.spaceBetween,
+                  children: _buildFooterContents(isMobile, isMinimal),
                 ),
-
-                if (!isMinimal) ...[
-                  // ==========================================
-                  // 2. DIRECT CONTACTS SECTION
-                  // ==========================================
-                  AppTheme.applyAnim(
-                    SizedBox(
-                      width: isMobile ? double.infinity : 220,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'CONNECT', 
-                            style: AppTheme.getBodyStyle(
-                              fontSize: 15, 
-                              color: AppTheme.textMain,
-                              weight: FontWeight.bold,
-                            ).copyWith(letterSpacing: 2.0),
-                          ),
-                          const SizedBox(height: 25),
-                          _buildContactRow('Kaushik Panjre', '+91 91745 64996', 'tel:+919174564996'),
-                          _buildContactRow('Meet Shah', '+91 76930 64811', 'tel:+917693064811'),
-                          _buildContactRow('Pushpendra Thakur', '+91 82249 68245', 'tel:+918224968245'),
-                        ],
-                      ),
-                    ),
-                    200, 
-                  ),
-
-                  // ==========================================
-                  // 3. ADDRESS & EMAIL SECTION
-                  // ==========================================
-                  AppTheme.applyAnim(
-                    SizedBox(
-                      width: isMobile ? double.infinity : 250,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'HEADQUARTERS', 
-                            style: AppTheme.getBodyStyle(
-                              fontSize: 15, 
-                              color: AppTheme.textMain,
-                              weight: FontWeight.bold,
-                            ).copyWith(letterSpacing: 2.0),
-                          ),
-                          const SizedBox(height: 25),
-                          _buildIconRow(
-                            Icons.location_on_outlined, 
-                            '152 Orbit Mall,\nVijay Nagar, Indore',
-                            'https://maps.google.com/?q=152+Orbit+Mall,Vijay+Nagar,Indore'
-                          ),
-                          const SizedBox(height: 25),
-                          _buildIconRow(
-                            Icons.email_outlined, 
-                            'fortuneeventplanner1\n@gmail.com',
-                            'mailto:fortuneeventplanner1@gmail.com'
-                          ),
-                        ],
-                      ),
-                    ),
-                    300, 
-                  ),
-                ],
-              ],
-            ),
           ),
 
           // ==========================================
@@ -190,6 +90,119 @@ class CustomFooter extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  // 🛠️ FIX: Footer contents ko ek List me extract kar diya taaki dono (Mobile aur Desktop) me easily same items pass kar sakein bina code duplicate kiye
+  List<Widget> _buildFooterContents(bool isMobile, bool isMinimal) {
+    return [
+      // ==========================================
+      // 1. BRAND SECTION
+      // ==========================================
+      AppTheme.applyAnim(
+        SizedBox(
+          width: isMobile ? double.infinity : (isMinimal ? double.infinity : 320),
+          child: Column(
+            crossAxisAlignment: isMinimal || (isMobile && isMinimal) ? CrossAxisAlignment.center : CrossAxisAlignment.start,
+            children: [
+              Text(
+                'FORTUNE',
+                style: AppTheme.getHeadingStyle(
+                  fontSize: 32,
+                  color: AppTheme.textMain, 
+                  weight: FontWeight.bold,
+                ).copyWith(letterSpacing: 4.0),
+              ),
+              Text(
+                'EVENT PLANNER',
+                style: AppTheme.getBodyStyle(
+                  fontSize: 12,
+                  color: AppTheme.accent, 
+                  weight: FontWeight.w600,
+                ).copyWith(letterSpacing: 6.0),
+              ),
+              const SizedBox(height: 25),
+              Text(
+                'The Ultimate Event Management.\nDelivering premium execution and unified staffing solutions across the industry.',
+                textAlign: isMinimal || (isMobile && isMinimal) ? TextAlign.center : TextAlign.left,
+                style: AppTheme.getBodyStyle(
+                  color: AppTheme.textSub.withValues(alpha: 0.9),
+                  fontSize: 14,
+                ).copyWith(height: 1.6),
+              ),
+            ],
+          ),
+        ),
+        100, 
+      ),
+
+      if (!isMinimal) ...[
+        if (isMobile) const SizedBox(height: 40), // 🛠️ FIX: Mobile ke liye proper vertical spacing
+
+        // ==========================================
+        // 2. DIRECT CONTACTS SECTION
+        // ==========================================
+        AppTheme.applyAnim(
+          SizedBox(
+            width: isMobile ? double.infinity : 220,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'CONNECT', 
+                  style: AppTheme.getBodyStyle(
+                    fontSize: 15, 
+                    color: AppTheme.textMain,
+                    weight: FontWeight.bold,
+                  ).copyWith(letterSpacing: 2.0),
+                ),
+                const SizedBox(height: 25),
+                _buildContactRow('Kaushik Panjre', '+91 91745 64996', 'tel:+919174564996'),
+                _buildContactRow('Meet Shah', '+91 76930 64811', 'tel:+917693064811'),
+                _buildContactRow('Pushpendra Thakur', '+91 82249 68245', 'tel:+918224968245'),
+              ],
+            ),
+          ),
+          200, 
+        ),
+
+        if (isMobile) const SizedBox(height: 20), // 🛠️ FIX: Mobile ke liye proper vertical spacing
+
+        // ==========================================
+        // 3. ADDRESS & EMAIL SECTION
+        // ==========================================
+        AppTheme.applyAnim(
+          SizedBox(
+            width: isMobile ? double.infinity : 250,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'HEADQUARTERS', 
+                  style: AppTheme.getBodyStyle(
+                    fontSize: 15, 
+                    color: AppTheme.textMain,
+                    weight: FontWeight.bold,
+                  ).copyWith(letterSpacing: 2.0),
+                ),
+                const SizedBox(height: 25),
+                _buildIconRow(
+                  Icons.location_on_outlined, 
+                  '152 Orbit Mall,\nVijay Nagar, Indore',
+                  'https://maps.google.com/?q=152+Orbit+Mall,Vijay+Nagar,Indore'
+                ),
+                const SizedBox(height: 25),
+                _buildIconRow(
+                  Icons.email_outlined, 
+                  'fortuneeventplanner1\n@gmail.com',
+                  'mailto:fortuneeventplanner1@gmail.com'
+                ),
+              ],
+            ),
+          ),
+          300, 
+        ),
+      ],
+    ];
   }
 
   Widget _buildCopyrightText() {

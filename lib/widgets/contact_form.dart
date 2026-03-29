@@ -17,6 +17,9 @@ class ContactFormWidget extends StatefulWidget {
 class _ContactFormWidgetState extends State<ContactFormWidget> {
   final _formKey = GlobalKey<FormState>();
   
+  // ==========================================
+  // 📝 FORM CONTROLLERS
+  // ==========================================
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _eventTypeController = TextEditingController();
@@ -25,6 +28,9 @@ class _ContactFormWidgetState extends State<ContactFormWidget> {
   bool _isLoading = false;
   bool _isHoveringSubmit = false;
 
+  // ==========================================
+  // 🔊 SOUND ENGINE SYNC
+  // ==========================================
   void _triggerSound({bool isError = false}) {
     if (!AppTheme.enableSoundEffects) return;
     if (isError) {
@@ -40,33 +46,34 @@ class _ContactFormWidgetState extends State<ContactFormWidget> {
     }
   }
 
-  // 🚀 ENGINE SYNC: Dynamic Snackbar/Toast Generator (Soft & Beautiful)
+  // ==========================================
+  // 🚀 DYNAMIC SNACKBAR/TOAST GENERATOR
+  // ==========================================
   void _showCustomToast(String message, Color bgColor, IconData icon) {
     if (AppTheme.enableSoundEffects) HapticFeedback.mediumImpact();
 
     SnackBar behavior;
     
-    // Check global toast style setting
     if (AppTheme.toastStyle == 'glass') {
       behavior = SnackBar(
         content: BackdropFilter(
           filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
           child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8), // 🟢 FIX: Better padding
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8), 
             child: Row(
               children: [
                 Icon(icon, color: Colors.white, size: 24),
-                const SizedBox(width: 15), // 🟢 FIX: Better spacing
+                const SizedBox(width: 15), 
                 Expanded(child: Text(message, style: AppTheme.getBodyStyle(fontSize: 14, color: Colors.white, weight: FontWeight.w600))),
               ],
             ),
           ),
         ),
-        backgroundColor: bgColor.withValues(alpha: 0.8), // 🟢 FIX: Increased visibility
+        backgroundColor: bgColor.withValues(alpha: 0.8), 
         behavior: SnackBarBehavior.floating,
         elevation: 0,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppTheme.getGlobalRadius())),
-        margin: EdgeInsets.all(widget.isMobile ? 20 : 40), // 🟢 FIX: Margin to float properly
+        margin: EdgeInsets.all(widget.isMobile ? 20 : 40), 
       );
     } else if (AppTheme.toastStyle == 'banner') {
       behavior = SnackBar(
@@ -78,9 +85,10 @@ class _ContactFormWidgetState extends State<ContactFormWidget> {
           ],
         ),
         backgroundColor: bgColor,
-        behavior: SnackBarBehavior.fixed, // Attaches to the bottom
+        behavior: SnackBarBehavior.fixed, 
       );
-    } else { // default floating
+    } else { 
+      // Default floating
       behavior = SnackBar(
         content: Row(
           children: [
@@ -100,6 +108,9 @@ class _ContactFormWidgetState extends State<ContactFormWidget> {
     ScaffoldMessenger.of(context).showSnackBar(behavior);
   }
 
+  // ==========================================
+  // 🌐 API SUBMISSION LOGIC
+  // ==========================================
   Future<void> _submitForm() async {
     if (!_formKey.currentState!.validate()) {
       _triggerSound(isError: true);
@@ -128,6 +139,7 @@ class _ContactFormWidgetState extends State<ContactFormWidget> {
       if (response.statusCode == 200 || response.statusCode == 302) {
         _showCustomToast('Message sent successfully! We will contact you soon.', Colors.green.shade600, Icons.check_circle_outline);
         
+        // Clear form after success
         _nameController.clear();
         _emailController.clear();
         _eventTypeController.clear();
@@ -147,18 +159,21 @@ class _ContactFormWidgetState extends State<ContactFormWidget> {
 
   @override
   Widget build(BuildContext context) {
-    // 🚀 ENGINE SYNC: Dynamic Button Radius based on Global Style
+    // 🚀 ENGINE SYNC: Dynamic Variables
     double buttonRadius = AppTheme.buttonStyle == 'pill' ? 50 : (AppTheme.buttonStyle == 'square' ? 0 : AppTheme.getGlobalRadius());
     int animMs = AppTheme.transitionSpeed == 'fast' ? 150 : (AppTheme.transitionSpeed == 'slow' ? 400 : 250);
     
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // 🚀 ENGINE SYNC: Dynamic Heading
+        
+        // ==========================================
+        // 🧩 FORM HEADER
+        // ==========================================
         Text(
           'Inquiry',
           style: AppTheme.getHeadingStyle(
-            fontSize: widget.isMobile ? 36 : 42, // 🟢 FIX: Larger, more impactful heading
+            fontSize: widget.isMobile ? 36 : 42, 
             weight: FontWeight.bold,
             color: AppTheme.textMain,
           ),
@@ -173,11 +188,15 @@ class _ContactFormWidgetState extends State<ContactFormWidget> {
         ),
         const SizedBox(height: 40),
         
+        // ==========================================
+        // 📋 THE FORM
+        // ==========================================
         Form(
           key: _formKey,
           child: Column(
             children: [
-              // 🟢 FIX: Smooth Layout Transition between Mobile and Desktop
+              
+              // 🛠️ ALIGNMENT FIX: Desktop pe Row use karne par 'CrossAxisAlignment.start' zaruri hai taaki error aane pe design na hile
               widget.isMobile 
                 ? Column(
                     children: [
@@ -187,6 +206,7 @@ class _ContactFormWidgetState extends State<ContactFormWidget> {
                     ],
                   )
                 : Row(
+                    crossAxisAlignment: CrossAxisAlignment.start, // 🛠️ FIX: Form Error Alignment Fix
                     children: [
                       Expanded(child: _buildTextField('FULL NAME', 'John Doe', _nameController, TextInputType.name)),
                       const SizedBox(width: 30),
@@ -215,13 +235,12 @@ class _ContactFormWidgetState extends State<ContactFormWidget> {
                     duration: Duration(milliseconds: animMs),
                     curve: Curves.easeOutCubic,
                     width: double.infinity,
-                    height: 55, // 🟢 FIX: Taller, more clickable button
+                    height: 55, 
                     decoration: BoxDecoration(
                       color: _isLoading 
                           ? AppTheme.accent.withValues(alpha: 0.7) // Disabled look when loading
                           : (_isHoveringSubmit ? AppTheme.accent : AppTheme.accent.withValues(alpha: 0.9)), // Hover brightness
                       borderRadius: BorderRadius.circular(buttonRadius),
-                      // 🟢 FIX: Glow effect on hover
                       boxShadow: (AppTheme.enableShadows || AppTheme.enableGlow) && _isHoveringSubmit && !_isLoading
                           ? [BoxShadow(color: AppTheme.accent.withValues(alpha: 0.5), blurRadius: 20, spreadRadius: 2, offset: const Offset(0, 5))]
                           : (AppTheme.enableShadows && !_isLoading ? [BoxShadow(color: Colors.black.withValues(alpha: 0.2), blurRadius: 10, offset: const Offset(0, 4))] : []),
@@ -230,23 +249,21 @@ class _ContactFormWidgetState extends State<ContactFormWidget> {
                       child: _isLoading 
                         ? const SizedBox(
                             height: 24, width: 24, 
-                            // 🚀 ENGINE SYNC: Loader Color based on text main
-                            child: CircularProgressIndicator(color: Colors.black, strokeWidth: 3) // 🟢 FIX: Solid contrast loader
+                            child: CircularProgressIndicator(color: Colors.black, strokeWidth: 3) 
                           )
                         : Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               Text(
                                 'SEND MESSAGE',
-                                // 🚀 ENGINE SYNC: Body Font
                                 style: AppTheme.getBodyStyle(
-                                  fontSize: 15, // 🟢 FIX: Clearer text
+                                  fontSize: 15, 
                                   weight: FontWeight.bold,
-                                  color: Colors.black, // 🟢 FIX: Solid dark text for high contrast on Accent
+                                  color: Colors.black, // Solid dark text for high contrast
                                 ).copyWith(letterSpacing: 2.0),
                               ),
                               const SizedBox(width: 10),
-                              AnimatedSlide( // 🟢 FIX: Arrow slides slightly on hover
+                              AnimatedSlide( 
                                 duration: Duration(milliseconds: animMs),
                                 offset: _isHoveringSubmit ? const Offset(0.2, 0) : Offset.zero,
                                 child: const Icon(Icons.arrow_forward_rounded, color: Colors.black, size: 20),
@@ -271,13 +288,12 @@ class _ContactFormWidgetState extends State<ContactFormWidget> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // 🚀 ENGINE SYNC: Dynamic Label
         Text(
           label,
           style: AppTheme.getBodyStyle(
             fontSize: 12, 
             color: AppTheme.textSub,
-            weight: FontWeight.w600, // 🟢 FIX: Bolder labels for better readability
+            weight: FontWeight.w600, 
           ).copyWith(letterSpacing: 1.5),
         ),
         const SizedBox(height: 10),
@@ -285,25 +301,21 @@ class _ContactFormWidgetState extends State<ContactFormWidget> {
           controller: controller,
           maxLines: maxLines,
           keyboardType: type,
-          // 🚀 ENGINE SYNC: Input Text Font & Color Correction
           style: AppTheme.getBodyStyle(fontSize: 15, color: AppTheme.textMain), 
-          cursorColor: AppTheme.accent, // 🟢 FIX: Cursor color syncs with Accent
+          cursorColor: AppTheme.accent, 
           validator: (value) {
             if (value == null || value.trim().isEmpty) {
-              return 'This field is required'; // 🟢 FIX: Better error message
+              return 'This field is required'; 
             }
             if (isEmail) {
-              // 🟢 FIX: Basic Email Validation Regex
               final emailRegex = RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+");
               if (!emailRegex.hasMatch(value.trim())) return 'Enter a valid email address';
             }
             return null;
           },
-          // 🚀 ENGINE SYNC: Master Decoration from AppTheme
           decoration: AppTheme.getFormInputDecoration(hint).copyWith(
-            // 🟢 FIX: Premium error styling sync
             errorStyle: AppTheme.getBodyStyle(color: Colors.redAccent.shade400, fontSize: 12),
-            contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18), // 🟢 FIX: Taller, more spacious input fields
+            contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18), 
           ),
         ),
       ],

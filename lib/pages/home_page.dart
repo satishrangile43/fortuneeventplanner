@@ -19,9 +19,15 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  // ==========================================
+  // 🤫 ADMIN SECRETS
+  // ==========================================
   int _secretTapCount = 0;
   final String _adminPasscode = "LOVEDAYBITTU"; 
 
+  // ==========================================
+  // 📸 MASSIVE GALLERY DATA
+  // ==========================================
   final List<String> _gallery30 = [
     'https://images.unsplash.com/photo-1511527661048-7fe73d85e9a4?w=500', 'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=500',
     'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=500', 'https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?w=500',
@@ -40,6 +46,9 @@ class _HomePageState extends State<HomePage> {
     'https://images.unsplash.com/photo-1511765224389-37f0e77cf0eb?w=500', 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=500',
   ];
 
+  // ==========================================
+  // 🔊 SOUND ENGINE
+  // ==========================================
   void _triggerSound() {
     if (AppTheme.enableSoundEffects) {
       if (AppTheme.soundPack == 'heavy') {
@@ -52,6 +61,9 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
+  // ==========================================
+  // 🛠️ GOD MODE: OBJECT EDITOR DIALOG
+  // ==========================================
   void _showObjectEditor(BuildContext context, ThemeProvider provider, String elementKey, String defaultText) {
     TextEditingController textCtrl = TextEditingController(text: provider.elementSettings['${elementKey}_text'] ?? defaultText);
     showDialog(
@@ -65,7 +77,8 @@ class _HomePageState extends State<HomePage> {
           children: [
             TextField(
               controller: textCtrl,
-              style: const TextStyle(color: Colors.white), maxLines: 3,
+              style: const TextStyle(color: Colors.white), 
+              maxLines: 3,
               decoration: InputDecoration(
                 filled: true, 
                 fillColor: Colors.white.withValues(alpha: 0.05), 
@@ -77,8 +90,12 @@ class _HomePageState extends State<HomePage> {
             const SizedBox(height: 25),
             Center(
               child: ElevatedButton.icon(
-                onPressed: () { provider.clearElementSetting('${elementKey}_text'); Navigator.pop(ctx); },
-                icon: const Icon(Icons.refresh, size: 16), label: const Text("Reset", style: TextStyle(fontWeight: FontWeight.bold)),
+                onPressed: () { 
+                  provider.clearElementSetting('${elementKey}_text'); 
+                  Navigator.pop(ctx); 
+                },
+                icon: const Icon(Icons.refresh, size: 16), 
+                label: const Text("Reset", style: TextStyle(fontWeight: FontWeight.bold)),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppTheme.accent, 
                   foregroundColor: Colors.black,
@@ -91,13 +108,19 @@ class _HomePageState extends State<HomePage> {
         actions: [
           MouseRegion(
             cursor: SystemMouseCursors.click,
-            child: TextButton(onPressed: () => Navigator.pop(ctx), child: Text("DONE", style: TextStyle(color: AppTheme.accent, fontWeight: FontWeight.bold))),
+            child: TextButton(
+              onPressed: () => Navigator.pop(ctx), 
+              child: Text("DONE", style: TextStyle(color: AppTheme.accent, fontWeight: FontWeight.bold))
+            ),
           )
         ],
       ),
     );
   }
 
+  // ==========================================
+  // 🎯 GOD MODE: EDITABLE WRAPPER
+  // ==========================================
   Widget _buildEditable(BuildContext context, ThemeProvider provider, String key, String defaultText, Widget child) {
     if (!provider.isSelectionMode) return child; 
     return GestureDetector(
@@ -120,6 +143,9 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  // ==========================================
+  // 🔐 ADMIN PASSCODE DIALOG
+  // ==========================================
   void _showPasscodeDialog(ThemeProvider provider) {
     final TextEditingController passController = TextEditingController();
     showDialog(
@@ -138,12 +164,24 @@ class _HomePageState extends State<HomePage> {
         ),
         actions: [
           TextButton(onPressed: () => Navigator.pop(context), child: const Text('CANCEL', style: TextStyle(color: Colors.white))),
-          ElevatedButton(onPressed: () { if (passController.text == _adminPasscode) { provider.unlockGodMode(); Navigator.pop(context); } }, style: ElevatedButton.styleFrom(backgroundColor: AppTheme.accent), child: const Text('OVERRIDE', style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold))),
+          ElevatedButton(
+            onPressed: () { 
+              if (passController.text == _adminPasscode) { 
+                provider.unlockGodMode(); 
+                Navigator.pop(context); 
+              } 
+            }, 
+            style: ElevatedButton.styleFrom(backgroundColor: AppTheme.accent), 
+            child: const Text('OVERRIDE', style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold))
+          ),
         ],
       ),
     );
   }
 
+  // ==========================================
+  // ⚡ DYNAMIC SCROLL PHYSICS
+  // ==========================================
   ScrollPhysics _getScrollPhysics() {
     switch (AppTheme.scrollEffect) {
       case 'bouncy': return const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics());
@@ -153,6 +191,9 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
+  // ==========================================
+  // 🏗️ MAIN BUILD METHOD
+  // ==========================================
   @override
   Widget build(BuildContext context) {
     return Consumer<ThemeProvider>(
@@ -163,8 +204,10 @@ class _HomePageState extends State<HomePage> {
             cursor: SystemMouseCursors.basic, 
             child: Stack(
               children: [
+                // 🌌 BACKGROUND ENGINE
                 Container(decoration: AppTheme.getBackgroundDecoration()),
                 
+                // 🧩 MAIN CONTENT
                 Column(
                   children: [
                     if (AppTheme.navbarStyle != 'hidden') const CustomNavbar(),
@@ -174,7 +217,7 @@ class _HomePageState extends State<HomePage> {
                         child: Column(
                           children: [
                             _buildDynamicHero(context, provider), 
-                            _buildVibeGallery(context, provider),
+                            _buildVibeGallery(context, provider), // 🛠️ FIX: Title properly placed above gallery
                             _buildMassiveGallery(context), 
                             _buildWhyFortuneSection(context, provider),
                             if (AppTheme.footerStyle != 'hidden') const CustomFooter(),
@@ -192,6 +235,9 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  // ==========================================
+  // 🌟 DYNAMIC HERO SECTION
+  // ==========================================
   Widget _buildDynamicHero(BuildContext context, ThemeProvider provider) {
     var screenSize = MediaQuery.of(context).size;
     bool isMobile = screenSize.width < 800 || AppTheme.mobileLayout == 'compact';
@@ -212,6 +258,7 @@ class _HomePageState extends State<HomePage> {
       child: Stack(
         fit: StackFit.expand,
         children: [
+          // 🎞️ CAROUSEL BACKGROUND
           AppTheme.applyImageFilter(
             CarouselSlider(
               options: CarouselOptions(
@@ -227,6 +274,7 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
           
+          // 🖤 GRADIENT OVERLAY
           Container(
             decoration: BoxDecoration(
               gradient: LinearGradient(
@@ -241,6 +289,7 @@ class _HomePageState extends State<HomePage> {
             )
           ),
           
+          // 📝 HERO CONTENT BOX
           Align(
             alignment: AppTheme.heroStyle == 'left' ? Alignment.centerLeft : (AppTheme.heroStyle == 'right' ? Alignment.centerRight : Alignment.center),
             child: Padding(
@@ -251,20 +300,24 @@ class _HomePageState extends State<HomePage> {
                   child: BackdropFilter(
                     filter: ImageFilter.blur(sigmaX: AppTheme.enableBlur ? 15 : 0.001, sigmaY: AppTheme.enableBlur ? 15 : 0.001),
                     child: Container(
-                      padding: EdgeInsets.all(isMobile ? 30 : 50), 
+                      padding: EdgeInsets.all(isMobile ? 25 : 50), // 🛠️ FIX: Slightly reduced padding on mobile to prevent overflow
                       decoration: AppTheme.getCardDecoration(isHovered: false).copyWith(
                         color: AppTheme.enableBlur ? AppTheme.cardBg.withValues(alpha: 0.6) : AppTheme.cardBg.withValues(alpha: 0.85),
                       ),
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
-                        // 🛠️ ALIGNMENT FIX: Dynamic Cross Alignment
                         crossAxisAlignment: heroCrossAlign,
                         children: [
-                          _buildEditable(context, provider, 'hero_top_tag', 'THE STANDARD FOR EXCELLENCE', 
-                            Text(provider.elementSettings['hero_top_tag_text'] ?? 'THE STANDARD FOR EXCELLENCE', 
-                            style: AppTheme.getBodyStyle(fontSize: 12, color: AppTheme.accent, weight: FontWeight.w800).copyWith(letterSpacing: 4))),
+                          _buildEditable(
+                            context, provider, 'hero_top_tag', 'THE STANDARD FOR EXCELLENCE', 
+                            Text(
+                              provider.elementSettings['hero_top_tag_text'] ?? 'THE STANDARD FOR EXCELLENCE', 
+                              style: AppTheme.getBodyStyle(fontSize: isMobile ? 10 : 12, color: AppTheme.accent, weight: FontWeight.w800).copyWith(letterSpacing: 4),
+                              textAlign: heroTextAlign, // 🛠️ FIX: Ensure proper alignment
+                            )
+                          ),
                           
-                          const SizedBox(height: 25),
+                          const SizedBox(height: 20),
                           
                           GestureDetector(
                             onTap: () { 
@@ -273,22 +326,29 @@ class _HomePageState extends State<HomePage> {
                             },
                             child: _buildEditable(
                               context, provider, 'hero_title', AppTheme.heroTitle, 
-                              // 🛠️ ALIGNMENT FIX: Applied synced text align
-                              Text(provider.elementSettings['hero_title_text'] ?? AppTheme.heroTitle, textAlign: heroTextAlign, 
-                              style: AppTheme.getHeadingStyle(fontSize: isMobile ? 36 : 64, color: AppTheme.textMain).copyWith( 
-                                letterSpacing: -1.0, 
-                                shadows: [Shadow(color: AppTheme.textMain.withValues(alpha: 0.15), offset: const Offset(0, 4), blurRadius: 15)]
-                              ))),
+                              Text(
+                                provider.elementSettings['hero_title_text'] ?? AppTheme.heroTitle, 
+                                textAlign: heroTextAlign, 
+                                style: AppTheme.getHeadingStyle(fontSize: isMobile ? 32 : 64, color: AppTheme.textMain).copyWith( 
+                                  letterSpacing: -1.0, 
+                                  shadows: [Shadow(color: AppTheme.textMain.withValues(alpha: 0.15), offset: const Offset(0, 4), blurRadius: 15)]
+                                )
+                              )
+                            ),
                           ),
                           
-                          const SizedBox(height: 20),
+                          const SizedBox(height: 15),
                           
-                          _buildEditable(context, provider, 'hero_subtitle', AppTheme.heroSubtitle, 
-                            // 🛠️ ALIGNMENT FIX: Applied synced text align
-                            Text(provider.elementSettings['hero_subtitle_text'] ?? AppTheme.heroSubtitle, textAlign: heroTextAlign, 
-                            style: AppTheme.getBodyStyle(fontSize: isMobile ? 15 : 18, color: AppTheme.textSub.withValues(alpha: 0.9), weight: FontWeight.w500).copyWith(height: 1.5))), 
+                          _buildEditable(
+                            context, provider, 'hero_subtitle', AppTheme.heroSubtitle, 
+                            Text(
+                              provider.elementSettings['hero_subtitle_text'] ?? AppTheme.heroSubtitle, 
+                              textAlign: heroTextAlign, 
+                              style: AppTheme.getBodyStyle(fontSize: isMobile ? 14 : 18, color: AppTheme.textSub.withValues(alpha: 0.9), weight: FontWeight.w500).copyWith(height: 1.5)
+                            )
+                          ), 
                           
-                          const SizedBox(height: 40),
+                          const SizedBox(height: 35),
                           
                           _buildCTAButton(context, provider),
                         ],
@@ -305,6 +365,9 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  // ==========================================
+  // 🔘 CTA BUTTON
+  // ==========================================
   Widget _buildCTAButton(BuildContext context, ThemeProvider provider) {
     return _buildEditable(
       context, provider, 'hero_btn', AppTheme.heroCTA,
@@ -324,12 +387,39 @@ class _HomePageState extends State<HomePage> {
             _triggerSound(); 
             context.go('/services'); 
           },
-          child: Text(provider.elementSettings['hero_btn_text'] ?? AppTheme.heroCTA, style: AppTheme.getBodyStyle(fontSize: 16, color: Colors.black, weight: FontWeight.bold).copyWith(letterSpacing: 1.0)),
+          child: Text(
+            provider.elementSettings['hero_btn_text'] ?? AppTheme.heroCTA, 
+            style: AppTheme.getBodyStyle(fontSize: 16, color: Colors.black, weight: FontWeight.bold).copyWith(letterSpacing: 1.0)
+          ),
         ),
       ),
     );
   }
 
+  // ==========================================
+  // 🖼️ VIBE GALLERY TITLE
+  // ==========================================
+  Widget _buildVibeGallery(BuildContext context, ThemeProvider provider) {
+    bool isMobile = MediaQuery.of(context).size.width < 600;
+    return Column(
+      children: [
+        SizedBox(height: isMobile ? 60 : 100),
+        _buildEditable(
+          context, provider, 'vibe_title', 'Experience The Vibe', 
+          Text(
+            provider.elementSettings['vibe_title_text'] ?? 'Experience The Vibe', 
+            style: AppTheme.getHeadingStyle(fontSize: isMobile ? 32 : 52, color: AppTheme.textMain, weight: FontWeight.w800).copyWith(letterSpacing: -1.0),
+            textAlign: TextAlign.center, // 🛠️ FIX: Centered the text for mobile
+          )
+        ),
+        const SizedBox(height: 40), 
+      ],
+    );
+  }
+
+  // ==========================================
+  // 🧱 MASSIVE MASONRY GALLERY
+  // ==========================================
   Widget _buildMassiveGallery(BuildContext context) {
     bool isMobile = MediaQuery.of(context).size.width < 600 || AppTheme.mobileLayout == 'compact';
     return Container(
@@ -359,6 +449,9 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  // ==========================================
+  // ⭐ WHY FORTUNE SECTION
+  // ==========================================
   Widget _buildWhyFortuneSection(BuildContext context, ThemeProvider provider) {
     bool isMobile = MediaQuery.of(context).size.width < 600;
     
@@ -367,11 +460,18 @@ class _HomePageState extends State<HomePage> {
       color: Colors.transparent, 
       child: Column(
         children: [
-          _buildEditable(context, provider, 'why_title', 'Why Fortune?', 
-            Text(provider.elementSettings['why_title_text'] ?? 'Why Fortune?', style: AppTheme.getHeadingStyle(fontSize: isMobile ? 38 : 52, color: AppTheme.textMain, weight: FontWeight.w800).copyWith(letterSpacing: -1.0))),
+          _buildEditable(
+            context, provider, 'why_title', 'Why Fortune?', 
+            Text(
+              provider.elementSettings['why_title_text'] ?? 'Why Fortune?', 
+              style: AppTheme.getHeadingStyle(fontSize: isMobile ? 32 : 52, color: AppTheme.textMain, weight: FontWeight.w800).copyWith(letterSpacing: -1.0),
+              textAlign: TextAlign.center, // 🛠️ FIX: Centered for Mobile
+            )
+          ),
           
           const SizedBox(height: 60),
           
+          // 🛠️ ALIGNMENT FIX: Wrap alignment ensures perfect grid flow on Desktop & Mobile
           Wrap(
             spacing: AppTheme.layoutStyle == 'dense' ? 20 : 40, 
             runSpacing: AppTheme.layoutStyle == 'dense' ? 20 : 40, 
@@ -391,27 +491,35 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget _buildVibeGallery(BuildContext context, ThemeProvider provider) {
-    bool isMobile = MediaQuery.of(context).size.width < 600;
-    return Column(
-      children: [
-        SizedBox(height: isMobile ? 60 : 100),
-        _buildEditable(context, provider, 'vibe_title', 'Experience The Vibe', 
-          Text(provider.elementSettings['vibe_title_text'] ?? 'Experience The Vibe', style: AppTheme.getHeadingStyle(fontSize: isMobile ? 38 : 52, color: AppTheme.textMain, weight: FontWeight.w800).copyWith(letterSpacing: -1.0))),
-        const SizedBox(height: 40), 
-      ],
-    );
-  }
-
+  // ==========================================
+  // 🧩 FEATURE CARD BUILDER
+  // ==========================================
   Widget _buildFeature(BuildContext context, ThemeProvider provider, String id, IconData icon, String defaultTitle, String defaultDesc) {
     return _FeatureCard(
       icon: icon, 
-      titleWidget: _buildEditable(context, provider, 'feat_${id}_title', defaultTitle, Text(provider.elementSettings['feat_${id}_title_text'] ?? defaultTitle, style: AppTheme.getHeadingStyle(fontSize: 18, color: AppTheme.textMain, weight: FontWeight.w700), textAlign: TextAlign.center)),
-      descWidget: _buildEditable(context, provider, 'feat_${id}_desc', defaultDesc, Text(provider.elementSettings['feat_${id}_desc_text'] ?? defaultDesc, style: AppTheme.getBodyStyle(fontSize: 14, color: AppTheme.textSub).copyWith(height: 1.6), textAlign: TextAlign.center)),
+      titleWidget: _buildEditable(
+        context, provider, 'feat_${id}_title', defaultTitle, 
+        Text(
+          provider.elementSettings['feat_${id}_title_text'] ?? defaultTitle, 
+          style: AppTheme.getHeadingStyle(fontSize: 18, color: AppTheme.textMain, weight: FontWeight.w700), 
+          textAlign: TextAlign.center
+        )
+      ),
+      descWidget: _buildEditable(
+        context, provider, 'feat_${id}_desc', defaultDesc, 
+        Text(
+          provider.elementSettings['feat_${id}_desc_text'] ?? defaultDesc, 
+          style: AppTheme.getBodyStyle(fontSize: 14, color: AppTheme.textSub).copyWith(height: 1.6), 
+          textAlign: TextAlign.center
+        )
+      ),
     );
   }
 }
 
+// ==========================================
+// 🌀 3D PARALLAX WRAPPER
+// ==========================================
 class _ParallaxWrapper extends StatefulWidget {
   final Widget child; const _ParallaxWrapper({required this.child});
   @override State<_ParallaxWrapper> createState() => _ParallaxWrapperState();
@@ -445,6 +553,9 @@ class _ParallaxWrapperState extends State<_ParallaxWrapper> {
   }
 }
 
+// ==========================================
+// 🃏 INDIVIDUAL FEATURE CARD COMPONENT
+// ==========================================
 class _FeatureCard extends StatefulWidget {
   final IconData icon; final Widget titleWidget; final Widget descWidget;
   const _FeatureCard({required this.icon, required this.titleWidget, required this.descWidget});

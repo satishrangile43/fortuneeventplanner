@@ -9,6 +9,9 @@ import '../theme/app_theme.dart'; // 🚀 GLOBAL THEME ENGINE IMPORTED
 class CustomNavbar extends StatelessWidget {
   const CustomNavbar({super.key});
 
+  // ==========================================
+  // 🔊 SOUND ENGINE SYNC
+  // ==========================================
   void _triggerSound() {
     if (AppTheme.enableSoundEffects) {
       if (AppTheme.soundPack == 'heavy') {
@@ -23,17 +26,19 @@ class CustomNavbar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // 🧠 SMART LOGIC: Agar admin panel se hidden set hai toh kuch mat dikhao
     if (AppTheme.navbarStyle == 'hidden') {
       return const SizedBox.shrink(); 
     }
 
     return ResponsiveBuilder(
       builder: (context, sizingInformation) {
+        // 📱 RESPONSIVE DETECTION
         bool isMobile = sizingInformation.isMobile || MediaQuery.of(context).size.width < 800;
         
+        // 📐 LAYOUT CALCULATION
         bool isFloating = AppTheme.navbarStyle == 'floating';
         double marginValue = isFloating ? (isMobile ? 15.0 : 30.0) : 0.0;
-        
         double radiusValue = AppTheme.borderStyle == 'sharp' ? 0.0 : (isFloating ? AppTheme.getGlobalRadius() : 0.0);
 
         return Container(
@@ -41,11 +46,13 @@ class CustomNavbar extends StatelessWidget {
           child: ClipRRect( 
             borderRadius: BorderRadius.circular(radiusValue),
             child: BackdropFilter(
+              // 🌫️ BLUR ENGINE
               filter: ImageFilter.blur(
                 sigmaX: AppTheme.enableBlur ? 20 : 0.001, 
                 sigmaY: AppTheme.enableBlur ? 20 : 0.001
               ),
               child: Container(
+                // 🛠️ FIX: Perfect padding arrangement for both Desktop and Mobile
                 padding: EdgeInsets.symmetric(
                     horizontal: isMobile ? 20 : (isFloating ? 40 : 60), 
                     vertical: isMobile ? 15 : 20
@@ -54,6 +61,8 @@ class CustomNavbar extends StatelessWidget {
                   color: (AppTheme.globalUIStyle == 'solid' || !AppTheme.enableBlur)
                       ? AppTheme.bg 
                       : AppTheme.bg.withValues(alpha: 0.85), 
+                  
+                  // 🎨 BORDER LOGIC: Floating pe pura border, sticky pe sirf niche
                   border: isFloating 
                     ? Border.all(color: AppTheme.accent.withValues(alpha: 0.2), width: 1.5)
                     : Border(
@@ -63,6 +72,8 @@ class CustomNavbar extends StatelessWidget {
                         ),
                       ),
                   borderRadius: BorderRadius.circular(radiusValue),
+                  
+                  // 🌟 SHADOW ENGINE
                   boxShadow: AppTheme.enableShadows ? [
                     BoxShadow(
                       color: Colors.black.withValues(alpha: isFloating ? 0.3 : 0.15), 
@@ -71,13 +82,18 @@ class CustomNavbar extends StatelessWidget {
                     )
                   ] : [],
                 ),
+                
+                // ==========================================
+                // 🧩 MAIN NAVBAR CONTENT (LOGO + LINKS)
+                // ==========================================
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center, // 🛠️ FIX: Center align everything perfectly
                   children: [
-                    // ==========================================
-                    // 1. BRAND LOGO
-                    // ==========================================
+                    
+                    // ------------------------------------------
+                    // 1. BRAND LOGO SECTION
+                    // ------------------------------------------
                     InkWell(
                       mouseCursor: AppTheme.cursorType == 'none' ? SystemMouseCursors.none : SystemMouseCursors.click,
                       onTap: () {
@@ -89,7 +105,7 @@ class CustomNavbar extends StatelessWidget {
                       highlightColor: Colors.transparent,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisSize: MainAxisSize.min,
+                        mainAxisSize: MainAxisSize.min, // 🛠️ FIX: Shrink to fit content
                         children: [
                           Text(
                             'FORTUNE',
@@ -114,23 +130,26 @@ class CustomNavbar extends StatelessWidget {
                       ),
                     ),
 
-                    if (isMobile) const SizedBox(width: 15),
+                    if (isMobile) const SizedBox(width: 15), // Safe spacing for mobile
 
-                    // ==========================================
-                    // 2. NAVIGATION LINKS
-                    // ==========================================
+                    // ------------------------------------------
+                    // 2. NAVIGATION LINKS SECTION
+                    // ------------------------------------------
                     if (!isMobile)
+                      // 🖥️ DESKTOP VIEW
                       Row(
+                        mainAxisSize: MainAxisSize.min, // 🛠️ FIX: Use minimum space needed
                         children: _getNavItems(context, isMobile: false),
                       )
                     else
-                      Expanded(
+                      // 📱 MOBILE VIEW (Horizontal Scrollable)
+                      Expanded( // 🛠️ FIX: Expanded forces the scroll view to take only remaining space, preventing overflow!
                         child: SingleChildScrollView(
                           scrollDirection: Axis.horizontal,
                           physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()), 
                           child: Row(
-                            // 🛠️ ALIGNMENT FIX: Changed from end to start. 'end' forces items out of view if they overflow the screen width.
-                            mainAxisAlignment: MainAxisAlignment.start, 
+                            mainAxisAlignment: MainAxisAlignment.start, // 🛠️ FIX: Start alignment ensures smooth swipe
+                            crossAxisAlignment: CrossAxisAlignment.center,
                             children: _getNavItems(context, isMobile: true),
                           ),
                         ),
@@ -145,6 +164,7 @@ class CustomNavbar extends StatelessWidget {
     );
   }
 
+  // 📋 LIST OF NAVIGATION ITEMS
   List<Widget> _getNavItems(BuildContext context, {required bool isMobile}) {
     final String currentRoute = GoRouterState.of(context).uri.toString();
 
@@ -160,6 +180,9 @@ class CustomNavbar extends StatelessWidget {
   }
 }
 
+// ==========================================
+// 🔗 INDIVIDUAL NAVBAR ITEM COMPONENT
+// ==========================================
 class _NavBarItem extends StatefulWidget {
   final String title;
   final String path;
@@ -192,15 +215,20 @@ class _NavBarItemState extends State<_NavBarItem> {
 
   @override
   Widget build(BuildContext context) {
+    // 🧠 ACTIVE STATE DETECTOR
     bool isActive = widget.currentRoute == widget.path || (widget.path != '/' && widget.currentRoute.startsWith(widget.path));
     int animMs = AppTheme.transitionSpeed == 'fast' ? 150 : (AppTheme.transitionSpeed == 'slow' ? 400 : 250);
 
     return Padding(
+      // 🛠️ FIX: Proper spacing between links based on device
       padding: EdgeInsets.symmetric(horizontal: widget.isMobile ? 12.0 : 18.0),
       child: MouseRegion(
         onEnter: (_) {
           setState(() => isHovered = true);
-          if (AppTheme.enableSoundEffects && AppTheme.soundPack == 'clicky' && !widget.isMobile) HapticFeedback.selectionClick();
+          // Only play hover sound on desktop to avoid annoying taps on mobile
+          if (AppTheme.enableSoundEffects && AppTheme.soundPack == 'clicky' && !widget.isMobile) {
+            HapticFeedback.selectionClick();
+          }
         },
         onExit: (_) => setState(() => isHovered = false),
         cursor: AppTheme.cursorType == 'none' ? SystemMouseCursors.none : SystemMouseCursors.click,
@@ -211,12 +239,14 @@ class _NavBarItemState extends State<_NavBarItem> {
             context.go(widget.path);
           },
           child: Container(
-            color: Colors.transparent, 
+            color: Colors.transparent, // Ensures the entire area is clickable
             child: Column(
               mainAxisSize: MainAxisSize.min,
-              // 🛠️ ALIGNMENT FIX: Explicitly center the text and underline indicator
+              // 🛠️ FIX: Text aur Underline ekdum perfectly center me align honge
               crossAxisAlignment: CrossAxisAlignment.center, 
               children: [
+                
+                // 📝 MENU TEXT
                 AnimatedDefaultTextStyle(
                   duration: Duration(milliseconds: animMs), 
                   curve: Curves.easeOutCubic,
@@ -227,8 +257,10 @@ class _NavBarItemState extends State<_NavBarItem> {
                   ).copyWith(letterSpacing: 1.0),
                   child: Text(widget.title),
                 ),
-                const SizedBox(height: 6),
                 
+                const SizedBox(height: 6), // 🛠️ FIX: Consistent spacing
+                
+                // ✨ ANIMATED UNDERLINE INDICATOR
                 AnimatedContainer(
                   duration: Duration(milliseconds: animMs), 
                   curve: Curves.easeOutCubic,
