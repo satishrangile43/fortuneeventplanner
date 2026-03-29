@@ -5,12 +5,9 @@ class ThemeProvider extends ChangeNotifier {
   // ==========================================
   // 🚀 THE ULTIMATE REAL ENGINE (GOD TIER CONTROL)
   // ==========================================
-  
-  // 🔓 God Mode Active Switch
   bool isSelectionMode = false; 
-
-  // 🎯 Map to store individual object customizations
   Map<String, dynamic> elementSettings = {};
+  bool isGodModeUnlocked = false; 
 
   void toggleSelectionMode() {
     isSelectionMode = !isSelectionMode;
@@ -27,19 +24,16 @@ class ThemeProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  bool isGodModeUnlocked = false; 
-
   void unlockGodMode() {
     isGodModeUnlocked = true;
     notifyListeners();
   }
 
   // ==========================================
-  // 🎨 1. THEMES, COLORS & FILTERS (GLOBAL)
+  // 🎨 1. THEMES, COLORS & FILTERS
   // ==========================================
   void changeTheme(String newTheme) {
     AppTheme.activeTheme = newTheme;
-    // 🧠 SMART LOGIC: Auto-adjust autoDarkMode toggle if manually forced
     AppTheme.autoDarkMode = false; 
     notifyListeners();
   }
@@ -49,7 +43,6 @@ class ThemeProvider extends ChangeNotifier {
     notifyListeners();
   }
   
-  // 🆕 NAYA: Image Filters (Grayscale, Sepia, etc.)
   void updateImageFilter(String newFilter) {
     AppTheme.imageFilter = newFilter;
     notifyListeners();
@@ -63,7 +56,6 @@ class ThemeProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  // 🆕 NAYA: Transition Speed (Slow, Normal, Fast)
   void updateTransitionSpeed(String speed) {
     AppTheme.transitionSpeed = speed;
     notifyListeners();
@@ -74,16 +66,8 @@ class ThemeProvider extends ChangeNotifier {
   // ==========================================
   void updateUIStyle(String newStyle) {
     AppTheme.globalUIStyle = newStyle;
-    
-    // 🧠 SMART LOGIC: If Glassmorphism is selected, Blur MUST be true for the effect to work
-    if (newStyle == 'glass' && !AppTheme.enablePerformanceMode) {
-      AppTheme.enableBlur = true;
-    }
-    // 🧠 SMART LOGIC: If Neumorphism is selected, Shadows MUST be true
-    if (newStyle == 'neumorphic') {
-      AppTheme.enableShadows = true;
-    }
-    
+    if (newStyle == 'glass' && !AppTheme.enablePerformanceMode) AppTheme.enableBlur = true;
+    if (newStyle == 'neumorphic') AppTheme.enableShadows = true;
     notifyListeners();
   }
 
@@ -102,7 +86,6 @@ class ThemeProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  // 🆕 NAYA: Border Radius Styles (Sharp, Squircle, Rounded)
   void updateBorderStyle(String newBorder) {
     AppTheme.borderStyle = newBorder;
     notifyListeners();
@@ -118,12 +101,7 @@ class ThemeProvider extends ChangeNotifier {
 
   void updateBackgroundStyle(String newBackground) {
     AppTheme.backgroundStyle = newBackground;
-    
-    // 🧠 SMART LOGIC: If mesh or gradient background is selected, turn on gradients
-    if (newBackground == 'mesh' || newBackground == 'gradient') {
-      AppTheme.enableGradients = true;
-    }
-    
+    if (newBackground == 'mesh' || newBackground == 'gradient') AppTheme.enableGradients = true;
     notifyListeners();
   }
 
@@ -135,7 +113,6 @@ class ThemeProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  // 🆕 NAYA: 3D Parallax Intensity
   void updateParallaxIntensity(String intensity) {
     AppTheme.parallaxIntensity = intensity;
     notifyListeners();
@@ -166,7 +143,6 @@ class ThemeProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  // 🆕 NAYA: Custom Cursor Type (Dot, Ring, None)
   void updateCursorType(String cursorType) {
     AppTheme.cursorType = cursorType;
     notifyListeners();
@@ -198,19 +174,16 @@ class ThemeProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  // 🆕 NAYA: Navbar Behavior (Sticky, Floating, Hidden)
   void updateNavbarStyle(String style) {
     AppTheme.navbarStyle = style;
     notifyListeners();
   }
 
-  // 🆕 NAYA: Footer Style (Minimal, Expanded)
   void updateFooterStyle(String style) {
     AppTheme.footerStyle = style;
     notifyListeners();
   }
 
-  // 🆕 NAYA: Form Input Styles (Filled, Outlined, Underlined)
   void updateFormInputStyle(String style) {
     AppTheme.formInputStyle = style;
     notifyListeners();
@@ -239,7 +212,6 @@ class ThemeProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  // 🆕 NAYA: Sound Packs
   void updateSoundPack(String pack) {
     AppTheme.soundPack = pack;
     notifyListeners();
@@ -250,14 +222,13 @@ class ThemeProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  // 🆕 NAYA: Toast/Snackbar Style
   void updateToastStyle(String style) {
     AppTheme.toastStyle = style;
     notifyListeners();
   }
 
   // ==========================================
-  // 🌙 9. ADVANCED & PERFORMANCE (SMART ENGINE)
+  // 🌙 9. ADVANCED & PERFORMANCE
   // ==========================================
   void toggleAutoDarkMode(bool value) {
     AppTheme.autoDarkMode = value;
@@ -271,72 +242,123 @@ class ThemeProvider extends ChangeNotifier {
 
   void togglePerformanceMode(bool value) {
     AppTheme.enablePerformanceMode = value;
-    
-    // 🧠 SMART LOGIC: Auto-disable Heavy Rendering for Max FPS
     if (value) {
       AppTheme.enableBlur = false;
       AppTheme.enableParticles = false;
       AppTheme.enableGlow = false;
       AppTheme.parallaxIntensity = 'none';
       AppTheme.scrollEffect = 'smooth';
-      AppTheme.transitionSpeed = 'fast'; // Faster transitions = less frame drops
+      AppTheme.transitionSpeed = 'fast'; 
     }
-    
     notifyListeners();
   }
 
   // ==========================================
-  // 🛠️ 10. MASTER RESET (THE GOD TIER PRESET)
+  // 🛠️ 10. MASTER RESET
   // ==========================================
   void resetToDefault() {
     isSelectionMode = false;
     elementSettings.clear(); 
     
-    // 🧠 Core: Dark/Light Adaptive
-    AppTheme.activeTheme = 'dark'; // Dark theme defaults look more premium
+    AppTheme.activeTheme = 'dark'; 
     AppTheme.accentColor = 'auto';
     AppTheme.imageFilter = 'none';
-    
-    // 🧠 UI & Motion: Buttery Smooth & Modern
-    AppTheme.globalAnimation = 'fade'; // Fade is smoother than zoom out of the box
+    AppTheme.globalAnimation = 'fade'; 
     AppTheme.transitionSpeed = 'normal';
-    AppTheme.globalUIStyle = 'glass'; // Glassmorphism is top-tier trend
+    AppTheme.globalUIStyle = 'glass'; 
     AppTheme.layoutStyle = 'modern';
-    AppTheme.buttonStyle = 'pill'; // Pill buttons give a sleek SaaS look
+    AppTheme.buttonStyle = 'pill'; 
     AppTheme.cardStyle = 'elevated';
-    AppTheme.borderStyle = 'squircle'; // Apple-like smooth corners
+    AppTheme.borderStyle = 'squircle'; 
     AppTheme.fontStyle = 'modern';
-    AppTheme.backgroundStyle = 'gradient'; // Richer background
-    
-    // 🧠 Effects: Balanced Depth
-    AppTheme.hoverEffect = 'parallax'; // 3D feel
+    AppTheme.backgroundStyle = 'gradient'; 
+    AppTheme.hoverEffect = 'parallax'; 
     AppTheme.parallaxIntensity = 'medium';
-    AppTheme.enableGlow = true; // Subtle glowing accents
-    AppTheme.enableBlur = true; // Required for glass UI
+    AppTheme.enableGlow = true; 
+    AppTheme.enableBlur = true; 
     AppTheme.enableShadows = true;
     AppTheme.enableGradients = true;
-    AppTheme.enableParticles = false; // Off by default to save battery
+    AppTheme.enableParticles = false; 
     AppTheme.enableCursorEffect = true;
-    AppTheme.cursorType = 'ring'; // Premium cursor for web
-    
-    // 🧠 Layout & Components
-    AppTheme.scrollEffect = 'bouncy'; // iOS style bounce
+    AppTheme.cursorType = 'ring'; 
+    AppTheme.scrollEffect = 'bouncy'; 
     AppTheme.mobileLayout = 'adaptive';
     AppTheme.heroStyle = 'centered';
-    AppTheme.navbarStyle = 'floating'; // Floating navbars look luxurious
+    AppTheme.navbarStyle = 'floating'; 
     AppTheme.footerStyle = 'expanded';
     AppTheme.formInputStyle = 'filled';
     AppTheme.loaderStyle = 'spinner';
-    
-    // 🧠 Sounds & Alerts
-    AppTheme.enableSoundEffects = true; // Micro-interactions feel alive
+    AppTheme.enableSoundEffects = true; 
     AppTheme.soundPack = 'clicky';
-    AppTheme.toastStyle = 'glass'; // Matches global UI style
-    
-    // 🧠 System
+    AppTheme.toastStyle = 'glass'; 
     AppTheme.autoDarkMode = true;
     AppTheme.enablePerformanceMode = false;
     
     notifyListeners();
+  }
+
+  // ==========================================
+  // 🚀 11. THE TRUE CLOUD HYDRATION SYSTEM (FIX 1)
+  // ==========================================
+  void loadFromCloud(Map<String, dynamic> data) {
+    // 1. Core Config (Theme logic)
+    if (data.containsKey('app_config')) {
+      Map<String, dynamic> config = data['app_config'];
+      AppTheme.activeTheme = config['theme'] ?? 'dark';
+      AppTheme.accentColor = config['accent'] ?? 'auto';
+      AppTheme.imageFilter = config['filter'] ?? 'none';
+      AppTheme.globalUIStyle = config['ui_style'] ?? 'glass';
+      AppTheme.buttonStyle = config['btn_style'] ?? 'pill';
+      AppTheme.cardStyle = config['card_style'] ?? 'elevated';
+      AppTheme.borderStyle = config['border_style'] ?? 'squircle';
+      AppTheme.heroStyle = config['hero_style'] ?? 'centered';
+      AppTheme.globalAnimation = config['animation'] ?? 'fade';
+      AppTheme.transitionSpeed = config['speed'] ?? 'normal';
+      AppTheme.fontStyle = config['font'] ?? 'modern';
+      AppTheme.navbarStyle = config['nav_style'] ?? 'floating';
+      AppTheme.footerStyle = config['footer_style'] ?? 'expanded';
+      AppTheme.formInputStyle = config['form_style'] ?? 'filled';
+      AppTheme.parallaxIntensity = config['parallax'] ?? 'none';
+      
+      AppTheme.enableBlur = config['blur'] ?? true;
+      AppTheme.enableShadows = config['shadows'] ?? true;
+      AppTheme.enableGlow = config['glow'] ?? true;
+      AppTheme.enableCursorEffect = config['cursor_fx'] ?? true;
+    }
+
+    // 2. Element Texts & Colors (The actual Map for individual widgets)
+    if (data.containsKey('element_settings')) {
+      elementSettings = Map<String, dynamic>.from(data['element_settings']);
+    }
+
+    notifyListeners(); // 🔥 COMPLETE UI OVERHAUL
+  }
+
+  // 🚀 HELPER TO PACK ALL DATA FOR GITHUB
+  Map<String, dynamic> exportToCloud() {
+    return {
+      'app_config': {
+        'theme': AppTheme.activeTheme,
+        'accent': AppTheme.accentColor,
+        'filter': AppTheme.imageFilter,
+        'ui_style': AppTheme.globalUIStyle,
+        'btn_style': AppTheme.buttonStyle,
+        'card_style': AppTheme.cardStyle,
+        'border_style': AppTheme.borderStyle,
+        'hero_style': AppTheme.heroStyle,
+        'animation': AppTheme.globalAnimation,
+        'speed': AppTheme.transitionSpeed,
+        'font': AppTheme.fontStyle,
+        'nav_style': AppTheme.navbarStyle,
+        'footer_style': AppTheme.footerStyle,
+        'form_style': AppTheme.formInputStyle,
+        'parallax': AppTheme.parallaxIntensity,
+        'blur': AppTheme.enableBlur,
+        'shadows': AppTheme.enableShadows,
+        'glow': AppTheme.enableGlow,
+        'cursor_fx': AppTheme.enableCursorEffect,
+      },
+      'element_settings': elementSettings,
+    };
   }
 }

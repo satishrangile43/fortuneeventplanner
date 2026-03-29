@@ -23,29 +23,24 @@ class CustomNavbar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // 🚀 ENGINE SYNC: Check Navbar Style (Hidden, Sticky, Floating)
     if (AppTheme.navbarStyle == 'hidden') {
-      return const SizedBox.shrink(); // Hide the navbar completely
+      return const SizedBox.shrink(); 
     }
 
     return ResponsiveBuilder(
       builder: (context, sizingInformation) {
         bool isMobile = sizingInformation.isMobile || MediaQuery.of(context).size.width < 800;
         
-        // 🚀 ENGINE SYNC: Floating Navbar Logic
         bool isFloating = AppTheme.navbarStyle == 'floating';
         double marginValue = isFloating ? (isMobile ? 15.0 : 30.0) : 0.0;
         
-        // 🟢 FIX: Border Style Sync (Sharp overrides radius)
         double radiusValue = AppTheme.borderStyle == 'sharp' ? 0.0 : (isFloating ? AppTheme.getGlobalRadius() : 0.0);
 
         return Container(
-          // Floating margin apply karna hai ya nahi
           margin: EdgeInsets.only(top: marginValue, left: marginValue, right: marginValue),
           child: ClipRRect( 
-            borderRadius: BorderRadius.circular(radiusValue), // 🚀 ENGINE SYNC: Border Radius apply
+            borderRadius: BorderRadius.circular(radiusValue),
             child: BackdropFilter(
-              // 🚀 ENGINE SYNC: Blur effect Admin Panel se toggle hoga
               filter: ImageFilter.blur(
                 sigmaX: AppTheme.enableBlur ? 20 : 0.001, 
                 sigmaY: AppTheme.enableBlur ? 20 : 0.001
@@ -56,12 +51,11 @@ class CustomNavbar extends StatelessWidget {
                     vertical: isMobile ? 15 : 20
                 ),
                 decoration: BoxDecoration(
-                  // 🚀 ENGINE SYNC & 🟢 COLOR FIX: Dynamic contrast engine. Blur off hone par background dark/solid rahega taaki text visible rahe.
                   color: (AppTheme.globalUIStyle == 'solid' || !AppTheme.enableBlur)
                       ? AppTheme.bg 
                       : AppTheme.bg.withValues(alpha: 0.85), 
                   border: isFloating 
-                    ? Border.all(color: AppTheme.accent.withValues(alpha: 0.2), width: 1.5) // 🟢 FIX: Colored floating border
+                    ? Border.all(color: AppTheme.accent.withValues(alpha: 0.2), width: 1.5)
                     : Border(
                         bottom: BorderSide(
                           color: AppTheme.accent.withValues(alpha: 0.2),
@@ -69,7 +63,6 @@ class CustomNavbar extends StatelessWidget {
                         ),
                       ),
                   borderRadius: BorderRadius.circular(radiusValue),
-                  // 🚀 ENGINE SYNC: Shadow toggle
                   boxShadow: AppTheme.enableShadows ? [
                     BoxShadow(
                       color: Colors.black.withValues(alpha: isFloating ? 0.3 : 0.15), 
@@ -83,10 +76,9 @@ class CustomNavbar extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     // ==========================================
-                    // 1. BRAND LOGO (Upgraded visibility)
+                    // 1. BRAND LOGO
                     // ==========================================
                     InkWell(
-                      // 🚀 ENGINE SYNC: Custom Cursor Type
                       mouseCursor: AppTheme.cursorType == 'none' ? SystemMouseCursors.none : SystemMouseCursors.click,
                       onTap: () {
                         _triggerSound();
@@ -99,7 +91,6 @@ class CustomNavbar extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          // 🚀 ENGINE SYNC: Heading Font Engine
                           Text(
                             'FORTUNE',
                             style: AppTheme.getHeadingStyle(
@@ -108,11 +99,9 @@ class CustomNavbar extends StatelessWidget {
                               weight: FontWeight.bold,
                             ).copyWith(
                               letterSpacing: 2.0,
-                              // 🟢 FIX: Text shadow for premium punch
                               shadows: [Shadow(color: AppTheme.textMain.withValues(alpha: 0.2), offset: const Offset(0, 2), blurRadius: 4)]
                             ),
                           ),
-                          // 🚀 ENGINE SYNC: Body Font Engine
                           Text(
                             'EVENT PLANNER',
                             style: AppTheme.getBodyStyle(
@@ -128,21 +117,20 @@ class CustomNavbar extends StatelessWidget {
                     if (isMobile) const SizedBox(width: 15),
 
                     // ==========================================
-                    // 2. NAVIGATION LINKS (Web & Mobile Split)
+                    // 2. NAVIGATION LINKS
                     // ==========================================
                     if (!isMobile)
-                      // 🖥️ Desktop UI: Clean Row
                       Row(
                         children: _getNavItems(context, isMobile: false),
                       )
                     else
-                      // 📱 Mobile UI: Smooth Scrollable Row with Soft Edges
                       Expanded(
                         child: SingleChildScrollView(
                           scrollDirection: Axis.horizontal,
-                          physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()), // 🟢 FIX: Ultra smooth bouncing for iOS/Android
+                          physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()), 
                           child: Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
+                            // 🛠️ ALIGNMENT FIX: Changed from end to start. 'end' forces items out of view if they overflow the screen width.
+                            mainAxisAlignment: MainAxisAlignment.start, 
                             children: _getNavItems(context, isMobile: true),
                           ),
                         ),
@@ -172,9 +160,6 @@ class CustomNavbar extends StatelessWidget {
   }
 }
 
-// ==========================================
-// 🎯 CUSTOM HOVER ITEM WIDGET
-// ==========================================
 class _NavBarItem extends StatefulWidget {
   final String title;
   final String path;
@@ -207,22 +192,17 @@ class _NavBarItemState extends State<_NavBarItem> {
 
   @override
   Widget build(BuildContext context) {
-    // Exact match or sub-route match logic
     bool isActive = widget.currentRoute == widget.path || (widget.path != '/' && widget.currentRoute.startsWith(widget.path));
-
-    // 🚀 ENGINE SYNC: Dynamic transition speed sync
     int animMs = AppTheme.transitionSpeed == 'fast' ? 150 : (AppTheme.transitionSpeed == 'slow' ? 400 : 250);
 
     return Padding(
-      // 🟢 FIX: Mobile pe spacing kam kar di taaki zyada items ek screen par fit aayein
       padding: EdgeInsets.symmetric(horizontal: widget.isMobile ? 12.0 : 18.0),
       child: MouseRegion(
         onEnter: (_) {
           setState(() => isHovered = true);
-          if (AppTheme.enableSoundEffects && AppTheme.soundPack == 'clicky' && !widget.isMobile) HapticFeedback.selectionClick(); // Soft hover click for web
+          if (AppTheme.enableSoundEffects && AppTheme.soundPack == 'clicky' && !widget.isMobile) HapticFeedback.selectionClick();
         },
         onExit: (_) => setState(() => isHovered = false),
-        // 🚀 ENGINE SYNC: Custom Cursor Type
         cursor: AppTheme.cursorType == 'none' ? SystemMouseCursors.none : SystemMouseCursors.click,
         
         child: GestureDetector(
@@ -231,16 +211,16 @@ class _NavBarItemState extends State<_NavBarItem> {
             context.go(widget.path);
           },
           child: Container(
-            color: Colors.transparent, // Ensures the whole area is clickable on mobile
+            color: Colors.transparent, 
             child: Column(
               mainAxisSize: MainAxisSize.min,
+              // 🛠️ ALIGNMENT FIX: Explicitly center the text and underline indicator
+              crossAxisAlignment: CrossAxisAlignment.center, 
               children: [
-                // 🚀 ENGINE SYNC: Body Font Engine & Dynamic Color
                 AnimatedDefaultTextStyle(
                   duration: Duration(milliseconds: animMs), 
                   curve: Curves.easeOutCubic,
                   style: AppTheme.getBodyStyle(
-                    // 🟢 FIX: Slightly larger font for better touch targets on mobile
                     fontSize: widget.isMobile ? 15 : 14,
                     color: (isHovered || isActive) ? AppTheme.accent : AppTheme.textSub,
                     weight: (isHovered || isActive) ? FontWeight.bold : FontWeight.w500,
@@ -249,16 +229,14 @@ class _NavBarItemState extends State<_NavBarItem> {
                 ),
                 const SizedBox(height: 6),
                 
-                // 🚀 Hover Underline Indicator
                 AnimatedContainer(
                   duration: Duration(milliseconds: animMs), 
                   curve: Curves.easeOutCubic,
-                  width: (isHovered || isActive) ? (widget.isMobile ? 15 : 24) : 0, // 🟢 FIX: Adaptive underline width
+                  width: (isHovered || isActive) ? (widget.isMobile ? 15 : 24) : 0, 
                   height: 2.5,
                   decoration: BoxDecoration(
-                    color: AppTheme.accent, // 🚀 Dynamic Line Color
+                    color: AppTheme.accent, 
                     borderRadius: BorderRadius.circular(10),
-                    // 🚀 ENGINE SYNC: Glow toggle pe react karega
                     boxShadow: (AppTheme.enableGlow && (isHovered || isActive)) 
                         ? [BoxShadow(color: AppTheme.accent, blurRadius: 10, spreadRadius: 1)]
                         : [],

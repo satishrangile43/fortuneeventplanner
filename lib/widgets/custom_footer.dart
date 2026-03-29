@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:url_launcher/url_launcher.dart'; // 🚀 AB YEH ACTUAL MEIN USE HOGA!
-import '../theme/app_theme.dart'; // 🚀 GLOBAL THEME ENGINE IMPORTED
+import 'package:url_launcher/url_launcher.dart'; 
+import '../theme/app_theme.dart'; 
 
 class CustomFooter extends StatelessWidget {
   const CustomFooter({super.key});
@@ -16,7 +16,6 @@ class CustomFooter extends StatelessWidget {
     }
   }
 
-  // 🚀 ENGINE SYNC: Universal URL Launcher Helper
   Future<void> _launchURL(String url) async {
     final Uri uri = Uri.parse(url);
     if (!await launchUrl(uri, mode: LaunchMode.externalApplication)) {
@@ -27,28 +26,24 @@ class CustomFooter extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     bool isMobile = MediaQuery.of(context).size.width < 800;
-    
-    // 🚀 ENGINE SYNC: Footer Style (Minimal vs Expanded)
     bool isMinimal = AppTheme.footerStyle == 'minimal';
 
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
-        color: AppTheme.cardBg, // 🚀 ENGINE SYNC: Dynamic Background
+        color: AppTheme.cardBg, 
         border: Border(
           top: BorderSide(
             color: AppTheme.accent.withValues(alpha: 0.5), 
             width: 1.5,
           ),
         ),
-        // 🚀 ENGINE SYNC: Global Shadows for footer top
         boxShadow: AppTheme.enableShadows ? [
           BoxShadow(color: Colors.black.withValues(alpha: 0.15), blurRadius: 30, offset: const Offset(0, -5))
         ] : [],
       ),
       child: Column(
         children: [
-          // Main Content Area
           Padding(
             padding: EdgeInsets.symmetric(
               horizontal: isMobile ? 30 : 80,
@@ -57,11 +52,13 @@ class CustomFooter extends StatelessWidget {
             child: Wrap(
               spacing: isMobile ? 40 : 80, 
               runSpacing: 50,
+              // 🛠️ ALIGNMENT FIX: Added crossAxisAlignment so items align properly when wrapping to a new line
+              crossAxisAlignment: WrapCrossAlignment.start, 
               alignment: isMinimal ? WrapAlignment.center : (isMobile ? WrapAlignment.start : WrapAlignment.spaceBetween),
               children: [
                 
                 // ==========================================
-                // 1. BRAND SECTION (Hamesha dikhega)
+                // 1. BRAND SECTION
                 // ==========================================
                 AppTheme.applyAnim(
                   SizedBox(
@@ -97,10 +94,9 @@ class CustomFooter extends StatelessWidget {
                       ],
                     ),
                   ),
-                  100, // Animation delay
+                  100, 
                 ),
 
-                // 🚀 ENGINE SYNC: Ye dono sections sirf 'expanded' mode mein dikhenge
                 if (!isMinimal) ...[
                   // ==========================================
                   // 2. DIRECT CONTACTS SECTION
@@ -196,10 +192,6 @@ class CustomFooter extends StatelessWidget {
     );
   }
 
-  // ----------------------------------------------------
-  // HELPER WIDGETS
-  // ----------------------------------------------------
-
   Widget _buildCopyrightText() {
     return Text(
       '© ${DateTime.now().year} Fortune Event Planner. All Rights Reserved.',
@@ -217,7 +209,6 @@ class CustomFooter extends StatelessWidget {
       child: GestureDetector(
         onTap: () {
           _triggerSound();
-          // 🚀 DIRECTED TO LINKEDIN / SEARCH
           _launchURL('https://www.google.com/search?q=Satish+Rangile+Developer');
         },
         child: RichText(
@@ -232,7 +223,7 @@ class CustomFooter extends StatelessWidget {
               TextSpan(
                 text: 'Satish Rangile',
                 style: TextStyle(
-                  color: AppTheme.accent, // Highlighted name
+                  color: AppTheme.accent, 
                   fontWeight: FontWeight.bold,
                   letterSpacing: 1.0,
                 ),
@@ -244,7 +235,6 @@ class CustomFooter extends StatelessWidget {
     );
   }
 
-  // Stylish Contact Detail (NOW FUNCTIONAL)
   Widget _buildContactRow(String name, String phone, String url) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 20.0), 
@@ -253,7 +243,7 @@ class CustomFooter extends StatelessWidget {
         child: GestureDetector(
           onTap: () {
             _triggerSound();
-            _launchURL(url); // 🚀 CALL OPENER
+            _launchURL(url); 
           },
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -282,14 +272,13 @@ class CustomFooter extends StatelessWidget {
     );
   }
 
-  // Stylish Address/Email Details (NOW FUNCTIONAL)
   Widget _buildIconRow(IconData icon, String text, String url) {
     return MouseRegion(
       cursor: AppTheme.cursorType == 'none' ? SystemMouseCursors.none : SystemMouseCursors.click,
       child: GestureDetector(
         onTap: () {
           _triggerSound();
-          _launchURL(url); // 🚀 MAIL/MAPS OPENER
+          _launchURL(url);
         },
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,

@@ -2,8 +2,6 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
-// ignore: unused_import
-import 'package:flutter_animate/flutter_animate.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:provider/provider.dart';
@@ -11,7 +9,7 @@ import 'package:provider/provider.dart';
 import '../widgets/custom_navbar.dart';
 import '../widgets/custom_footer.dart';
 import '../theme/app_theme.dart';
-import '../theme/theme_provider.dart'; // 🚀 GOD MODE MEMORY
+import '../theme/theme_provider.dart'; 
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -21,11 +19,9 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  // 🤫 SECRET VARIABLES
   int _secretTapCount = 0;
-  final String _adminPasscode = "LOVEDAYBITTU"; // 🔐 TERA SECRET PASSWORD
+  final String _adminPasscode = "LOVEDAYBITTU"; 
 
-  // 📸 30 MASSIVE GALLERY IMAGES
   final List<String> _gallery30 = [
     'https://images.unsplash.com/photo-1511527661048-7fe73d85e9a4?w=500', 'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=500',
     'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=500', 'https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?w=500',
@@ -61,7 +57,7 @@ class _HomePageState extends State<HomePage> {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        backgroundColor: Colors.black.withValues(alpha: 0.95), // 🟢 FIX: Darker for focus
+        backgroundColor: Colors.black.withValues(alpha: 0.95), 
         shape: RoundedRectangleBorder(side: BorderSide(color: AppTheme.accent.withValues(alpha: 0.5), width: 1.5), borderRadius: BorderRadius.circular(AppTheme.getGlobalRadius())),
         title: const Text("✏️ Edit Object", style: TextStyle(fontSize: 18, color: Colors.white, fontWeight: FontWeight.bold)),
         content: Column(
@@ -72,7 +68,7 @@ class _HomePageState extends State<HomePage> {
               style: const TextStyle(color: Colors.white), maxLines: 3,
               decoration: InputDecoration(
                 filled: true, 
-                fillColor: Colors.white.withValues(alpha: 0.05), // 🟢 FIX: Better contrast input
+                fillColor: Colors.white.withValues(alpha: 0.05), 
                 border: OutlineInputBorder(borderRadius: BorderRadius.circular(8), borderSide: BorderSide.none),
                 focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(8), borderSide: BorderSide(color: AppTheme.accent, width: 1)),
               ),
@@ -114,10 +110,10 @@ class _HomePageState extends State<HomePage> {
         child: Container(
           decoration: BoxDecoration(
             border: Border.all(color: Colors.pinkAccent, width: 2, style: BorderStyle.solid), 
-            color: Colors.pinkAccent.withValues(alpha: 0.05), // 🟢 FIX: Softer highlight
+            color: Colors.pinkAccent.withValues(alpha: 0.05), 
             borderRadius: BorderRadius.circular(8)
           ),
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4), // 🟢 FIX: Horizontal breathing room
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4), 
           child: child,
         ),
       ),
@@ -164,11 +160,9 @@ class _HomePageState extends State<HomePage> {
         return Scaffold(
           backgroundColor: AppTheme.bg,
           body: MouseRegion(
-            // 🟢 FIX: Uses basic mouse here, AppTheme cursor handles web specific overrides if needed
             cursor: SystemMouseCursors.basic, 
             child: Stack(
               children: [
-                // ✨ Background Gradient Engine (Powered by AppTheme)
                 Container(decoration: AppTheme.getBackgroundDecoration()),
                 
                 Column(
@@ -198,28 +192,33 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  // ==========================================
-  // 🚀 HERO WITH PARALLAX, RADIUS & LAYOUT ENGINE
-  // ==========================================
   Widget _buildDynamicHero(BuildContext context, ThemeProvider provider) {
     var screenSize = MediaQuery.of(context).size;
     bool isMobile = screenSize.width < 800 || AppTheme.mobileLayout == 'compact';
     double radius = AppTheme.borderStyle == 'sharp' ? 0.0 : AppTheme.getGlobalRadius() * 2;
     
+    // 🛠️ ALIGNMENT FIX: Sync the exact text alignment to the AppTheme engine
+    TextAlign heroTextAlign = AppTheme.heroStyle == 'centered' 
+        ? TextAlign.center 
+        : (AppTheme.heroStyle == 'right' ? TextAlign.end : TextAlign.start);
+        
+    CrossAxisAlignment heroCrossAlign = AppTheme.heroStyle == 'left' 
+        ? CrossAxisAlignment.start 
+        : (AppTheme.heroStyle == 'right' ? CrossAxisAlignment.end : CrossAxisAlignment.center);
+
     return SizedBox(
       width: double.infinity,
-      height: AppTheme.heroStyle == 'fullscreen' ? screenSize.height : (isMobile ? screenSize.height * 0.75 : screenSize.height * 0.85), // 🟢 FIX: Slightly taller on mobile
+      height: AppTheme.heroStyle == 'fullscreen' ? screenSize.height : (isMobile ? screenSize.height * 0.75 : screenSize.height * 0.85), 
       child: Stack(
         fit: StackFit.expand,
         children: [
-          // 🖼️ IMAGE FILTER SYNC
           AppTheme.applyImageFilter(
             CarouselSlider(
               options: CarouselOptions(
                 height: double.infinity, 
                 viewportFraction: 1.0, 
                 autoPlay: true,
-                autoPlayAnimationDuration: Duration(milliseconds: AppTheme.transitionSpeed == 'fast' ? 400 : (AppTheme.transitionSpeed == 'slow' ? 1200 : 800)), // 🟢 FIX: Smoother carousel
+                autoPlayAnimationDuration: Duration(milliseconds: AppTheme.transitionSpeed == 'fast' ? 400 : (AppTheme.transitionSpeed == 'slow' ? 1200 : 800)), 
               ),
               items: [
                 'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?q=80&w=2070',
@@ -228,14 +227,13 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
           
-          // 🟢 FIX: Ultra smooth gradient to blend hero into the rest of the page
           Container(
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 colors: [
-                  AppTheme.bg.withValues(alpha: 0.7), // Top dark/light tint
-                  Colors.black.withValues(alpha: 0.3), // Center clarity
-                  AppTheme.bg // Bottom seamless merge
+                  AppTheme.bg.withValues(alpha: 0.7), 
+                  Colors.black.withValues(alpha: 0.3), 
+                  AppTheme.bg 
                 ], 
                 begin: Alignment.topCenter, 
                 end: Alignment.bottomCenter
@@ -246,21 +244,21 @@ class _HomePageState extends State<HomePage> {
           Align(
             alignment: AppTheme.heroStyle == 'left' ? Alignment.centerLeft : (AppTheme.heroStyle == 'right' ? Alignment.centerRight : Alignment.center),
             child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: AppTheme.heroStyle == 'centered' ? 20.0 : (isMobile ? 20.0 : 60.0)), // 🟢 FIX: Responsive padding
+              padding: EdgeInsets.symmetric(horizontal: AppTheme.heroStyle == 'centered' ? 20.0 : (isMobile ? 20.0 : 60.0)), 
               child: AppTheme.applyAnim(
                 ClipRRect(
                   borderRadius: BorderRadius.circular(radius),
                   child: BackdropFilter(
                     filter: ImageFilter.blur(sigmaX: AppTheme.enableBlur ? 15 : 0.001, sigmaY: AppTheme.enableBlur ? 15 : 0.001),
                     child: Container(
-                      padding: EdgeInsets.all(isMobile ? 30 : 50), // 🟢 FIX: More breathing room
+                      padding: EdgeInsets.all(isMobile ? 30 : 50), 
                       decoration: AppTheme.getCardDecoration(isHovered: false).copyWith(
-                        // 🟢 FIX: Solid tint if blur is disabled for maximum text readability
                         color: AppTheme.enableBlur ? AppTheme.cardBg.withValues(alpha: 0.6) : AppTheme.cardBg.withValues(alpha: 0.85),
                       ),
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
-                        crossAxisAlignment: AppTheme.heroStyle == 'left' ? CrossAxisAlignment.start : (AppTheme.heroStyle == 'right' ? CrossAxisAlignment.end : CrossAxisAlignment.center),
+                        // 🛠️ ALIGNMENT FIX: Dynamic Cross Alignment
+                        crossAxisAlignment: heroCrossAlign,
                         children: [
                           _buildEditable(context, provider, 'hero_top_tag', 'THE STANDARD FOR EXCELLENCE', 
                             Text(provider.elementSettings['hero_top_tag_text'] ?? 'THE STANDARD FOR EXCELLENCE', 
@@ -275,9 +273,10 @@ class _HomePageState extends State<HomePage> {
                             },
                             child: _buildEditable(
                               context, provider, 'hero_title', AppTheme.heroTitle, 
-                              Text(provider.elementSettings['hero_title_text'] ?? AppTheme.heroTitle, textAlign: AppTheme.heroStyle == 'centered' ? TextAlign.center : TextAlign.start, 
-                              style: AppTheme.getHeadingStyle(fontSize: isMobile ? 36 : 64, color: AppTheme.textMain).copyWith( // 🟢 FIX: Larger impact desktop title
-                                letterSpacing: -1.0, // Modern SaaS kerning
+                              // 🛠️ ALIGNMENT FIX: Applied synced text align
+                              Text(provider.elementSettings['hero_title_text'] ?? AppTheme.heroTitle, textAlign: heroTextAlign, 
+                              style: AppTheme.getHeadingStyle(fontSize: isMobile ? 36 : 64, color: AppTheme.textMain).copyWith( 
+                                letterSpacing: -1.0, 
                                 shadows: [Shadow(color: AppTheme.textMain.withValues(alpha: 0.15), offset: const Offset(0, 4), blurRadius: 15)]
                               ))),
                           ),
@@ -285,8 +284,9 @@ class _HomePageState extends State<HomePage> {
                           const SizedBox(height: 20),
                           
                           _buildEditable(context, provider, 'hero_subtitle', AppTheme.heroSubtitle, 
-                            Text(provider.elementSettings['hero_subtitle_text'] ?? AppTheme.heroSubtitle, textAlign: AppTheme.heroStyle == 'centered' ? TextAlign.center : TextAlign.start, 
-                            style: AppTheme.getBodyStyle(fontSize: isMobile ? 15 : 18, color: AppTheme.textSub.withValues(alpha: 0.9), weight: FontWeight.w500).copyWith(height: 1.5))), // 🟢 FIX: Better line height
+                            // 🛠️ ALIGNMENT FIX: Applied synced text align
+                            Text(provider.elementSettings['hero_subtitle_text'] ?? AppTheme.heroSubtitle, textAlign: heroTextAlign, 
+                            style: AppTheme.getBodyStyle(fontSize: isMobile ? 15 : 18, color: AppTheme.textSub.withValues(alpha: 0.9), weight: FontWeight.w500).copyWith(height: 1.5))), 
                           
                           const SizedBox(height: 40),
                           
@@ -296,7 +296,7 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ),
                 ),
-                0, // Index for animation
+                0, 
               ),
             ),
           ),
@@ -313,11 +313,11 @@ class _HomePageState extends State<HomePage> {
         child: ElevatedButton(
           style: ElevatedButton.styleFrom(
             backgroundColor: AppTheme.accent, 
-            padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 20), // 🟢 FIX: Thicker, more luxurious button
+            padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 20), 
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(AppTheme.buttonStyle == 'sharp' ? 0 : (AppTheme.buttonStyle == 'pill' ? 50 : 12)), // 🟢 FIX: Subtle rounded option
+              borderRadius: BorderRadius.circular(AppTheme.buttonStyle == 'sharp' ? 0 : (AppTheme.buttonStyle == 'pill' ? 50 : 12)), 
             ),
-            elevation: AppTheme.enableShadows ? 10 : 0, // 🟢 FIX: Stronger CTA shadow
+            elevation: AppTheme.enableShadows ? 10 : 0, 
             shadowColor: AppTheme.accent.withValues(alpha: 0.5),
           ),
           onPressed: () { 
@@ -330,16 +330,13 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  // ==========================================
-  // 🏢 30 MASSIVE GALLERY IMAGES WITH FILTERS
-  // ==========================================
   Widget _buildMassiveGallery(BuildContext context) {
     bool isMobile = MediaQuery.of(context).size.width < 600 || AppTheme.mobileLayout == 'compact';
     return Container(
       padding: EdgeInsets.all(isMobile ? 20 : 40), color: Colors.transparent, 
       child: MasonryGridView.count(
         crossAxisCount: isMobile ? 2 : (AppTheme.layoutStyle == 'grid' ? 4 : 5), 
-        mainAxisSpacing: AppTheme.layoutStyle == 'dense' ? 8 : 20, // 🟢 FIX: Spacing sync
+        mainAxisSpacing: AppTheme.layoutStyle == 'dense' ? 8 : 20, 
         crossAxisSpacing: AppTheme.layoutStyle == 'dense' ? 8 : 20, 
         shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),
@@ -362,15 +359,12 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  // ==========================================
-  // 📋 WHY FORTUNE (UPGRADED UI SYNC & 7 POINTS)
-  // ==========================================
   Widget _buildWhyFortuneSection(BuildContext context, ThemeProvider provider) {
     bool isMobile = MediaQuery.of(context).size.width < 600;
     
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: isMobile ? 20 : 40, vertical: 80), // 🟢 FIX: Balanced vertical padding
-      color: Colors.transparent, // Background handled globally
+      padding: EdgeInsets.symmetric(horizontal: isMobile ? 20 : 40, vertical: 80), 
+      color: Colors.transparent, 
       child: Column(
         children: [
           _buildEditable(context, provider, 'why_title', 'Why Fortune?', 
@@ -379,7 +373,7 @@ class _HomePageState extends State<HomePage> {
           const SizedBox(height: 60),
           
           Wrap(
-            spacing: AppTheme.layoutStyle == 'dense' ? 20 : 40, // 🟢 FIX: Better responsive grid spacing
+            spacing: AppTheme.layoutStyle == 'dense' ? 20 : 40, 
             runSpacing: AppTheme.layoutStyle == 'dense' ? 20 : 40, 
             alignment: WrapAlignment.center, 
             children: [
@@ -404,7 +398,7 @@ class _HomePageState extends State<HomePage> {
         SizedBox(height: isMobile ? 60 : 100),
         _buildEditable(context, provider, 'vibe_title', 'Experience The Vibe', 
           Text(provider.elementSettings['vibe_title_text'] ?? 'Experience The Vibe', style: AppTheme.getHeadingStyle(fontSize: isMobile ? 38 : 52, color: AppTheme.textMain, weight: FontWeight.w800).copyWith(letterSpacing: -1.0))),
-        const SizedBox(height: 40), // 🟢 FIX: Tighter gap to gallery
+        const SizedBox(height: 40), 
       ],
     );
   }
@@ -418,7 +412,6 @@ class _HomePageState extends State<HomePage> {
   }
 }
 
-// 🚀 NAYA: PARALLAX & TILT ENGINE
 class _ParallaxWrapper extends StatefulWidget {
   final Widget child; const _ParallaxWrapper({required this.child});
   @override State<_ParallaxWrapper> createState() => _ParallaxWrapperState();
@@ -433,7 +426,6 @@ class _ParallaxWrapperState extends State<_ParallaxWrapper> {
     if (AppTheme.parallaxIntensity == 'high') scale = 1.15;
     if (AppTheme.parallaxIntensity == 'none') scale = 1.0;
     
-    // 🟢 SUPER FIX: God Mode Scale Engine (Scale vector properly handled)
     return Matrix4.identity()..multiply(Matrix4.diagonal3Values(scale, scale, 1.0));
   }
 
@@ -444,8 +436,10 @@ class _ParallaxWrapperState extends State<_ParallaxWrapper> {
       child: AnimatedContainer(
         duration: Duration(milliseconds: AppTheme.transitionSpeed == 'fast' ? 150 : (AppTheme.transitionSpeed == 'slow' ? 500 : 300)),
         curve: Curves.easeOutCubic,
+        // 🛠️ ALIGNMENT FIX: Prevent layout from jumping top-left when scaling up
+        transformAlignment: FractionalOffset.center,
         transform: _getParallaxTransform(),
-        child: widget.child, // Image is inside child
+        child: widget.child, 
       ),
     );
   }
@@ -471,17 +465,17 @@ class _FeatureCardState extends State<_FeatureCard> {
       cursor: SystemMouseCursors.click,
       child: AnimatedContainer(
         duration: Duration(milliseconds: AppTheme.transitionSpeed == 'fast' ? 150 : 300),
-        width: isMobile ? MediaQuery.of(context).size.width * 0.85 : 340, // 🟢 FIX: Wider cards for 7 points to look full
-        padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 40), // 🟢 FIX: Taller padding
+        width: isMobile ? MediaQuery.of(context).size.width * 0.85 : 340, 
+        padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 40), 
+        // 🛠️ ALIGNMENT FIX: Prevent the card from snapping/jumping its position on hover
+        transformAlignment: FractionalOffset.center,
         decoration: AppTheme.getCardDecoration(isHovered: isHovered).copyWith(
           borderRadius: BorderRadius.circular(AppTheme.borderStyle == 'sharp' ? 0 : AppTheme.getGlobalRadius()),
-          // 🟢 FIX: Gorgeous subtle hover glow shadow
           boxShadow: AppTheme.enableShadows && isHovered ? [BoxShadow(color: AppTheme.accent.withValues(alpha: 0.25), blurRadius: 30, spreadRadius: 2, offset: const Offset(0, 10))] : [],
         ),
         transform: AppTheme.getHoverTransform(isHovered),
         child: Column(
           children: [
-            // 🟢 FIX: Glowing inverted icon on hover
             AnimatedContainer(
               duration: const Duration(milliseconds: 300),
               padding: const EdgeInsets.all(15),

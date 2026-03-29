@@ -2,16 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:flutter/services.dart'; // 🚀 Haptics support
+import 'package:flutter/services.dart'; 
+import 'package:flutter/foundation.dart'; // 🚀 Required for kDebugMode check
 
-// Tumhare custom paths
 import 'routes/app_router.dart';
 import 'theme/theme_provider.dart';
-import 'theme/app_theme.dart'; // 🚀 MASTER ENGINE IMPORTED
+import 'theme/app_theme.dart'; 
+import 'api/github_cms.dart'; 
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  // 🟢 Makes system nav bar transparent for a cleaner edge-to-edge look on Android/iOS
   SystemChrome.setSystemUIOverlayStyle(
     const SystemUiOverlayStyle(statusBarColor: Colors.transparent, systemNavigationBarColor: Colors.transparent),
   );
@@ -28,16 +28,27 @@ void main() {
 
 class FortuneEventApp extends StatefulWidget {
   const FortuneEventApp({super.key});
-
   @override
   State<FortuneEventApp> createState() => _FortuneEventAppState();
 }
 
 class _FortuneEventAppState extends State<FortuneEventApp> {
-  // 🤫 GLOBAL SECRET VARIABLES
   int _secretTapCount = 0;
-  final String _adminPasscode = "LOVEDAYBITTU"; // 🔐 TERA SECRET PASSWORD
-  bool _isPanelOpen = false; // 🎛️ Controls the sliding Admin Panel
+  final String _adminPasscode = "LOVEDAYBITTU"; 
+  bool _isPanelOpen = false; 
+
+  @override
+  void initState() {
+    super.initState();
+    _loadLiveWebsite();
+  }
+
+  void _loadLiveWebsite() async {
+    final cloudData = await GitHubCMS.fetchLiveSettings();
+    if (cloudData != null && mounted) {
+      Provider.of<ThemeProvider>(context, listen: false).loadFromCloud(cloudData);
+    }
+  }
 
   void _triggerSound() {
     if (AppTheme.enableSoundEffects) {
@@ -72,7 +83,6 @@ class _FortuneEventAppState extends State<FortuneEventApp> {
     }
   }
 
-  // 🔐 GLOBAL PASSCODE DIALOG
   void _showGlobalPasscodeDialog(BuildContext dialogContext, ThemeProvider provider) {
     _triggerSound();
     final TextEditingController passController = TextEditingController();
@@ -183,7 +193,6 @@ class _FortuneEventAppState extends State<FortuneEventApp> {
               children: [
                 routerChild!, 
 
-                // 🕵️‍♂️ GLOBAL SECRET TRIGGER
                 if (!themeProvider.isGodModeUnlocked)
                   Positioned(
                     top: 0, right: 0,
@@ -203,7 +212,6 @@ class _FortuneEventAppState extends State<FortuneEventApp> {
                     ),
                   ),
 
-                // 🎛️ GLOBAL ADMIN PANEL
                 if (themeProvider.isGodModeUnlocked)
                   AnimatedPositioned(
                     duration: const Duration(milliseconds: 500), 
@@ -218,7 +226,6 @@ class _FortuneEventAppState extends State<FortuneEventApp> {
                     ),
                   ),
 
-                // 🚀 GLOBAL SETTINGS FAB
                 if (themeProvider.isGodModeUnlocked)
                   AnimatedPositioned(
                     duration: const Duration(milliseconds: 500),
@@ -243,7 +250,6 @@ class _FortuneEventAppState extends State<FortuneEventApp> {
                     ),
                   ),
 
-                // 🕵️‍♂️ THE GLOBAL GOD BAR
                 if (themeProvider.isGodModeUnlocked)
                   Positioned(
                     bottom: 0, left: 0, right: 0,
@@ -281,9 +287,6 @@ class _FortuneEventAppState extends State<FortuneEventApp> {
     );
   }
 
-  // ==========================================
-  // 🎛️ THE FIXED PRO GLOBAL ADMIN PANEL UI
-  // ==========================================
   Widget _buildGlobalAdminPanel(ThemeProvider provider) {
     return SafeArea(
       child: Padding(
@@ -295,7 +298,6 @@ class _FortuneEventAppState extends State<FortuneEventApp> {
               children: [
                 Icon(Icons.tune_rounded, color: AppTheme.accent, size: 28), 
                 const SizedBox(width: 15),
-                // 🔴 FIXED: Text(xxx).copyWith() issue resolved here
                 Text(
                   "GOD TIER CONTROL", 
                   style: AppTheme.getHeadingStyle(fontSize: 18, color: Colors.white).copyWith(fontWeight: FontWeight.w900, letterSpacing: 1.5),
@@ -343,6 +345,52 @@ class _FortuneEventAppState extends State<FortuneEventApp> {
             _buildToggle("Enable Cursor Effect", AppTheme.enableCursorEffect, (v) => provider.toggleCursorEffect(v)), 
             const SizedBox(height: 40),
 
+            // ========================================================
+            // 🚀 7. SECURE PUBLISH TO LIVE WEBSITE (FIX 3)
+            // ========================================================
+            const Divider(color: Colors.white24, height: 40),
+            _buildSectionTitle("🚀 7. PUBLISH TO LIVE WEBSITE"),
+            
+            SizedBox(
+              width: double.infinity,
+              height: 50,
+              child: MouseRegion(
+                cursor: kDebugMode ? SystemMouseCursors.click : SystemMouseCursors.forbidden,
+                child: ElevatedButton.icon(
+                  onPressed: () async {
+                    _triggerSound();
+                    
+                    if (!kDebugMode) {
+                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('❌ SECURITY ALERT: Production publish is disabled.', style: AppTheme.getBodyStyle(fontSize: 14, color: Colors.white)), backgroundColor: Colors.redAccent.shade700));
+                      return;
+                    }
+
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('⏳ Syncing Master Configuration to Cloud...', style: AppTheme.getBodyStyle(fontSize: 14, color: Colors.white)), backgroundColor: Colors.blueAccent));
+
+                    // 🔥 NEW: Pack ALL AppTheme configs + elements
+                    Map<String, dynamic> packedData = provider.exportToCloud();
+                    
+                    bool success = await GitHubCMS.publishToLive(packedData);
+
+                    if (!mounted) return; 
+
+                    if (success) {
+                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('🔥 SYSTEM LIVE: Changes propagated globally.', style: AppTheme.getBodyStyle(fontSize: 14, color: Colors.white)), backgroundColor: Colors.green.shade700));
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('❌ Error: Failed to push to Cloud.', style: AppTheme.getBodyStyle(fontSize: 14, color: Colors.white)), backgroundColor: Colors.redAccent.shade700));
+                    }
+                  },
+                  icon: Icon(kDebugMode ? Icons.cloud_upload_rounded : Icons.lock_person, color: AppTheme.bg),
+                  label: Text(kDebugMode ? "SYNC TO CLOUD" : "LOCKED IN PRODUCTION", style: TextStyle(color: AppTheme.bg, fontWeight: FontWeight.w900, letterSpacing: 1.0)),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: kDebugMode ? AppTheme.accent : Colors.grey.shade800,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8))
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(height: 40),
+
             Center(
               child: MouseRegion(
                 cursor: SystemMouseCursors.click,
@@ -368,8 +416,6 @@ class _FortuneEventAppState extends State<FortuneEventApp> {
     );
   }
 
-  // 🛠️ UI Helpers
-  // 🔴 FIXED: copyWith issue resolved in buildSectionTitle
   Widget _buildSectionTitle(String title) => Padding(
     padding: const EdgeInsets.only(bottom: 20), 
     child: Text(
@@ -383,7 +429,6 @@ class _FortuneEventAppState extends State<FortuneEventApp> {
     child: Text(t, style: AppTheme.getBodyStyle(fontSize: 12, color: Colors.white60).copyWith(fontWeight: FontWeight.w600)) 
   );
   
-  // 🔥 THE NEW CUSTOM CHIP PICKER
   Widget _buildCustomPicker(String label, String currentValue, List<String> items, Function(String) onSelect) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 25), 
@@ -433,7 +478,6 @@ class _FortuneEventAppState extends State<FortuneEventApp> {
     );
   }
 
-  // 🎨 THE NEW COLOR PICKER
   Color _getColorFromName(String name) {
     switch(name) {
       case 'blue': return Colors.blueAccent;
@@ -509,7 +553,7 @@ class _FortuneEventAppState extends State<FortuneEventApp> {
               ), 
               Switch(
                 value: value, 
-                activeThumbColor: AppTheme.bg, // 🟢 Standard property
+                activeThumbColor: AppTheme.bg, 
                 activeTrackColor: AppTheme.accent, 
                 inactiveTrackColor: Colors.white.withValues(alpha: 0.1),
                 inactiveThumbColor: Colors.white54,
@@ -535,7 +579,6 @@ class _FortuneEventAppState extends State<FortuneEventApp> {
             children: [
               Icon(Icons.precision_manufacturing_rounded, color: AppTheme.cardBg, size: 24),
               const SizedBox(width: 15),
-              // 🔴 FIXED: copyWith issue resolved here
               Text(
                 "GOD MODE ACTIVE: CLICK ANY TEXT OR CARD TO EDIT", 
                 style: AppTheme.getBodyStyle(fontSize: 13, color: AppTheme.cardBg).copyWith(fontWeight: FontWeight.w900, letterSpacing: 1.0),
