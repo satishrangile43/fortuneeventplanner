@@ -3,7 +3,7 @@ import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter/services.dart'; 
-import 'package:flutter/foundation.dart'; // 🚀 Required for kDebugMode check
+// 🚀 Required for kDebugMode check
 
 import 'routes/app_router.dart';
 import 'theme/theme_provider.dart';
@@ -346,7 +346,7 @@ class _FortuneEventAppState extends State<FortuneEventApp> {
             const SizedBox(height: 40),
 
             // ========================================================
-            // 🚀 7. SECURE PUBLISH TO LIVE WEBSITE (FIX 3)
+            // 🚀 7. SECURE PUBLISH TO LIVE WEBSITE (UNLOCKED)
             // ========================================================
             const Divider(color: Colors.white24, height: 40),
             _buildSectionTitle("🚀 7. PUBLISH TO LIVE WEBSITE"),
@@ -355,19 +355,14 @@ class _FortuneEventAppState extends State<FortuneEventApp> {
               width: double.infinity,
               height: 50,
               child: MouseRegion(
-                cursor: kDebugMode ? SystemMouseCursors.click : SystemMouseCursors.forbidden,
+                cursor: SystemMouseCursors.click, // 🟢 Lock Hata diya
                 child: ElevatedButton.icon(
                   onPressed: () async {
                     _triggerSound();
-                    
-                    if (!kDebugMode) {
-                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('❌ SECURITY ALERT: Production publish is disabled.', style: AppTheme.getBodyStyle(fontSize: 14, color: Colors.white)), backgroundColor: Colors.redAccent.shade700));
-                      return;
-                    }
 
                     ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('⏳ Syncing Master Configuration to Cloud...', style: AppTheme.getBodyStyle(fontSize: 14, color: Colors.white)), backgroundColor: Colors.blueAccent));
 
-                    // 🔥 NEW: Pack ALL AppTheme configs + elements
+                    // 🔥 Pack ALL AppTheme configs + elements
                     Map<String, dynamic> packedData = provider.exportToCloud();
                     
                     bool success = await GitHubCMS.publishToLive(packedData);
@@ -380,10 +375,10 @@ class _FortuneEventAppState extends State<FortuneEventApp> {
                       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('❌ Error: Failed to push to Cloud.', style: AppTheme.getBodyStyle(fontSize: 14, color: Colors.white)), backgroundColor: Colors.redAccent.shade700));
                     }
                   },
-                  icon: Icon(kDebugMode ? Icons.cloud_upload_rounded : Icons.lock_person, color: AppTheme.bg),
-                  label: Text(kDebugMode ? "SYNC TO CLOUD" : "LOCKED IN PRODUCTION", style: TextStyle(color: AppTheme.bg, fontWeight: FontWeight.w900, letterSpacing: 1.0)),
+                  icon: Icon(Icons.cloud_upload_rounded, color: AppTheme.bg), // 🟢 Lock icon hata diya
+                  label: Text("SYNC TO CLOUD", style: TextStyle(color: AppTheme.bg, fontWeight: FontWeight.w900, letterSpacing: 1.0)),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: kDebugMode ? AppTheme.accent : Colors.grey.shade800,
+                    backgroundColor: AppTheme.accent, // 🟢 Grey color hata diya
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8))
                   ),
                 ),
@@ -599,5 +594,5 @@ class _FortuneEventAppState extends State<FortuneEventApp> {
         ],
       ),
     );
-  }
+  }  
 }
