@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter/services.dart'; // 🚀 Haptics support
 
-// Tumhare custom paths
+// Tumhare custom paths (Agar path error aaye toh inko check kar lena)
 import 'routes/app_router.dart';
 import 'theme/theme_provider.dart';
 import 'theme/app_theme.dart'; // 🚀 MASTER ENGINE IMPORTED
@@ -34,9 +34,14 @@ class FortuneEventApp extends StatefulWidget {
 }
 
 class _FortuneEventAppState extends State<FortuneEventApp> {
-  // 🤫 GLOBAL SECRET VARIABLES
+  // ==========================================
+  // 🤫 GLOBAL SECRET VARIABLES (YAHAN SE PASSWORD CHANGE KARO)
+  // ==========================================
   int _secretTapCount = 0;
-  final String _adminPasscode = "LOVEDAYBITTU"; // 🔐 TERA SECRET PASSWORD
+  
+  // 👇 ISKO CHANGE KARKE APNA NAYA PASSWORD RAKH SAKTE HO 👇
+  final String _adminPasscode = "LOVEDAYBITTU"; 
+  
   bool _isPanelOpen = false; // 🎛️ Controls the sliding Admin Panel
 
   void _triggerSound() {
@@ -49,6 +54,7 @@ class _FortuneEventAppState extends State<FortuneEventApp> {
     }
   }
 
+  // Yahan se FlexScheme connect hoti hai active theme se
   FlexScheme _getFlexScheme(String themeName) {
     switch (themeName) {
       case 'luxury': return FlexScheme.gold;
@@ -72,7 +78,7 @@ class _FortuneEventAppState extends State<FortuneEventApp> {
     }
   }
 
-  // 🔐 GLOBAL PASSCODE DIALOG
+  // 🔐 GLOBAL PASSCODE DIALOG (Admin Panel Unlock UI)
   void _showGlobalPasscodeDialog(BuildContext dialogContext, ThemeProvider provider) {
     _triggerSound();
     final TextEditingController passController = TextEditingController();
@@ -183,7 +189,10 @@ class _FortuneEventAppState extends State<FortuneEventApp> {
               children: [
                 routerChild!, 
 
-                // 🕵️‍♂️ GLOBAL SECRET TRIGGER
+                // ==========================================
+                // 🕵️‍♂️ GLOBAL SECRET TRIGGER (SCREEN KE TOP RIGHT CORNER PE HAI)
+                // 5 baar wahan tap/click karne se password screen khulegi
+                // ==========================================
                 if (!themeProvider.isGodModeUnlocked)
                   Positioned(
                     top: 0, right: 0,
@@ -198,12 +207,12 @@ class _FortuneEventAppState extends State<FortuneEventApp> {
                             _showGlobalPasscodeDialog(context, themeProvider);
                           }
                         },
-                        child: const SizedBox(width: 80, height: 80),
+                        child: const SizedBox(width: 80, height: 80), // Tap Area (Top Right 80x80 px)
                       ),
                     ),
                   ),
 
-                // 🎛️ GLOBAL ADMIN PANEL
+                // 🎛️ GLOBAL ADMIN PANEL (Right se slide hoke aayega)
                 if (themeProvider.isGodModeUnlocked)
                   AnimatedPositioned(
                     duration: const Duration(milliseconds: 500), 
@@ -218,7 +227,7 @@ class _FortuneEventAppState extends State<FortuneEventApp> {
                     ),
                   ),
 
-                // 🚀 GLOBAL SETTINGS FAB
+                // 🚀 GLOBAL SETTINGS FAB (Floating Action Button)
                 if (themeProvider.isGodModeUnlocked)
                   AnimatedPositioned(
                     duration: const Duration(milliseconds: 500),
@@ -243,7 +252,7 @@ class _FortuneEventAppState extends State<FortuneEventApp> {
                     ),
                   ),
 
-                // 🕵️‍♂️ THE GLOBAL GOD BAR
+                // 🕵️‍♂️ THE GLOBAL GOD BAR (Niche se aayega edit mode on karne ke liye)
                 if (themeProvider.isGodModeUnlocked)
                   Positioned(
                     bottom: 0, left: 0, right: 0,
@@ -283,6 +292,7 @@ class _FortuneEventAppState extends State<FortuneEventApp> {
 
   // ==========================================
   // 🎛️ THE FIXED PRO GLOBAL ADMIN PANEL UI
+  // Panel ke andar jo Buttons/Pickers hain unki List
   // ==========================================
   Widget _buildGlobalAdminPanel(ThemeProvider provider) {
     return SafeArea(

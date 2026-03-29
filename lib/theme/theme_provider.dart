@@ -4,6 +4,7 @@ import 'app_theme.dart';
 class ThemeProvider extends ChangeNotifier {
   // ==========================================
   // 🚀 THE ULTIMATE REAL ENGINE (GOD TIER CONTROL)
+  // State management for instant updates across the app
   // ==========================================
   
   // 🔓 God Mode Active Switch
@@ -287,51 +288,53 @@ class ThemeProvider extends ChangeNotifier {
 
   // ==========================================
   // 🛠️ 10. MASTER RESET (THE GOD TIER PRESET)
+  // JAB BHI TUM MASTER RESET BUTTON DABAOGE TOH YE WALI SETTINGS APPLY HONGI
+  // Agar tumhe apne naye defaults banane hain, toh yahan variables change kar lo!
   // ==========================================
   void resetToDefault() {
     isSelectionMode = false;
     elementSettings.clear(); 
     
     // 🧠 Core: Dark/Light Adaptive
-    AppTheme.activeTheme = 'dark'; // Dark theme defaults look more premium
+    AppTheme.activeTheme = 'dark'; // Master Reset pe default theme
     AppTheme.accentColor = 'auto';
     AppTheme.imageFilter = 'none';
     
     // 🧠 UI & Motion: Buttery Smooth & Modern
-    AppTheme.globalAnimation = 'fade'; // Fade is smoother than zoom out of the box
+    AppTheme.globalAnimation = 'fade'; 
     AppTheme.transitionSpeed = 'normal';
-    AppTheme.globalUIStyle = 'glass'; // Glassmorphism is top-tier trend
+    AppTheme.globalUIStyle = 'glass'; 
     AppTheme.layoutStyle = 'modern';
-    AppTheme.buttonStyle = 'pill'; // Pill buttons give a sleek SaaS look
+    AppTheme.buttonStyle = 'pill'; 
     AppTheme.cardStyle = 'elevated';
-    AppTheme.borderStyle = 'squircle'; // Apple-like smooth corners
+    AppTheme.borderStyle = 'squircle'; 
     AppTheme.fontStyle = 'modern';
-    AppTheme.backgroundStyle = 'gradient'; // Richer background
+    AppTheme.backgroundStyle = 'gradient'; 
     
     // 🧠 Effects: Balanced Depth
-    AppTheme.hoverEffect = 'parallax'; // 3D feel
+    AppTheme.hoverEffect = 'parallax'; 
     AppTheme.parallaxIntensity = 'medium';
-    AppTheme.enableGlow = true; // Subtle glowing accents
-    AppTheme.enableBlur = true; // Required for glass UI
+    AppTheme.enableGlow = true; 
+    AppTheme.enableBlur = true; 
     AppTheme.enableShadows = true;
     AppTheme.enableGradients = true;
-    AppTheme.enableParticles = false; // Off by default to save battery
+    AppTheme.enableParticles = false; 
     AppTheme.enableCursorEffect = true;
-    AppTheme.cursorType = 'ring'; // Premium cursor for web
+    AppTheme.cursorType = 'ring'; 
     
     // 🧠 Layout & Components
-    AppTheme.scrollEffect = 'bouncy'; // iOS style bounce
+    AppTheme.scrollEffect = 'bouncy'; 
     AppTheme.mobileLayout = 'adaptive';
     AppTheme.heroStyle = 'centered';
-    AppTheme.navbarStyle = 'floating'; // Floating navbars look luxurious
+    AppTheme.navbarStyle = 'floating'; 
     AppTheme.footerStyle = 'expanded';
     AppTheme.formInputStyle = 'filled';
     AppTheme.loaderStyle = 'spinner';
     
     // 🧠 Sounds & Alerts
-    AppTheme.enableSoundEffects = true; // Micro-interactions feel alive
+    AppTheme.enableSoundEffects = true; 
     AppTheme.soundPack = 'clicky';
-    AppTheme.toastStyle = 'glass'; // Matches global UI style
+    AppTheme.toastStyle = 'glass'; 
     
     // 🧠 System
     AppTheme.autoDarkMode = true;

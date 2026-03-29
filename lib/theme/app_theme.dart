@@ -6,65 +6,96 @@ import 'dart:math' as math;
 class AppTheme {
   // ==========================================
   // 🧠 GLOBAL DESIGN SYSTEM (ULTRA GOD CONTROL)
+  // 👇 YAHAN SE TUM APP KA DEFAULT LOOK SET KAR SAKTE HO 👇
   // ==========================================
   
-  // 🎨 THEMES & COLORS
+  // 🎨 1. THEMES & COLORS (Default theme kya rakhni hai yahan likho)
+  // Options: 'light', 'dark', 'ocean', 'sunset', 'hacker', 'cyberpunk', 'dracula', 'minimalist', 'midnight', 'forest', 'galaxy', 'fire', 'ice', 'luxury'
   static String activeTheme = 'dark'; 
+  
+  // Options: 'auto', 'blue', 'purple', 'green', 'red', 'gold', 'pink', 'cyan'
   static String accentColor = 'auto'; 
-  static String imageFilter = 'none'; // Grayscale, Sepia, High-Contrast
+  
+  // Options: 'none', 'grayscale', 'sepia', 'high-contrast'
+  static String imageFilter = 'none'; 
 
-  // ✨ ANIMATIONS
+  // ✨ 2. ANIMATIONS (App me kis tarah ke effects aayenge)
+  // Options: 'fade', 'slide', 'zoom', 'glitch', 'bounce', 'elastic', 'flip'
   static String globalAnimation = 'fade'; 
-  static String transitionSpeed = 'normal'; // Slow, Normal, Fast
+  
+  // Options: 'slow' (800ms), 'normal' (450ms), 'fast' (200ms)
+  static String transitionSpeed = 'normal'; 
 
-  // 🧊 UI STYLE & SHAPES
+  // 🧊 3. UI STYLE & SHAPES (Card aur button kaise dikhenge)
+  // Options: 'glass', 'solid', 'bordered', 'flat', 'neumorphism'
   static String globalUIStyle = 'glass'; 
   static String layoutStyle = 'modern';
+  
+  // Options: 'pill' (gol), 'rounded' (halke gol), 'square' (chakor)
   static String buttonStyle = 'pill';
   static String cardStyle = 'elevated';
-  static String borderStyle = 'squircle'; // Sharp, Rounded, Squircle
+  
+  // Options: 'sharp', 'rounded', 'squircle' (Apple jaisa smooth)
+  static String borderStyle = 'squircle'; 
 
-  // 🔠 FONTS & BACKGROUND
+  // 🔠 4. FONTS & BACKGROUND
+  // Options: 'modern', 'tech', 'classic', 'futuristic', 'mono'
   static String fontStyle = 'modern';
+  
+  // Options: 'gradient', 'mesh', 'solid'
   static String backgroundStyle = 'gradient';
 
-  // 🌟 EFFECTS & 3D
+  // 🌟 5. EFFECTS & 3D (ON/OFF karne wale features - true/false likho)
+  // Options for hover: 'lift', 'scale', 'tilt', 'glow', 'none'
   static String hoverEffect = 'scale';
-  static String parallaxIntensity = 'low'; // Off, Low, High
-  static bool enableGlow = true;
-  static bool enableBlur = true;
-  static bool enableShadows = true;
-  static bool enableGradients = true;
-  static bool enableParticles = false;
   
-  // 🖱️ CURSOR
-  static String cursorType = 'Dot'; // Dot, Ring, None (Custom Engine handling)
+  // Options for parallax: 'off', 'low', 'high'
+  static String parallaxIntensity = 'low'; 
+  
+  static bool enableGlow = true;       // True matab chamak aayegi
+  static bool enableBlur = true;       // Glass effect ke liye true zaroori hai
+  static bool enableShadows = true;    // Cards ke piche shadow
+  static bool enableGradients = true;
+  static bool enableParticles = false; // Background me udte hue particles
+  
+  // 🖱️ 6. CURSOR (Web/Desktop ke liye)
+  // Options: 'Dot', 'Ring', 'None'
+  static String cursorType = 'Dot'; 
   static bool enableCursorEffect = true;
 
-  // ⚡ SCROLL & RESPONSIVE
+  // ⚡ 7. SCROLL & RESPONSIVE
   static String scrollEffect = 'bouncy';
   static String mobileLayout = 'adaptive';
 
-  // 🎯 HEADER, FOOTER & FORMS 
+  // 🎯 8. HEADER, FOOTER & FORMS 
   static String heroStyle = 'centered';
-  static String navbarStyle = 'floating'; // sticky, floating, hidden
-  static String footerStyle = 'expanded'; // minimal, expanded
-  static String formInputStyle = 'filled'; // filled, outlined, underlined
   
+  // Options: 'sticky', 'floating', 'hidden'
+  static String navbarStyle = 'floating'; 
+  static String footerStyle = 'expanded'; 
+  
+  // Options: 'filled', 'outlined', 'underlined'
+  static String formInputStyle = 'filled'; 
+  
+  // 👇 MAIN WEBSITE TEXTS - Yahan se website ka main text direct change karo 👇
   static String heroTitle = "Simplifying Event\nExecution With Precision";
   static String heroSubtitle = "Plan smarter. Execute faster. Impress everyone.";
   static String heroCTA = "Get Started";
 
-  // 🎬 LOADER, SOUND & ALERTS 
+  // 🎬 9. LOADER, SOUND & ALERTS 
   static String loaderStyle = 'spinner';
-  static String soundPack = 'clicky'; // clicky, heavy, light
+  
+  // Options: 'clicky', 'heavy', 'light'
+  static String soundPack = 'clicky'; 
   static bool enableSoundEffects = true;
-  static String toastStyle = 'glass'; // floating, glass, banner
+  
+  // Options: 'floating', 'glass', 'banner'
+  static String toastStyle = 'glass'; 
 
-  // 🌙 ADVANCED SETTINGS
+  // 🌙 10. ADVANCED SETTINGS
   static bool autoDarkMode = true;
   static bool enableAIThemeSwitch = false; 
-  static bool enablePerformanceMode = false; 
+  static bool enablePerformanceMode = false; // Slow phone/PC me true kar do, animations band ho jayengi
 
   // ==========================================
   // 🧠 SMART HELPER: Theme Detectors
@@ -73,7 +104,8 @@ class AppTheme {
       activeTheme != 'light' && activeTheme != 'minimalist' && activeTheme != 'ice';
 
   // ==========================================
-  // ⏳ 1. GLOBAL TRANSITION SPEED LOGIC (ULTRA SMOOTH)
+  // ⏳ 1. GLOBAL TRANSITION SPEED LOGIC
+  // Edit yahan tab karna jab tumhe custom milliseconds daalne ho
   // ==========================================
   static int get durationMs {
     if (enablePerformanceMode) return 0; // Instant for slow devices
@@ -86,6 +118,7 @@ class AppTheme {
 
   // ==========================================
   // ✨ 2. GLOBAL ANIMATION ENGINE (BUTTER SMOOTH CURVES)
+  // Yahan naye effects bana sakte ho ya speed/curve modify kar sakte ho
   // ==========================================
   static Widget applyAnim(Widget child, int delayMs) {
     if (enablePerformanceMode) return child; 
@@ -94,8 +127,8 @@ class AppTheme {
     var anim = child.animate(delay: delayMs.ms).fade(duration: durationMs.ms, curve: Curves.easeOutCubic);
     
     switch (globalAnimation) {
-      case 'slide': return anim.slideY(begin: 0.15, end: 0, curve: Curves.easeOutCubic); // Softer slide
-      case 'zoom': return anim.scale(begin: const Offset(0.9, 0.9), curve: Curves.easeOutBack); // Premium pop
+      case 'slide': return anim.slideY(begin: 0.15, end: 0, curve: Curves.easeOutCubic); 
+      case 'zoom': return anim.scale(begin: const Offset(0.9, 0.9), curve: Curves.easeOutBack); 
       case 'glitch': return anim.shakeX(amount: 2).then().shimmer(duration: 800.ms); 
       case 'bounce': return anim.slideY(begin: 0.3, end: 0, curve: Curves.easeOutBack);
       case 'elastic': return anim.scale(begin: const Offset(0.8, 0.8), curve: Curves.elasticOut, duration: (durationMs * 1.5).ms);
@@ -144,17 +177,19 @@ class AppTheme {
 
   // ==========================================
   // 📏 4. GLOBAL RADIUS & BORDER ENGINE
+  // Yahan radius ki value manually adjust kar sakte ho
   // ==========================================
   static double getGlobalRadius() {
     switch (borderStyle) {
       case 'sharp': return 0.0;
-      case 'squircle': return 24.0; // Perfect squircle ratio
-      case 'rounded': default: return 12.0;
+      case 'squircle': return 24.0; // Isko 30.0 karoge toh zyada gol hoga
+      case 'rounded': default: return 12.0; // Normal thoda sa gol
     }
   }
 
   // ==========================================
   // 📐 5. GLOBAL UI STYLE & CARD ENGINE (ADAPTIVE)
+  // Cards ka design, shadow aur border yahan se handle hota hai
   // ==========================================
   static BoxDecoration getCardDecoration({bool isHovered = false}) {
     double radius = getGlobalRadius(); 
@@ -162,7 +197,7 @@ class AppTheme {
     if (buttonStyle == 'pill') radius = 50;
     if (buttonStyle == 'square') radius = 0;
 
-    // 🟢 FIX: Adaptive borders (Light mode me blackish border, Dark me whitish)
+    // 🟢 FIX: Adaptive borders
     Color adaptiveBorderColor = isDarkTheme ? Colors.white.withValues(alpha: 0.08) : Colors.black.withValues(alpha: 0.05);
 
     // 🔥 PREMIUM SHADOWS & GLOW
@@ -170,12 +205,11 @@ class AppTheme {
     if (isHovered && enableGlow) {
       currentShadows.add(BoxShadow(color: accent.withValues(alpha: 0.4), blurRadius: 30, spreadRadius: 0)); // Sleek glow
     } else if (enableShadows) {
-      // 🟢 FIX: Soft, realistic resting shadow
       currentShadows.add(BoxShadow(
         color: Colors.black.withValues(alpha: isDarkTheme ? 0.4 : 0.08), 
         blurRadius: isHovered ? 25 : 15, 
         offset: Offset(0, isHovered ? 12 : 6),
-        spreadRadius: isHovered ? -2 : -4, // Negative spread gives a very premium floating effect
+        spreadRadius: isHovered ? -2 : -4, // Negative spread = premium floating effect
       ));
     }
 
@@ -214,7 +248,6 @@ class AppTheme {
       case 'glass':
       default:
         return BoxDecoration(
-          // 🟢 FIX: Glass color adapts perfectly to light/dark themes
           color: isHovered ? accent.withValues(alpha: 0.15) : cardBg.withValues(alpha: enableBlur ? (isDarkTheme ? 0.4 : 0.7) : 0.9),
           borderRadius: BorderRadius.circular(radius),
           border: Border.all(color: isHovered ? accent.withValues(alpha: 0.5) : adaptiveBorderColor, width: 1.5),
@@ -225,24 +258,24 @@ class AppTheme {
 
   // ==========================================
   // 🌟 6. HOVER TRANSFORM ENGINE (PHYSICS UPGRADED)
+  // Values change karke tum tilt ya zoom ka effect kam-zyada kar sakte ho
   // ==========================================
   static Matrix4 getHoverTransform(bool isHovered) {
     if (!isHovered || hoverEffect == 'none' || enablePerformanceMode) return Matrix4.identity();
     
     switch (hoverEffect) {
       case 'lift': 
-        return Matrix4.translationValues(0, -6, 0); // 🟢 FIX: Softer, more natural lift
+        return Matrix4.translationValues(0, -6, 0); // Upar uthne ki height (-6 ko -10 karoge toh zyada uthega)
       case 'scale': 
-        return Matrix4.diagonal3Values(1.03, 1.03, 1.0); // 🟢 FIX: Less aggressive scale
+        return Matrix4.diagonal3Values(1.03, 1.03, 1.0); // 1.03 ko 1.10 karoge toh zyada zoom hoga
       case 'tilt': 
-        // 🟢 SUPER FIX: True 3D CSS-like tilt effect with correct Vector scaling
         return Matrix4.identity()
           ..setEntry(3, 2, 0.001) // Perspective
           ..rotateX(-0.02)
           ..rotateY(0.02)
-          ..multiply(Matrix4.diagonal3Values(1.02, 1.02, 1.0)); // ✅ YAHAN FIX KIYA HAI
+          ..multiply(Matrix4.diagonal3Values(1.02, 1.02, 1.0));
       case 'glow': 
-        return Matrix4.identity(); // Handled by BoxDecoration shadow
+        return Matrix4.identity(); 
       default: 
         return Matrix4.identity();
     }
@@ -250,6 +283,7 @@ class AppTheme {
 
   // ==========================================
   // 📝 7. FORM INPUT ENGINE (PREMIUM FOCUS)
+  // Forms ke textbox yahan se design hote hain
   // ==========================================
   static InputDecoration getFormInputDecoration(String hint) {
     double radius = getGlobalRadius();
@@ -282,7 +316,7 @@ class AppTheme {
           hintText: hint,
           hintStyle: getBodyStyle(fontSize: 14, color: textSub.withValues(alpha: 0.6)),
           filled: true,
-          fillColor: isDarkTheme ? Colors.white.withValues(alpha: 0.03) : Colors.black.withValues(alpha: 0.03), // 🟢 FIX: Subtle fill contrast
+          fillColor: isDarkTheme ? Colors.white.withValues(alpha: 0.03) : Colors.black.withValues(alpha: 0.03), 
           contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
           enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(radius), borderSide: BorderSide(color: adaptiveBorder, width: 1)),
           focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(radius), borderSide: BorderSide(color: accent, width: 2)),
@@ -302,7 +336,7 @@ class AppTheme {
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [bg, cardBg.withValues(alpha: 0.5), bg.withValues(alpha: 0.8)], // Smoother blend
+          colors: [bg, cardBg.withValues(alpha: 0.5), bg.withValues(alpha: 0.8)], 
         ),
       );
     } else if (backgroundStyle == 'mesh') {
@@ -319,6 +353,8 @@ class AppTheme {
 
   // ==========================================
   // 🔠 9. FONT ENGINE
+  // Heading aur Normal text ke fonts yahan set kiye hain
+  // Agar Custom fonts chahiye toh pubspec me add karke yahan naam daal do
   // ==========================================
   static TextStyle getHeadingStyle({required double fontSize, Color? color, FontWeight? weight}) {
     Color finalColor = color ?? textMain;
@@ -327,23 +363,24 @@ class AppTheme {
       case 'classic': return GoogleFonts.playfairDisplay(fontSize: fontSize, color: finalColor, fontWeight: weight ?? FontWeight.w700);
       case 'mono': return GoogleFonts.spaceMono(fontSize: fontSize, color: finalColor, fontWeight: weight ?? FontWeight.w700);
       case 'tech': return GoogleFonts.titilliumWeb(fontSize: fontSize, color: finalColor, fontWeight: weight ?? FontWeight.w700);
-      default: return GoogleFonts.inter(fontSize: fontSize, color: finalColor, fontWeight: weight ?? FontWeight.w800); // 🟢 FIX: Inter looks far more premium than Poppins for SaaS
+      default: return GoogleFonts.inter(fontSize: fontSize, color: finalColor, fontWeight: weight ?? FontWeight.w800); 
     }
   }
 
   static TextStyle getBodyStyle({required double fontSize, Color? color, FontWeight? weight}) {
      Color finalColor = color ?? textSub;
      if(fontStyle == 'mono') return GoogleFonts.spaceMono(fontSize: fontSize, color: finalColor, fontWeight: weight ?? FontWeight.normal);
-     return GoogleFonts.inter(fontSize: fontSize, color: finalColor, fontWeight: weight ?? FontWeight.w500); // 🟢 FIX: Inter for high legibility
+     return GoogleFonts.inter(fontSize: fontSize, color: finalColor, fontWeight: weight ?? FontWeight.w500);
   }
 
   // ==========================================
   // 🎨 10. COLOR PALETTE ENGINE (HARMONIZED)
+  // Tum apne specific hex codes "0xFF[HEXCODE]" ke format me daal sakte ho
   // ==========================================
   static Color get bg {
     switch (activeTheme) {
-      case 'light': return const Color(0xFFF9FAFB); // Sleek modern white
-      case 'dark': return const Color(0xFF09090B); // Pure pitch zinc
+      case 'light': return const Color(0xFFF9FAFB); 
+      case 'dark': return const Color(0xFF09090B); 
       case 'ocean': return const Color(0xFF020617);
       case 'sunset': return const Color(0xFF1E0E08);
       case 'hacker': return const Color(0xFF000000);
@@ -360,10 +397,9 @@ class AppTheme {
   }
 
   static Color get cardBg {
-    // 🟢 FIX: Perfectly harmonized card backgrounds that match `bg`
     switch (activeTheme) {
       case 'light': return const Color(0xFFFFFFFF);
-      case 'dark': return const Color(0xFF18181B); // Slightly elevated zinc
+      case 'dark': return const Color(0xFF18181B); 
       case 'ocean': return const Color(0xFF0F172A);
       case 'sunset': return const Color(0xFF2E150C);
       case 'hacker': return const Color(0xFF051008);
@@ -381,7 +417,6 @@ class AppTheme {
 
   static Color get accent {
     if (accentColor != 'auto') {
-      // 🟢 FIX: Premium custom hex codes instead of basic Material accents
       switch (accentColor) {
         case 'blue': return const Color(0xFF3B82F6);
         case 'purple': return const Color(0xFFA855F7);
@@ -395,45 +430,47 @@ class AppTheme {
 
     switch (activeTheme) {
       case 'light': return const Color(0xFF2563EB);
-      case 'dark': return const Color(0xFF3B82F6); // Soft blue looks great on dark
+      case 'dark': return const Color(0xFF3B82F6); 
       case 'ocean': return const Color(0xFF0EA5E9);
       case 'sunset': return const Color(0xFFF97316);
       case 'hacker': return const Color(0xFF22C55E);
-      case 'cyberpunk': return const Color(0xFFD946EF); // Neon pink
+      case 'cyberpunk': return const Color(0xFFD946EF); 
       case 'dracula': return const Color(0xFFFF79C6);
       case 'minimalist': return const Color(0xFF18181B);
       case 'fire': return const Color(0xFFFF4500);
       case 'ice': return const Color(0xFF00B4D8);
-      case 'luxury': default: return const Color(0xFFD4AF37); // True Gold
+      case 'luxury': default: return const Color(0xFFD4AF37); 
     }
   }
 
   static Color get textMain {
     if (isDarkTheme) {
       if (activeTheme == 'hacker') return const Color(0xFF4ADE80);
-      return const Color(0xFFFAFAFA); // Almost white
+      return const Color(0xFFFAFAFA); 
     } else {
-      return const Color(0xFF09090B); // Almost black
+      return const Color(0xFF09090B); 
     }
   }
 
   static Color get textSub {
     if (isDarkTheme) {
       if (activeTheme == 'hacker') return const Color(0xFF22C55E);
-      return const Color(0xFFA1A1AA); // Elegant Zinc-400
+      return const Color(0xFFA1A1AA); 
     } else {
-      return const Color(0xFF71717A); // Elegant Zinc-500
+      return const Color(0xFF71717A); 
     }
   }
 
   // ==========================================
   // 💼 11. GLOBAL SERVICES DATA
+  // Tum apne naye services yahan JSON format me add kar sakte ho!
+  // Images ki links direct change kar lena apne hisaab se.
   // ==========================================
   static List<Map<String, dynamic>> servicesData = [
     {
       'title': 'Hospitality Management',
       'description': 'Providing guest assistance, VIP handling, front desk operations, and hosting services to ensure every attendee feels welcomed.',
-      'delay': 100,
+      'delay': 100, // Card kab aayega uska time (milliseconds)
       'images': [
         'https://images.unsplash.com/photo-1551818255-e6e10975bc17?q=80&w=2000',
         'https://images.unsplash.com/photo-1560179707-f14e90ef3623?q=80&w=2000',
