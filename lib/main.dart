@@ -35,19 +35,21 @@ class FortuneEventApp extends StatefulWidget {
 
 class _FortuneEventAppState extends State<FortuneEventApp> {
   // ==========================================
-  // 🤫 GLOBAL SECRET VARIABLES (YAHAN SE PASSWORD CHANGE KARO)
+  // 🤫 GLOBAL SECRET VARIABLES
   // ==========================================
   int _secretTapCount = 0;
-  
-  // 👇 ISKO CHANGE KARKE APNA NAYA PASSWORD RAKH SAKTE HO 👇
   final String _adminPasscode = "LOVEDAYBITTU"; 
-  
-  bool _isPanelOpen = false; // 🎛️ Controls the sliding Admin Panel
+  bool _isPanelOpen = false; 
 
-  // 🚀 ADDED: Variables for Draggable Portable God Mode (Koi purana code delete nahi kiya)
+  // 🚀 VARIABLES FOR DRAGGABLE PORTABLE GOD MODE
   double? _fabX; 
   double? _fabY;
   bool _isDragging = false; 
+
+  // 🚀 VARIABLES FOR RESIZE & TRANSPARENCY
+  double _panelWidth = 380.0; 
+  double _panelOpacity = 0.95; 
+  bool _isResizing = false; 
 
   void _triggerSound() {
     if (AppTheme.enableSoundEffects) {
@@ -59,7 +61,6 @@ class _FortuneEventAppState extends State<FortuneEventApp> {
     }
   }
 
-  // Yahan se FlexScheme connect hoti hai active theme se
   FlexScheme _getFlexScheme(String themeName) {
     switch (themeName) {
       case 'luxury': return FlexScheme.gold;
@@ -84,28 +85,32 @@ class _FortuneEventAppState extends State<FortuneEventApp> {
   }
 
   // 🔐 GLOBAL PASSCODE DIALOG (Admin Panel Unlock UI)
-  void _showGlobalPasscodeDialog(BuildContext dialogContext, ThemeProvider provider) {
+  void _showGlobalPasscodeDialog(BuildContext navContext, ThemeProvider provider) {
     _triggerSound();
     final TextEditingController passController = TextEditingController();
     
+    // 🟢 FIX: Safe Context for 0 error dialog rendering
     showDialog(
-      context: dialogContext,
+      context: navContext,
       barrierDismissible: false,
       builder: (ctx) => AlertDialog(
         backgroundColor: Colors.black.withValues(alpha: 0.95), 
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15), side: BorderSide(color: AppTheme.accent, width: 1.5)), 
         title: Text('RESTRICTED AREA', style: AppTheme.getHeadingStyle(fontSize: 18, color: Colors.redAccent)),
-        content: TextField(
-          controller: passController, 
-          obscureText: true, 
-          style: const TextStyle(color: Colors.white, letterSpacing: 2.0), 
-          decoration: InputDecoration(
-            hintText: 'Enter Admin Passcode', 
-            hintStyle: const TextStyle(color: Colors.white30, letterSpacing: 0), 
-            filled: true, 
-            fillColor: Colors.white.withValues(alpha: 0.05), 
-            border: OutlineInputBorder(borderRadius: BorderRadius.circular(8), borderSide: BorderSide.none),
-            focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(8), borderSide: BorderSide(color: AppTheme.accent, width: 1)),
+        content: SingleChildScrollView(
+          physics: const BouncingScrollPhysics(),
+          child: TextField(
+            controller: passController, 
+            obscureText: true, 
+            style: const TextStyle(color: Colors.white, letterSpacing: 2.0), 
+            decoration: InputDecoration(
+              hintText: 'Enter Admin Passcode', 
+              hintStyle: const TextStyle(color: Colors.white30, letterSpacing: 0), 
+              filled: true, 
+              fillColor: Colors.white.withValues(alpha: 0.05), 
+              border: OutlineInputBorder(borderRadius: BorderRadius.circular(8), borderSide: BorderSide.none),
+              focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(8), borderSide: BorderSide(color: AppTheme.accent, width: 1)),
+            ),
           ),
         ),
         actions: [
@@ -132,7 +137,7 @@ class _FortuneEventAppState extends State<FortuneEventApp> {
                 if (passController.text == _adminPasscode) {
                   provider.unlockGodMode(); 
                   Navigator.pop(ctx);
-                  ScaffoldMessenger.of(ctx).showSnackBar(SnackBar(
+                  ScaffoldMessenger.of(navContext).showSnackBar(SnackBar(
                     content: Text('🚀 SYSTEM OVERRIDE GRANTED', style: AppTheme.getBodyStyle(fontSize: 14, color: Colors.white).copyWith(fontWeight: FontWeight.bold)), 
                     backgroundColor: Colors.green.shade700,
                     behavior: SnackBarBehavior.floating,
@@ -141,7 +146,7 @@ class _FortuneEventAppState extends State<FortuneEventApp> {
                 } else {
                   Navigator.pop(ctx);
                   if (AppTheme.enableSoundEffects) HapticFeedback.vibrate(); 
-                  ScaffoldMessenger.of(ctx).showSnackBar(SnackBar(
+                  ScaffoldMessenger.of(navContext).showSnackBar(SnackBar(
                     content: Text('❌ ACCESS DENIED', style: AppTheme.getBodyStyle(fontSize: 14, color: Colors.white).copyWith(fontWeight: FontWeight.bold)), 
                     backgroundColor: Colors.redAccent.shade700,
                     behavior: SnackBarBehavior.floating,
@@ -190,143 +195,218 @@ class _FortuneEventAppState extends State<FortuneEventApp> {
           routerConfig: appRouter,
 
           builder: (context, routerChild) {
-            // 📱 ADDED: Responsive & Draggable Logic
-            double screenWidth = MediaQuery.of(context).size.width;
-            double screenHeight = MediaQuery.of(context).size.height;
-            bool isMobile = screenWidth < 500;
-            double panelWidth = isMobile ? screenWidth : 380; 
+            // 🟢 Nav Context to prevent overlay errors
+            return Navigator(
+              pages: [
+                MaterialPage(
+                  child: ScaffoldMessenger(
+                    child: Scaffold(
+                      // 🛠️ BUG FIX: prevents the UI from crushing when virtual keyboard appears
+                      resizeToAvoidBottomInset: false, 
+                      backgroundColor: Colors.transparent, // Background handling in pages
+                      body: Builder(
+                        builder: (navContext) {
+                          
+                          // 📱 RESPONSIVE LOGIC
+                          double screenWidth = MediaQuery.of(navContext).size.width;
+                          double screenHeight = MediaQuery.of(navContext).size.height;
+                          bool isMobile = screenWidth < 600; // 🟢 UPGRADED: 600 is standard for Mobile/Tablet boundary
+                          
+                          // 🛠️ DEEP LOGIC FIX: Prevent _panelWidth from exceeding max screen width dynamically
+                          double maxSafeWidth = screenWidth * 0.85; 
+                          double safePanelWidth = isMobile ? screenWidth : _panelWidth.clamp(280.0, maxSafeWidth);
 
-            // 🚀 Default FAB Position (Agar drag nahi kiya toh niche right me rahega)
-            double currentFabX = _fabX ?? (screenWidth - 85);
-            double currentFabY = _fabY ?? (screenHeight - 100);
+                          // 🛠️ DEEP LOGIC FIX: Safe Boundaries for FAB (Prevents out-of-bounds crash on resize/rotate)
+                          double maxFabX = screenWidth > 60.0 ? screenWidth - 60.0 : 0.0;
+                          double maxFabY = screenHeight > 80.0 ? screenHeight - 80.0 : 0.0;
 
-            // 🚀 Check If FAB is on Left Side or Right Side of screen
-            bool isLeftHalf = currentFabX < (screenWidth / 2);
+                          double currentFabX = _fabX ?? maxFabX;
+                          double currentFabY = _fabY ?? (screenHeight > 100 ? screenHeight - 100.0 : 0.0);
+                          
+                          // Auto correction if window is resized manually by user
+                          currentFabX = currentFabX.clamp(0.0, maxFabX); 
+                          currentFabY = currentFabY.clamp(0.0, maxFabY);
 
-            return Stack(
-              children: [
-                routerChild!, 
+                          bool isLeftHalf = currentFabX < (screenWidth / 2);
 
-                // ==========================================
-                // 🕵️‍♂️ GLOBAL SECRET TRIGGER
-                // ==========================================
-                if (!themeProvider.isGodModeUnlocked)
-                  Positioned(
-                    top: 0, right: 0,
-                    child: MouseRegion(
-                      cursor: SystemMouseCursors.basic, 
-                      child: GestureDetector(
-                        behavior: HitTestBehavior.translucent, 
-                        onTap: () {
-                          _secretTapCount++;
-                          if (_secretTapCount >= 5) {
-                            _secretTapCount = 0; 
-                            _showGlobalPasscodeDialog(context, themeProvider);
-                          }
-                        },
-                        child: const SizedBox(width: 80, height: 80), 
-                      ),
-                    ),
-                  ),
+                          return Stack(
+                            children: [
+                              routerChild!, 
 
-                // 🎛️ GLOBAL ADMIN PANEL (Slide hoke aane wala - PORTABLE VERSION)
-                if (themeProvider.isGodModeUnlocked)
-                  AnimatedPositioned(
-                    duration: const Duration(milliseconds: 500), 
-                    curve: Curves.easeOutCubic, 
-                    top: 0, bottom: 0,
-                    // 🚀 ADDED: Agar button left me hai to left se khulega, varna right se
-                    left: isLeftHalf ? (_isPanelOpen ? 0 : -panelWidth) : null,
-                    right: !isLeftHalf ? (_isPanelOpen ? 0 : -panelWidth) : null, 
-                    width: panelWidth,
-                    child: Material(
-                      elevation: 30, 
-                      color: Colors.black.withValues(alpha: 0.95), 
-                      child: _buildGlobalAdminPanel(themeProvider),
-                    ),
-                  ),
-
-                // 🚀 GLOBAL SETTINGS FAB (PORTABLE DRAGGABLE BUTTON)
-                if (themeProvider.isGodModeUnlocked)
-                  AnimatedPositioned(
-                    // Agar drag kar raha hai to delay 0, varna smooth animation aayegi
-                    duration: _isDragging ? Duration.zero : const Duration(milliseconds: 500),
-                    curve: Curves.easeOutCubic,
-                    
-                    // 🚀 Smart Lock System: Jab panel open hoga to button panel ke border pe chipak jayega
-                    top: currentFabY, 
-                    left: _isPanelOpen 
-                        ? (isLeftHalf 
-                            ? (isMobile ? screenWidth - 85 : panelWidth + 20) 
-                            : (isMobile ? 25 : screenWidth - panelWidth - 85)) 
-                        : currentFabX,
-
-                    child: GestureDetector(
-                      // 🚀 ADDED: Draggable Logic
-                      onPanStart: (details) => setState(() => _isDragging = true),
-                      onPanUpdate: (details) {
-                        if (_isPanelOpen) return; // Jab panel khula ho to drag disable ho jayega
-                        setState(() {
-                          _fabX = (_fabX ?? (screenWidth - 85)) + details.delta.dx;
-                          _fabY = (_fabY ?? (screenHeight - 100)) + details.delta.dy;
-
-                          // Button screen se bahar na bhage isliye clamp kiya hai
-                          _fabX = _fabX!.clamp(0.0, screenWidth - 60.0);
-                          _fabY = _fabY!.clamp(0.0, screenHeight - 80.0);
-                        });
-                      },
-                      onPanEnd: (details) => setState(() => _isDragging = false),
-                      
-                      child: MouseRegion(
-                        cursor: SystemMouseCursors.click,
-                        child: FloatingActionButton(
-                          backgroundColor: AppTheme.accent,
-                          elevation: AppTheme.enableShadows ? 15 : 0, 
-                          onPressed: () {
-                            _triggerSound();
-                            setState(() => _isPanelOpen = !_isPanelOpen);
-                          },
-                          child: Icon(
-                            _isPanelOpen ? Icons.close_rounded : Icons.dashboard_customize_rounded, 
-                            color: AppTheme.cardBg, 
-                            size: 28 
-                          ),
-                        ).animate().fade().scale(curve: Curves.easeOutBack), 
-                      ),
-                    ),
-                  ),
-
-                // 🕵️‍♂️ THE GLOBAL GOD BAR
-                if (themeProvider.isGodModeUnlocked)
-                  Positioned(
-                    bottom: 0, left: 0, right: 0,
-                    child: Material(
-                      color: Colors.transparent,
-                      child: AnimatedContainer(
-                        duration: const Duration(milliseconds: 400),
-                        curve: Curves.easeOutBack, 
-                        height: themeProvider.isSelectionMode ? 60 : 6, 
-                        decoration: BoxDecoration(
-                          color: AppTheme.accent,
-                          boxShadow: [BoxShadow(color: AppTheme.accent.withValues(alpha: 0.6), blurRadius: 20, offset: const Offset(0, -2))] 
-                        ),
-                        child: themeProvider.isSelectionMode
-                            ? _buildExpandedGodBar(themeProvider)
-                            : MouseRegion(
-                                cursor: SystemMouseCursors.click,
-                                child: GestureDetector(
-                                  behavior: HitTestBehavior.opaque,
-                                  onTap: () {
-                                    _triggerSound();
-                                    themeProvider.toggleSelectionMode();
-                                  }, 
-                                  child: Container(color: Colors.transparent), 
+                              // ==========================================
+                              // 🕵️‍♂️ GLOBAL SECRET TRIGGER
+                              // ==========================================
+                              if (!themeProvider.isGodModeUnlocked)
+                                Positioned(
+                                  top: 0, right: 0,
+                                  child: MouseRegion(
+                                    cursor: SystemMouseCursors.basic, 
+                                    child: GestureDetector(
+                                      behavior: HitTestBehavior.translucent, 
+                                      onTap: () {
+                                        _secretTapCount++;
+                                        if (_secretTapCount >= 5) {
+                                          _secretTapCount = 0; 
+                                          _showGlobalPasscodeDialog(navContext, themeProvider); 
+                                        }
+                                      },
+                                      child: const SizedBox(width: 80, height: 80), 
+                                    ),
+                                  ),
                                 ),
-                              ),
+
+                              // ==========================================
+                              // 🎛️ PORTABLE GOD MODE PANEL
+                              // ==========================================
+                              if (themeProvider.isGodModeUnlocked)
+                                Positioned(
+                                  top: 0, bottom: 0,
+                                  left: isLeftHalf ? 0 : null,
+                                  right: !isLeftHalf ? 0 : null,
+                                  child: AnimatedContainer(
+                                    duration: _isResizing ? Duration.zero : const Duration(milliseconds: 500),
+                                    curve: Curves.easeOutCubic,
+                                    width: safePanelWidth,
+                                    transform: Matrix4.translationValues(
+                                      _isPanelOpen ? 0 : (isLeftHalf ? -safePanelWidth : safePanelWidth), 0, 0
+                                    ),
+                                    child: Stack(
+                                      children: [
+                                        SizedBox(
+                                          width: safePanelWidth,
+                                          height: double.infinity,
+                                          child: Material(
+                                            elevation: 30, 
+                                            color: Colors.black.withValues(alpha: _panelOpacity), 
+                                            child: _buildGlobalAdminPanel(themeProvider),
+                                          ),
+                                        ),
+                                        
+                                        // 🚀 DRAG-TO-RESIZE HANDLER
+                                        if (!isMobile && _isPanelOpen)
+                                          Positioned(
+                                            right: isLeftHalf ? 0 : null, 
+                                            left: !isLeftHalf ? 0 : null,
+                                            top: 0, bottom: 0,
+                                            child: MouseRegion(
+                                              cursor: SystemMouseCursors.resizeLeftRight,
+                                              child: GestureDetector(
+                                                onPanStart: (_) => setState(() => _isResizing = true),
+                                                onPanUpdate: (details) {
+                                                  setState(() {
+                                                    double delta = isLeftHalf ? details.delta.dx : -details.delta.dx;
+                                                    _panelWidth += delta;
+                                                    _panelWidth = _panelWidth.clamp(280.0, maxSafeWidth); 
+                                                  });
+                                                },
+                                                onPanEnd: (_) => setState(() => _isResizing = false),
+                                                child: Container(
+                                                  width: 12, 
+                                                  color: Colors.transparent, 
+                                                  child: Center(
+                                                    child: Container(
+                                                      height: 50, width: 4,
+                                                      decoration: BoxDecoration(
+                                                        color: AppTheme.accent.withValues(alpha: 0.5), 
+                                                        borderRadius: BorderRadius.circular(5)
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+
+                              // ==========================================
+                              // 🚀 GLOBAL SETTINGS FAB (DRAGGABLE)
+                              // ==========================================
+                              if (themeProvider.isGodModeUnlocked)
+                                AnimatedPositioned(
+                                  duration: _isDragging ? Duration.zero : const Duration(milliseconds: 500),
+                                  curve: Curves.easeOutCubic,
+                                  top: currentFabY, 
+                                  left: _isPanelOpen 
+                                      ? (isLeftHalf 
+                                          ? (isMobile ? maxFabX : safePanelWidth + 20) 
+                                          : (isMobile ? 25 : screenWidth - safePanelWidth - 85)) 
+                                      : currentFabX,
+
+                                  child: GestureDetector(
+                                    onPanStart: (_) => setState(() => _isDragging = true),
+                                    onPanUpdate: (details) {
+                                      if (_isPanelOpen) return; 
+                                      setState(() {
+                                        _fabX = (_fabX ?? maxFabX) + details.delta.dx;
+                                        _fabY = (_fabY ?? currentFabY) + details.delta.dy;
+                                        // 🟢 DEEP FIX: Proper Math bounding
+                                        _fabX = _fabX!.clamp(0.0, maxFabX);
+                                        _fabY = _fabY!.clamp(0.0, maxFabY);
+                                      });
+                                    },
+                                    onPanEnd: (_) => setState(() => _isDragging = false),
+                                    
+                                    child: MouseRegion(
+                                      cursor: SystemMouseCursors.click,
+                                      child: FloatingActionButton(
+                                        backgroundColor: AppTheme.accent,
+                                        elevation: AppTheme.enableShadows ? 15 : 0, 
+                                        onPressed: () {
+                                          _triggerSound();
+                                          setState(() => _isPanelOpen = !_isPanelOpen);
+                                        },
+                                        child: Icon(
+                                          _isPanelOpen ? Icons.close_rounded : Icons.dashboard_customize_rounded, 
+                                          color: AppTheme.cardBg, 
+                                          size: 28 
+                                        ),
+                                      ).animate().fade().scale(curve: Curves.easeOutBack), 
+                                    ),
+                                  ),
+                                ),
+
+                              // 🕵️‍♂️ THE GLOBAL GOD BAR
+                              if (themeProvider.isGodModeUnlocked)
+                                Positioned(
+                                  bottom: 0, left: 0, right: 0,
+                                  child: Material(
+                                    color: Colors.transparent,
+                                    child: AnimatedContainer(
+                                      duration: const Duration(milliseconds: 400),
+                                      curve: Curves.easeOutBack, 
+                                      height: themeProvider.isSelectionMode ? 60 : 6, 
+                                      decoration: BoxDecoration(
+                                        color: AppTheme.accent,
+                                        boxShadow: [BoxShadow(color: AppTheme.accent.withValues(alpha: 0.6), blurRadius: 20, offset: const Offset(0, -2))] 
+                                      ),
+                                      child: themeProvider.isSelectionMode
+                                          ? _buildExpandedGodBar(themeProvider)
+                                          : MouseRegion(
+                                              cursor: SystemMouseCursors.click,
+                                              child: GestureDetector(
+                                                behavior: HitTestBehavior.opaque,
+                                                onTap: () {
+                                                  _triggerSound();
+                                                  themeProvider.toggleSelectionMode();
+                                                }, 
+                                                child: Container(color: Colors.transparent), 
+                                              ),
+                                            ),
+                                    ),
+                                  ),
+                                ),
+                            ],
+                          );
+                        }
                       ),
                     ),
                   ),
+                )
               ],
+              onPopPage: (route, result) => route.didPop(result),
             );
           },
         );
@@ -348,14 +428,35 @@ class _FortuneEventAppState extends State<FortuneEventApp> {
               children: [
                 Icon(Icons.tune_rounded, color: AppTheme.accent, size: 28), 
                 const SizedBox(width: 15),
-                // 🔴 FIXED: Text(xxx).copyWith() issue resolved here
-                Text(
-                  "GOD TIER CONTROL", 
-                  style: AppTheme.getHeadingStyle(fontSize: 18, color: Colors.white).copyWith(fontWeight: FontWeight.w900, letterSpacing: 1.5),
+                Expanded(
+                  child: Text(
+                    "GOD TIER CONTROL", 
+                    style: AppTheme.getHeadingStyle(fontSize: 18, color: Colors.white).copyWith(fontWeight: FontWeight.w900, letterSpacing: 1.5),
+                    overflow: TextOverflow.ellipsis, // 🛠️ Prevents text crash if Panel is resized very small
+                  ),
                 ),
               ],
             ),
             const SizedBox(height: 20),
+
+            // 🚀 Opacity Slider
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text("Opacity", style: AppTheme.getBodyStyle(fontSize: 12, color: Colors.white54, weight: FontWeight.w600)),
+                Expanded(
+                  child: Slider(
+                    value: _panelOpacity,
+                    min: 0.4, 
+                    max: 1.0, 
+                    activeColor: AppTheme.accent,
+                    inactiveColor: Colors.white24,
+                    onChanged: (val) => setState(() => _panelOpacity = val),
+                  ),
+                ),
+              ],
+            ),
+            
             Divider(color: Colors.white.withValues(alpha: 0.1), height: 1, thickness: 1), 
             const SizedBox(height: 25),
             
@@ -403,6 +504,10 @@ class _FortuneEventAppState extends State<FortuneEventApp> {
                   onPressed: () {
                     _triggerSound();
                     provider.resetToDefault();
+                    setState(() {
+                      _panelWidth = 380.0;
+                      _panelOpacity = 0.95;
+                    });
                   },
                   icon: const Icon(Icons.warning_rounded, color: Colors.white, size: 18),
                   label: const Text("MASTER RESET", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, letterSpacing: 1.0)),
@@ -435,7 +540,6 @@ class _FortuneEventAppState extends State<FortuneEventApp> {
     child: Text(t, style: AppTheme.getBodyStyle(fontSize: 12, color: Colors.white60).copyWith(fontWeight: FontWeight.w600)) 
   );
   
-  // 🔥 THE NEW CUSTOM CHIP PICKER
   Widget _buildCustomPicker(String label, String currentValue, List<String> items, Function(String) onSelect) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 25), 
@@ -485,7 +589,6 @@ class _FortuneEventAppState extends State<FortuneEventApp> {
     );
   }
 
-  // 🎨 THE NEW COLOR PICKER
   Color _getColorFromName(String name) {
     switch(name) {
       case 'blue': return Colors.blueAccent;
@@ -561,7 +664,7 @@ class _FortuneEventAppState extends State<FortuneEventApp> {
               ), 
               Switch(
                 value: value, 
-                activeThumbColor: AppTheme.bg, // 🟢 Standard property
+                activeThumbColor: AppTheme.bg, 
                 activeTrackColor: AppTheme.accent, 
                 inactiveTrackColor: Colors.white.withValues(alpha: 0.1),
                 inactiveThumbColor: Colors.white54,
@@ -583,13 +686,11 @@ class _FortuneEventAppState extends State<FortuneEventApp> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          // 📱 ADDED: Expanded for mobile overflow protection
           Expanded(
             child: Row(
               children: [
                 Icon(Icons.precision_manufacturing_rounded, color: AppTheme.cardBg, size: 24),
                 const SizedBox(width: 15),
-                // 📱 ADDED: Expanded + TextOverflow taaki mobile pe text screen ke bahar na jaaye
                 Expanded(
                   child: Text(
                     "GOD MODE ACTIVE: CLICK ANY TEXT OR CARD TO EDIT", 
@@ -600,7 +701,7 @@ class _FortuneEventAppState extends State<FortuneEventApp> {
               ],
             ),
           ),
-          const SizedBox(width: 10), // Safe spacing
+          const SizedBox(width: 10),
           MouseRegion(
             cursor: SystemMouseCursors.click,
             child: TextButton.icon(
