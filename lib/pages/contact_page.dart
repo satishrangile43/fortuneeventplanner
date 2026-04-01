@@ -308,7 +308,7 @@ class ContactPage extends StatelessWidget {
         const SizedBox(height: 60), // 🟢 Separator space
         
         // 🚀 Dynamic Staggered Details
-        _buildDetailItem(context, provider, 'contact_1', 'HEAD OF OPERATIONS', 'Kaushik Panjre', '+91 91745 64996', 1),
+        _buildDetailItem(context, provider, 'contact_1', 'HEAD OF OPERATIONS', 'Kaushik Panjre', '+91 88891 55593', 1),
         _buildDetailItem(context, provider, 'contact_2', 'LEAD LOGISTICS', 'Meet Shah', '+91 76930 64811', 2),
         _buildDetailItem(context, provider, 'contact_3', 'SECURITY CHIEF', 'Pushpendra Thakur', '+91 82249 68245', 3),
         const SizedBox(height: 20),

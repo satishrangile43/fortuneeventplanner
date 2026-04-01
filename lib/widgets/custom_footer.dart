@@ -156,7 +156,7 @@ class CustomFooter extends StatelessWidget {
                   ).copyWith(letterSpacing: 2.0),
                 ),
                 const SizedBox(height: 25),
-                _buildContactRow('Kaushik Panjre', '+91 91745 64996', 'tel:+919174564996'),
+                _buildContactRow('Kaushik Panjre', '+91 88891 55593', 'tel:+918889155593'),
                 _buildContactRow('Meet Shah', '+91 76930 64811', 'tel:+917693064811'),
                 _buildContactRow('Pushpendra Thakur', '+91 82249 68245', 'tel:+918224968245'),
               ],
