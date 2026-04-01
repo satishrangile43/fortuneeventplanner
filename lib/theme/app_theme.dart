@@ -11,7 +11,7 @@ class AppTheme {
   
   // 🎨 1. THEMES & COLORS (Default theme kya rakhni hai yahan likho)
   // Options: 'light', 'dark', 'ocean', 'sunset', 'hacker', 'cyberpunk', 'dracula', 'minimalist', 'midnight', 'forest', 'galaxy', 'fire', 'ice', 'luxury'
-  static String activeTheme = 'ice'; 
+  static String activeTheme = 'luxury'; 
   
   // Options: 'auto', 'blue', 'purple', 'green', 'red', 'gold', 'pink', 'cyan'
   static String accentColor = 'auto'; 
