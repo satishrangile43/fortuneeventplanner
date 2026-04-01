@@ -57,13 +57,20 @@ class _FortuneEventAppState extends State<FortuneEventApp> {
   bool _isPublishing = false;
 
   // ==========================================
-  // 🔐 GITHUB CREDENTIALS
+  // 🔐 GITHUB CREDENTIALS (UPGRADED FOR SECURITY)
   // ==========================================
-  // ⚠️ WARNING: Token code me rakhna risky hai, par agar ye sirf tumhara private CMS hai toh theek hai.
-  final String _githubToken = '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'; 
+  // ⚠️ Ab token hardcode nahi hai! Yeh TextField se aayega.
+  final TextEditingController _tokenController = TextEditingController(); 
+  
   final String _githubUsername = 'satishrangile43';
   final String _githubRepo = 'fortuneeventplanner';
   final String _filePath = 'lib/theme/app_theme.dart'; // File ka exact rasta
+
+  @override
+  void dispose() {
+    _tokenController.dispose(); // Memory leak se bachne ke liye
+    super.dispose();
+  }
 
   void _triggerSound() {
     if (AppTheme.enableSoundEffects) {
@@ -79,6 +86,18 @@ class _FortuneEventAppState extends State<FortuneEventApp> {
   // 🚀 FULL GOD MODE PUBLISH (ALL SETTINGS SYNCED)
   // ==========================================
   Future<void> _publishToGitHub(BuildContext context) async {
+    final String secureToken = _tokenController.text.trim();
+
+    // 🛑 Security Check: Agar token khali hai toh rok do
+    if (secureToken.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text('❌ Please enter your GitHub Token below first!', style: AppTheme.getBodyStyle(fontSize: 14, color: Colors.white).copyWith(fontWeight: FontWeight.bold)), 
+        backgroundColor: Colors.redAccent.shade700,
+        behavior: SnackBarBehavior.floating,
+      ));
+      return;
+    }
+
     setState(() => _isPublishing = true);
     final String url = 'https://api.github.com/repos/$_githubUsername/$_githubRepo/contents/$_filePath';
 
@@ -86,7 +105,7 @@ class _FortuneEventAppState extends State<FortuneEventApp> {
       // 🕵️‍♂️ STEP 1: Fetch current file data
       final response = await http.get(
         Uri.parse(url),
-        headers: {'Authorization': 'Bearer $_githubToken', 'Accept': 'application/vnd.github.v3+json'},
+        headers: {'Authorization': 'Bearer $secureToken', 'Accept': 'application/vnd.github.v3+json'},
       );
 
       if (response.statusCode == 200) {
@@ -130,7 +149,7 @@ class _FortuneEventAppState extends State<FortuneEventApp> {
 
         final putResponse = await http.put(
           Uri.parse(url),
-          headers: {'Authorization': 'Bearer $_githubToken', 'Accept': 'application/vnd.github.v3+json'},
+          headers: {'Authorization': 'Bearer $secureToken', 'Accept': 'application/vnd.github.v3+json'},
           body: jsonEncode({
             'message': '🚀 ADMIN SYNC: Published 100% of Theme Settings Live!',
             'content': newContentBase64,
@@ -151,7 +170,7 @@ class _FortuneEventAppState extends State<FortuneEventApp> {
           if (context.mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('❌ Publish Failed: ${putResponse.body}'), backgroundColor: Colors.redAccent));
         }
       } else {
-        if (context.mounted) ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('❌ Cannot fetch code. Check Token & Repo Name.'), backgroundColor: Colors.redAccent));
+        if (context.mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('❌ Cannot fetch code (Error ${response.statusCode}). Check Token validity.'), backgroundColor: Colors.redAccent));
       }
     } catch (e) {
       if (context.mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('❌ Error: $e'), backgroundColor: Colors.redAccent));
@@ -590,6 +609,28 @@ class _FortuneEventAppState extends State<FortuneEventApp> {
             _buildToggle("Enable Glow", AppTheme.enableGlow, (v) => provider.toggleGlow(v)), 
             _buildToggle("Enable Cursor Effect", AppTheme.enableCursorEffect, (v) => provider.toggleCursorEffect(v)), 
             const SizedBox(height: 40),
+
+            // ==========================================
+            // 🔐 7. SECURE DEPLOYMENT (NEW UPGRADE)
+            // ==========================================
+            _buildSectionTitle("🔐 7. SECURE DEPLOYMENT"),
+            Padding(
+              padding: const EdgeInsets.only(bottom: 20),
+              child: TextField(
+                controller: _tokenController,
+                obscureText: true, // Password ki tarah hide karega
+                style: const TextStyle(color: Colors.white, fontSize: 13),
+                decoration: InputDecoration(
+                  hintText: 'Paste GitHub Token (ghp_...)',
+                  hintStyle: const TextStyle(color: Colors.white30),
+                  prefixIcon: Icon(Icons.vpn_key_rounded, color: AppTheme.accent, size: 18),
+                  filled: true,
+                  fillColor: Colors.white.withValues(alpha: 0.05),
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(8), borderSide: BorderSide.none),
+                  focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(8), borderSide: BorderSide(color: AppTheme.accent, width: 1)),
+                ),
+              ),
+            ),
 
             // ==========================================
             // 🚀 BUTTONS SECTION (MASTER RESET & PUBLISH)
