@@ -60,7 +60,7 @@ class _FortuneEventAppState extends State<FortuneEventApp> {
   // 🔐 GITHUB CREDENTIALS
   // ==========================================
   // ⚠️ WARNING: Token code me rakhna risky hai, par agar ye sirf tumhara private CMS hai toh theek hai.
-  final String _githubToken = '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'; 
+  final String _githubToken = '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'; 
   final String _githubUsername = 'satishrangile43';
   final String _githubRepo = 'fortuneeventplanner';
   final String _filePath = 'lib/theme/app_theme.dart'; // File ka exact rasta
