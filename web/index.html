@@ -1,18 +1,12 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <!--
-    Fortune Event Planner - Premium Web Experience
-  -->
+<!DOCTYPE html><html><head>
   <base href="$FLUTTER_BASE_HREF">
 
   <meta charset="UTF-8">
   <meta content="IE=Edge" http-equiv="X-UA-Compatible">
   
-  <title>Fortune Event Planner | Elite Staffing & Security</title>
+  <title>Fortune Event Planner | Elite Staffing &amp; Security</title>
   <meta name="description" content="Premium event management, professional manpower, and elite security services tailored for high-end events.">
 
-  <!-- iOS meta tags & icons -->
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Fortune Event">
@@ -24,92 +18,188 @@
     html, body {
       height: 100%;
       margin: 0;
-      background-color: #000000;
+      background-color: #050505; /* Thoda aur deep dark black */
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
 
-    /* Wrap loader & logo inside one container to destroy it completely */
+    /* Wrap loader & logo inside one container */
     #fortune-initial-loader {
       position: fixed;
       top: 0;
       left: 0;
       width: 100vw;
       height: 100vh;
-      background-color: #000000;
+      background: radial-gradient(circle, #1a1a1a 0%, #000000 100%); /* Premium Vignette Effect */
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       z-index: 9999;
-      transition: opacity 0.6s ease-out;
+      transition: opacity 0.8s ease-out, visibility 0.8s ease-out;
     }
 
+    /* 🚀 Upgraded Logo with Pulse Effect */
     .logo-img {
-      width: 180px;
+      width: 160px; /* Thoda refine kiya */
+      margin-bottom: 20px;
+      animation: fadeInDown 1s ease-out forwards, pulseGlow 2.5s infinite alternate ease-in-out;
+      filter: drop-shadow(0px 0px 10px rgba(214, 167, 98, 0.3));
+    }
+
+    /* Brand Name below Logo */
+    .brand-title {
+      color: #D6A762; /* Gold color */
+      font-size: 16px;
+      font-weight: 600;
+      letter-spacing: 6px;
+      text-transform: uppercase;
       margin-bottom: 40px;
-      animation: fadeIn 1s ease-in forwards;
+      opacity: 0;
+      animation: fadeInUp 1s ease-out 0.5s forwards;
     }
 
     /* Premium Loading Bar */
     .loading-container {
-      width: 200px;
-      height: 2px;
-      background: rgba(214, 167, 98, 0.1);
+      width: 220px;
+      height: 3px;
+      background: rgba(214, 167, 98, 0.15);
       border-radius: 10px;
       overflow: hidden;
       position: relative;
+      opacity: 0;
+      animation: fadeInUp 1s ease-out 0.8s forwards;
     }
 
     .loading-bar {
-      width: 0%;
+      width: 40%;
       height: 100%;
-      background: #D6A762; /* Fortune Accent Color */
+      background: linear-gradient(90deg, transparent, #D6A762, transparent); /* Sleek gradient line */
       box-shadow: 0 0 15px #D6A762;
-      animation: load 1.5s infinite ease-in-out;
+      animation: loadSwipe 1.5s infinite cubic-bezier(0.4, 0, 0.2, 1);
       position: absolute;
     }
 
-    @keyframes load {
-      0% { width: 0%; left: 0; }
-      50% { width: 100%; left: 0; }
-      100% { width: 0%; left: 100%; }
+    /* 🎭 Animations */
+    @keyframes loadSwipe {
+      0% { left: -50%; }
+      100% { left: 100%; }
     }
 
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(-10px); }
+    @keyframes fadeInDown {
+      from { opacity: 0; transform: translateY(-20px); }
       to { opacity: 1; transform: translateY(0); }
     }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes pulseGlow {
+      0% { transform: scale(1); filter: drop-shadow(0px 0px 5px rgba(214, 167, 98, 0.2)); }
+      100% { transform: scale(1.05); filter: drop-shadow(0px 0px 20px rgba(214, 167, 98, 0.6)); }
+    }
   </style>
+  <style id="splash-screen-style">
+    html {
+      height: 100%
+    }
+
+    body {
+      margin: 0;
+      min-height: 100%;
+      background-color: #000000;
+          background-size: 100% 100%;
+    }
+
+    .center {
+      margin: 0;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      -ms-transform: translate(-50%, -50%);
+      transform: translate(-50%, -50%);
+    }
+
+    .contain {
+      display:block;
+      width:100%; height:100%;
+      object-fit: contain;
+    }
+
+    .stretch {
+      display:block;
+      width:100%; height:100%;
+    }
+
+    .cover {
+      display:block;
+      width:100%; height:100%;
+      object-fit: cover;
+    }
+
+    .bottom {
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      -ms-transform: translate(-50%, 0);
+      transform: translate(-50%, 0);
+    }
+
+    .bottomLeft {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+    }
+
+    .bottomRight {
+      position: absolute;
+      bottom: 0;
+      right: 0;
+    }
+  </style>
+  <script id="splash-screen-script">
+    function removeSplashFromWeb() {
+      document.getElementById("splash")?.remove();
+      document.getElementById("splash-branding")?.remove();
+      document.body.style.background = "transparent";
+    }
+  </script>
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport">
 </head>
 <body>
+  <picture id="splash">
+      <source srcset="splash/img/light-1x.png 1x, splash/img/light-2x.png 2x, splash/img/light-3x.png 3x, splash/img/light-4x.png 4x" media="(prefers-color-scheme: light)">
+      <source srcset="splash/img/dark-1x.png 1x, splash/img/dark-2x.png 2x, splash/img/dark-3x.png 3x, splash/img/dark-4x.png 4x" media="(prefers-color-scheme: dark)">
+      <img class="center" aria-hidden="true" src="splash/img/light-1x.png" alt="">
+  </picture>
   
-  <!-- 🟢 PEHLI BAAR LOAD HONE WALA SCREEN -->
   <div id="fortune-initial-loader">
-    <!-- Make sure tera logo.png ka path sahi ho yahan -->
-    <img class="logo-img" src="assets/images/logo.png" alt="Fortune Logo">
+    <img class="logo-img" src="logo.png" alt="Fortune Event Planner Logo">
     
+    <div class="brand-title">Fortune Events</div>
+
     <div class="loading-container">
       <div class="loading-bar"></div>
     </div>
   </div>
 
-  <!-- 🟢 FLUTTER ENGINE INITIALIZATION & LOADER DESTRUCTION -->
   <script>
-    // Ye event tab fire hota hai jab Flutter web app ka UI screen pe draw ho jata hai
+    // Ye event tab fire hota hai jab Flutter web app ka UI draw hona shuru hota hai
     window.addEventListener('flutter-first-frame', function() {
       var loader = document.getElementById('fortune-initial-loader');
       if (loader) {
-        loader.style.opacity = '0'; // Fade out effect
+        loader.style.opacity = '0'; 
+        loader.style.visibility = 'hidden'; // Ensure it can't be clicked
         setTimeout(function () {
           loader.remove(); // 🚀 HTML se hamesha ke liye delete!
           document.body.style.background = 'transparent'; 
-        }, 600); // Wait for fade out
+        }, 800); // 800ms fade out wait
       }
     });
   </script>
 
-  <!-- Default Flutter Bootstrap -->
-  <script src="flutter_bootstrap.js" async></script>
+  <script src="flutter_bootstrap.js" async=""></script>
 
-</body>
-</html>
+
+</body></html>
