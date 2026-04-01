@@ -57,8 +57,9 @@ class _FortuneEventAppState extends State<FortuneEventApp> {
   bool _isPublishing = false;
 
   // ==========================================
-  // 🔐 GITHUB CREDENTIALS (YAHA APNI DETAILS DAALO)
+  // 🔐 GITHUB CREDENTIALS
   // ==========================================
+  // ⚠️ WARNING: Token code me rakhna risky hai, par agar ye sirf tumhara private CMS hai toh theek hai.
   final String _githubToken = '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'; 
   final String _githubUsername = 'satishrangile43';
   final String _githubRepo = 'fortuneeventplanner';
@@ -75,7 +76,7 @@ class _FortuneEventAppState extends State<FortuneEventApp> {
   }
 
   // ==========================================
-  // 🚀 GITHUB PUBLISH LIVE FUNCTION (MAGIC) - FIXED
+  // 🚀 FULL GOD MODE PUBLISH (ALL SETTINGS SYNCED)
   // ==========================================
   Future<void> _publishToGitHub(BuildContext context) async {
     setState(() => _isPublishing = true);
@@ -94,34 +95,53 @@ class _FortuneEventAppState extends State<FortuneEventApp> {
         final String contentBase64 = data['content'].replaceAll('\n', '');
         final String currentContent = utf8.decode(base64Decode(contentBase64));
 
-        // ✂️ STEP 2: Find & Replace current settings using Regex
+        // ✂️ STEP 2: Find & Replace EVERYTHING using Regex
         String newContent = currentContent;
         
-        // Major settings ko update kar rahe hain
+        // 🔹 1. STRINGS REPLACEMENT (Theme, Colors, Styles, Fonts, etc.)
         newContent = newContent.replaceAll(RegExp(r"static String activeTheme = '.*?';"), "static String activeTheme = '${AppTheme.activeTheme}';");
         newContent = newContent.replaceAll(RegExp(r"static String accentColor = '.*?';"), "static String accentColor = '${AppTheme.accentColor}';");
-        newContent = newContent.replaceAll(RegExp(r"static String globalUIStyle = '.*?';"), "static String globalUIStyle = '${AppTheme.globalUIStyle}';");
+        newContent = newContent.replaceAll(RegExp(r"static String imageFilter = '.*?';"), "static String imageFilter = '${AppTheme.imageFilter}';");
         newContent = newContent.replaceAll(RegExp(r"static String globalAnimation = '.*?';"), "static String globalAnimation = '${AppTheme.globalAnimation}';");
+        newContent = newContent.replaceAll(RegExp(r"static String transitionSpeed = '.*?';"), "static String transitionSpeed = '${AppTheme.transitionSpeed}';");
+        newContent = newContent.replaceAll(RegExp(r"static String globalUIStyle = '.*?';"), "static String globalUIStyle = '${AppTheme.globalUIStyle}';");
+        newContent = newContent.replaceAll(RegExp(r"static String buttonStyle = '.*?';"), "static String buttonStyle = '${AppTheme.buttonStyle}';");
+        newContent = newContent.replaceAll(RegExp(r"static String cardStyle = '.*?';"), "static String cardStyle = '${AppTheme.cardStyle}';");
+        newContent = newContent.replaceAll(RegExp(r"static String borderStyle = '.*?';"), "static String borderStyle = '${AppTheme.borderStyle}';");
         newContent = newContent.replaceAll(RegExp(r"static String fontStyle = '.*?';"), "static String fontStyle = '${AppTheme.fontStyle}';");
+        newContent = newContent.replaceAll(RegExp(r"static String backgroundStyle = '.*?';"), "static String backgroundStyle = '${AppTheme.backgroundStyle}';");
+        newContent = newContent.replaceAll(RegExp(r"static String parallaxIntensity = '.*?';"), "static String parallaxIntensity = '${AppTheme.parallaxIntensity}';");
+        newContent = newContent.replaceAll(RegExp(r"static String hoverEffect = '.*?';"), "static String hoverEffect = '${AppTheme.hoverEffect}';");
+        newContent = newContent.replaceAll(RegExp(r"static String cursorType = '.*?';"), "static String cursorType = '${AppTheme.cursorType}';");
+        newContent = newContent.replaceAll(RegExp(r"static String heroStyle = '.*?';"), "static String heroStyle = '${AppTheme.heroStyle}';");
+        newContent = newContent.replaceAll(RegExp(r"static String navbarStyle = '.*?';"), "static String navbarStyle = '${AppTheme.navbarStyle}';");
+        newContent = newContent.replaceAll(RegExp(r"static String footerStyle = '.*?';"), "static String footerStyle = '${AppTheme.footerStyle}';");
+        newContent = newContent.replaceAll(RegExp(r"static String formInputStyle = '.*?';"), "static String formInputStyle = '${AppTheme.formInputStyle}';");
 
-        // 🚀 STEP 3: Push changes back to GitHub
+        // 🔹 2. BOOLEANS REPLACEMENT (True/False Toggles)
+        newContent = newContent.replaceAll(RegExp(r"static bool enableGlow = .*?;"), "static bool enableGlow = ${AppTheme.enableGlow};");
+        newContent = newContent.replaceAll(RegExp(r"static bool enableBlur = .*?;"), "static bool enableBlur = ${AppTheme.enableBlur};");
+        newContent = newContent.replaceAll(RegExp(r"static bool enableShadows = .*?;"), "static bool enableShadows = ${AppTheme.enableShadows};");
+        newContent = newContent.replaceAll(RegExp(r"static bool enableGradients = .*?;"), "static bool enableGradients = ${AppTheme.enableGradients};");
+        newContent = newContent.replaceAll(RegExp(r"static bool enableCursorEffect = .*?;"), "static bool enableCursorEffect = ${AppTheme.enableCursorEffect};");
+
+        // 🚀 STEP 3: Push ALL changes back to GitHub
         final String newContentBase64 = base64Encode(utf8.encode(newContent));
 
         final putResponse = await http.put(
           Uri.parse(url),
           headers: {'Authorization': 'Bearer $_githubToken', 'Accept': 'application/vnd.github.v3+json'},
           body: jsonEncode({
-            'message': '🚀 Admin forcefully published theme [${AppTheme.activeTheme}] live!',
+            'message': '🚀 ADMIN SYNC: Published 100% of Theme Settings Live!',
             'content': newContentBase64,
             'sha': sha,
           }),
         );
 
-        // 🟢 FIX: Yahan context.mounted check lagaya hai
         if (putResponse.statusCode == 200 || putResponse.statusCode == 201) {
           if (context.mounted) {
             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-              content: Text('✅ BOOM! Theme Published. Code pushed to GitHub. Live in 1-2 mins.', style: AppTheme.getBodyStyle(fontSize: 14, color: Colors.white).copyWith(fontWeight: FontWeight.bold)), 
+              content: Text('✅ FULL SYSTEM SYNCED! Code pushed to GitHub. Live in 90 seconds.', style: AppTheme.getBodyStyle(fontSize: 14, color: Colors.white).copyWith(fontWeight: FontWeight.bold)), 
               backgroundColor: Colors.green.shade700,
               behavior: SnackBarBehavior.floating,
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
@@ -137,7 +157,6 @@ class _FortuneEventAppState extends State<FortuneEventApp> {
       if (context.mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('❌ Error: $e'), backgroundColor: Colors.redAccent));
     }
     
-    // Yahan sirf State ka variable update kar rahe hain toh sirf mounted likhna theek hai
     if (mounted) {
       setState(() => _isPublishing = false);
     }

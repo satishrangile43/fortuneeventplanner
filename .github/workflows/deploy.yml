@@ -28,7 +28,6 @@ jobs:
           flutter clean
           flutter pub get
 
-      # 🚀 FIXED COMMAND: Removed --web-renderer canvaskit
       - name: 🛠️ Build Flutter Web
         run: flutter build web --release --base-href /fortuneeventplanner/
 
