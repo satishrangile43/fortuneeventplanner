@@ -3,6 +3,8 @@ import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter/services.dart'; // 🚀 Haptics support
+import 'dart:convert'; // 🚀 JSON encode/decode ke liye
+import 'package:http/http.dart' as http; // 🚀 GitHub API call ke liye
 
 // Tumhare custom paths (Agar path error aaye toh inko check kar lena)
 import 'routes/app_router.dart';
@@ -51,6 +53,17 @@ class _FortuneEventAppState extends State<FortuneEventApp> {
   double _panelOpacity = 0.95; 
   bool _isResizing = false; 
 
+  // 🚀 PUBLISH LIVE STATE
+  bool _isPublishing = false;
+
+  // ==========================================
+  // 🔐 GITHUB CREDENTIALS (YAHA APNI DETAILS DAALO)
+  // ==========================================
+  final String _githubToken = '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'; 
+  final String _githubUsername = 'satishrangile43';
+  final String _githubRepo = 'fortuneeventplanner';
+  final String _filePath = 'lib/theme/app_theme.dart'; // File ka exact rasta
+
   void _triggerSound() {
     if (AppTheme.enableSoundEffects) {
       if (AppTheme.soundPack == 'heavy') {
@@ -58,6 +71,75 @@ class _FortuneEventAppState extends State<FortuneEventApp> {
       } else {
         HapticFeedback.selectionClick();
       }
+    }
+  }
+
+  // ==========================================
+  // 🚀 GITHUB PUBLISH LIVE FUNCTION (MAGIC) - FIXED
+  // ==========================================
+  Future<void> _publishToGitHub(BuildContext context) async {
+    setState(() => _isPublishing = true);
+    final String url = 'https://api.github.com/repos/$_githubUsername/$_githubRepo/contents/$_filePath';
+
+    try {
+      // 🕵️‍♂️ STEP 1: Fetch current file data
+      final response = await http.get(
+        Uri.parse(url),
+        headers: {'Authorization': 'Bearer $_githubToken', 'Accept': 'application/vnd.github.v3+json'},
+      );
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        final String sha = data['sha'];
+        final String contentBase64 = data['content'].replaceAll('\n', '');
+        final String currentContent = utf8.decode(base64Decode(contentBase64));
+
+        // ✂️ STEP 2: Find & Replace current settings using Regex
+        String newContent = currentContent;
+        
+        // Major settings ko update kar rahe hain
+        newContent = newContent.replaceAll(RegExp(r"static String activeTheme = '.*?';"), "static String activeTheme = '${AppTheme.activeTheme}';");
+        newContent = newContent.replaceAll(RegExp(r"static String accentColor = '.*?';"), "static String accentColor = '${AppTheme.accentColor}';");
+        newContent = newContent.replaceAll(RegExp(r"static String globalUIStyle = '.*?';"), "static String globalUIStyle = '${AppTheme.globalUIStyle}';");
+        newContent = newContent.replaceAll(RegExp(r"static String globalAnimation = '.*?';"), "static String globalAnimation = '${AppTheme.globalAnimation}';");
+        newContent = newContent.replaceAll(RegExp(r"static String fontStyle = '.*?';"), "static String fontStyle = '${AppTheme.fontStyle}';");
+
+        // 🚀 STEP 3: Push changes back to GitHub
+        final String newContentBase64 = base64Encode(utf8.encode(newContent));
+
+        final putResponse = await http.put(
+          Uri.parse(url),
+          headers: {'Authorization': 'Bearer $_githubToken', 'Accept': 'application/vnd.github.v3+json'},
+          body: jsonEncode({
+            'message': '🚀 Admin forcefully published theme [${AppTheme.activeTheme}] live!',
+            'content': newContentBase64,
+            'sha': sha,
+          }),
+        );
+
+        // 🟢 FIX: Yahan context.mounted check lagaya hai
+        if (putResponse.statusCode == 200 || putResponse.statusCode == 201) {
+          if (context.mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              content: Text('✅ BOOM! Theme Published. Code pushed to GitHub. Live in 1-2 mins.', style: AppTheme.getBodyStyle(fontSize: 14, color: Colors.white).copyWith(fontWeight: FontWeight.bold)), 
+              backgroundColor: Colors.green.shade700,
+              behavior: SnackBarBehavior.floating,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+            ));
+          }
+        } else {
+          if (context.mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('❌ Publish Failed: ${putResponse.body}'), backgroundColor: Colors.redAccent));
+        }
+      } else {
+        if (context.mounted) ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('❌ Cannot fetch code. Check Token & Repo Name.'), backgroundColor: Colors.redAccent));
+      }
+    } catch (e) {
+      if (context.mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('❌ Error: $e'), backgroundColor: Colors.redAccent));
+    }
+    
+    // Yahan sirf State ka variable update kar rahe hain toh sirf mounted likhna theek hai
+    if (mounted) {
+      setState(() => _isPublishing = false);
     }
   }
 
@@ -84,12 +166,11 @@ class _FortuneEventAppState extends State<FortuneEventApp> {
     }
   }
 
-  // 🔐 GLOBAL PASSCODE DIALOG (Admin Panel Unlock UI)
+  // 🔐 GLOBAL PASSCODE DIALOG
   void _showGlobalPasscodeDialog(BuildContext navContext, ThemeProvider provider) {
     _triggerSound();
     final TextEditingController passController = TextEditingController();
     
-    // 🟢 FIX: Safe Context for 0 error dialog rendering
     showDialog(
       context: navContext,
       barrierDismissible: false,
@@ -97,6 +178,7 @@ class _FortuneEventAppState extends State<FortuneEventApp> {
         backgroundColor: Colors.black.withValues(alpha: 0.95), 
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15), side: BorderSide(color: AppTheme.accent, width: 1.5)), 
         title: Text('RESTRICTED AREA', style: AppTheme.getHeadingStyle(fontSize: 18, color: Colors.redAccent)),
+        
         content: SingleChildScrollView(
           physics: const BouncingScrollPhysics(),
           child: TextField(
@@ -195,35 +277,30 @@ class _FortuneEventAppState extends State<FortuneEventApp> {
           routerConfig: appRouter,
 
           builder: (context, routerChild) {
-            // 🟢 Nav Context to prevent overlay errors
             return Navigator(
               pages: [
                 MaterialPage(
                   child: ScaffoldMessenger(
                     child: Scaffold(
-                      // 🛠️ BUG FIX: prevents the UI from crushing when virtual keyboard appears
                       resizeToAvoidBottomInset: false, 
-                      backgroundColor: Colors.transparent, // Background handling in pages
+                      backgroundColor: Colors.transparent,
                       body: Builder(
                         builder: (navContext) {
                           
                           // 📱 RESPONSIVE LOGIC
                           double screenWidth = MediaQuery.of(navContext).size.width;
                           double screenHeight = MediaQuery.of(navContext).size.height;
-                          bool isMobile = screenWidth < 600; // 🟢 UPGRADED: 600 is standard for Mobile/Tablet boundary
+                          bool isMobile = screenWidth < 600; 
                           
-                          // 🛠️ DEEP LOGIC FIX: Prevent _panelWidth from exceeding max screen width dynamically
                           double maxSafeWidth = screenWidth * 0.85; 
                           double safePanelWidth = isMobile ? screenWidth : _panelWidth.clamp(280.0, maxSafeWidth);
 
-                          // 🛠️ DEEP LOGIC FIX: Safe Boundaries for FAB (Prevents out-of-bounds crash on resize/rotate)
                           double maxFabX = screenWidth > 60.0 ? screenWidth - 60.0 : 0.0;
                           double maxFabY = screenHeight > 80.0 ? screenHeight - 80.0 : 0.0;
 
                           double currentFabX = _fabX ?? maxFabX;
                           double currentFabY = _fabY ?? (screenHeight > 100 ? screenHeight - 100.0 : 0.0);
                           
-                          // Auto correction if window is resized manually by user
                           currentFabX = currentFabX.clamp(0.0, maxFabX); 
                           currentFabY = currentFabY.clamp(0.0, maxFabY);
 
@@ -282,7 +359,6 @@ class _FortuneEventAppState extends State<FortuneEventApp> {
                                           ),
                                         ),
                                         
-                                        // 🚀 DRAG-TO-RESIZE HANDLER
                                         if (!isMobile && _isPanelOpen)
                                           Positioned(
                                             right: isLeftHalf ? 0 : null, 
@@ -342,7 +418,6 @@ class _FortuneEventAppState extends State<FortuneEventApp> {
                                       setState(() {
                                         _fabX = (_fabX ?? maxFabX) + details.delta.dx;
                                         _fabY = (_fabY ?? currentFabY) + details.delta.dy;
-                                        // 🟢 DEEP FIX: Proper Math bounding
                                         _fabX = _fabX!.clamp(0.0, maxFabX);
                                         _fabY = _fabY!.clamp(0.0, maxFabY);
                                       });
@@ -406,7 +481,7 @@ class _FortuneEventAppState extends State<FortuneEventApp> {
                   ),
                 )
               ],
-              onPopPage: (route, result) => route.didPop(result),
+              onDidRemovePage: (page) {}, 
             );
           },
         );
@@ -432,7 +507,7 @@ class _FortuneEventAppState extends State<FortuneEventApp> {
                   child: Text(
                     "GOD TIER CONTROL", 
                     style: AppTheme.getHeadingStyle(fontSize: 18, color: Colors.white).copyWith(fontWeight: FontWeight.w900, letterSpacing: 1.5),
-                    overflow: TextOverflow.ellipsis, // 🛠️ Prevents text crash if Panel is resized very small
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ),
               ],
@@ -497,27 +572,55 @@ class _FortuneEventAppState extends State<FortuneEventApp> {
             _buildToggle("Enable Cursor Effect", AppTheme.enableCursorEffect, (v) => provider.toggleCursorEffect(v)), 
             const SizedBox(height: 40),
 
-            Center(
-              child: MouseRegion(
-                cursor: SystemMouseCursors.click,
-                child: ElevatedButton.icon(
-                  onPressed: () {
-                    _triggerSound();
-                    provider.resetToDefault();
-                    setState(() {
-                      _panelWidth = 380.0;
-                      _panelOpacity = 0.95;
-                    });
-                  },
-                  icon: const Icon(Icons.warning_rounded, color: Colors.white, size: 18),
-                  label: const Text("MASTER RESET", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, letterSpacing: 1.0)),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.redAccent.shade700,
-                    padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 15), 
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50))
+            // ==========================================
+            // 🚀 BUTTONS SECTION (MASTER RESET & PUBLISH)
+            // ==========================================
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                // 🛑 Master Reset Button
+                MouseRegion(
+                  cursor: SystemMouseCursors.click,
+                  child: ElevatedButton.icon(
+                    onPressed: () {
+                      _triggerSound();
+                      provider.resetToDefault();
+                      setState(() {
+                        _panelWidth = 380.0;
+                        _panelOpacity = 0.95;
+                      });
+                    },
+                    icon: const Icon(Icons.warning_rounded, color: Colors.white, size: 16),
+                    label: const Text("RESET", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, letterSpacing: 1.0)),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.redAccent.shade700,
+                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15), 
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50))
+                    ),
                   ),
                 ),
-              ),
+
+                // 🚀 Publish Live Button
+                MouseRegion(
+                  cursor: _isPublishing ? SystemMouseCursors.wait : SystemMouseCursors.click,
+                  child: ElevatedButton.icon(
+                    onPressed: _isPublishing ? null : () {
+                      _triggerSound();
+                      _publishToGitHub(context);
+                    },
+                    icon: _isPublishing 
+                        ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
+                        : const Icon(Icons.rocket_launch_rounded, color: Colors.white, size: 16),
+                    label: Text(_isPublishing ? "PUBLISHING..." : "PUBLISH LIVE", style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, letterSpacing: 1.0)),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.green.shade600,
+                      padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 15), 
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
+                      disabledBackgroundColor: Colors.green.shade800,
+                    ),
+                  ),
+                ),
+              ],
             ),
             const SizedBox(height: 120), 
           ],

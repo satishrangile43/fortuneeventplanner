@@ -29,21 +29,21 @@ class _HomePageState extends State<HomePage> {
   // 📸 MASSIVE GALLERY DATA
   // ==========================================
   final List<String> _gallery30 = [
-    'https://images.unsplash.com/photo-1511527661048-7fe73d85e9a4?w=500', 'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=500',
-    'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=500', 'https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?w=500',
-    'https://images.unsplash.com/photo-1459749411175-04bf5292ceea?w=500', 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=500',
-    'https://images.unsplash.com/photo-1478146896981-b80fe463b330?w=500', 'https://images.unsplash.com/photo-1533174000220-db7f34149b5c?w=500',
-    'https://images.unsplash.com/photo-1520110120835-c96534a4c984?w=500', 'https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=500',
-    'https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?w=500', 'https://images.unsplash.com/photo-1531058020387-3be344556be6?w=500',
-    'https://images.unsplash.com/photo-1511765224389-37f0e77cf0eb?w=500', 'https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=500',
-    'https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=500', 'https://images.unsplash.com/photo-1555244162-803834f70033?w=500',
-    'https://images.unsplash.com/photo-1414235077428-3389886e5643?w=500', 'https://images.unsplash.com/photo-1533777857889-4be7c70b33f7?w=500',
-    'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=500', 'https://images.unsplash.com/photo-1564501049412-61c2a3083791?w=500',
-    'https://images.unsplash.com/photo-1515187029135-18ee286d815b?w=500', 'https://images.unsplash.com/photo-1528605248644-14dd04022da1?w=500',
-    'https://images.unsplash.com/photo-1551818255-e6e10975bc17?w=500', 'https://images.unsplash.com/photo-1560179707-f14e90ef3623?w=500',
-    'https://images.unsplash.com/photo-1530103862676-de8892bc952f?w=500', 'https://images.unsplash.com/photo-1586528116311-ad8ed7c1590a?w=500',
-    'https://images.unsplash.com/photo-1505373877841-8d25f7d46678?w=500', 'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=500',
-    'https://images.unsplash.com/photo-1511765224389-37f0e77cf0eb?w=500', 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=500',
+    'https://picsum.photos/id/10/500/500', 'https://picsum.photos/id/11/500/500',
+    'https://picsum.photos/id/12/500/500', 'https://picsum.photos/id/13/500/500',
+    'https://picsum.photos/id/14/500/500', 'https://picsum.photos/id/15/500/500',
+    'https://picsum.photos/id/16/500/500', 'https://picsum.photos/id/17/500/500',
+    'https://picsum.photos/id/18/500/500', 'https://picsum.photos/id/19/500/500',
+    'https://picsum.photos/id/20/500/500', 'https://picsum.photos/id/21/500/500',
+    'https://picsum.photos/id/22/500/500', 'https://picsum.photos/id/23/500/500',
+    'https://picsum.photos/id/24/500/500', 'https://picsum.photos/id/25/500/500',
+    'https://picsum.photos/id/26/500/500', 'https://picsum.photos/id/27/500/500',
+    'https://picsum.photos/id/28/500/500', 'https://picsum.photos/id/29/500/500',
+    'https://picsum.photos/id/30/500/500', 'https://picsum.photos/id/31/500/500',
+    'https://picsum.photos/id/32/500/500', 'https://picsum.photos/id/33/500/500',
+    'https://picsum.photos/id/34/500/500', 'https://picsum.photos/id/35/500/500',
+    'https://picsum.photos/id/36/500/500', 'https://picsum.photos/id/37/500/500',
+    'https://picsum.photos/id/38/500/500', 'https://picsum.photos/id/39/500/500',
   ];
 
   // ==========================================
@@ -268,8 +268,8 @@ class _HomePageState extends State<HomePage> {
                 autoPlayAnimationDuration: Duration(milliseconds: AppTheme.transitionSpeed == 'fast' ? 400 : (AppTheme.transitionSpeed == 'slow' ? 1200 : 800)), 
               ),
               items: [
-                'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?q=80&w=2070',
-                'https://images.unsplash.com/photo-1519225421980-715cb0215aed?q=80&w=2070',
+                'https://picsum.photos/id/1043/2070/1380',
+                'https://picsum.photos/id/1062/2070/1380',
               ].map((img) => Image.network(img, fit: BoxFit.cover, width: double.infinity)).toList(),
             ),
           ),
