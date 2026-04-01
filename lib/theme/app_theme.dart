@@ -14,7 +14,7 @@ class AppTheme {
   static String activeTheme = 'luxury'; 
   
   // Options: 'auto', 'blue', 'purple', 'green', 'red', 'gold', 'pink', 'cyan'
-  static String accentColor = 'auto'; 
+  static String accentColor = 'cyan'; 
   
   // Options: 'none', 'grayscale', 'sepia', 'high-contrast'
   static String imageFilter = 'none'; 
