@@ -411,7 +411,7 @@ class _FortuneEventAppState extends State<FortuneEventApp> {
                                         shape: BoxShape.circle,
                                         boxShadow: [BoxShadow(color: const Color(0xFFFD1D1D).withValues(alpha: 0.4), blurRadius: 15, spreadRadius: 2, offset: const Offset(0, 4))]
                                       ),
-                                      child: const Icon(FontAwesomeIcons.instagram, color: Colors.white, size: 28),
+                                      child: const FaIcon(FontAwesomeIcons.instagram, color: Colors.white, size: 28), // 🔥 FIXED HERE
                                     ).animate(onPlay: (controller) => controller.repeat()).shimmer(duration: 2.seconds, color: Colors.white30),
                                   ),
                                 ),
@@ -431,7 +431,7 @@ class _FortuneEventAppState extends State<FortuneEventApp> {
                                         shape: BoxShape.circle,
                                         boxShadow: [BoxShadow(color: const Color(0xFF25D366).withValues(alpha: 0.4), blurRadius: 15, spreadRadius: 2, offset: const Offset(0, 4))]
                                       ),
-                                      child: const Icon(FontAwesomeIcons.whatsapp, color: Colors.white, size: 28),
+                                      child: const FaIcon(FontAwesomeIcons.whatsapp, color: Colors.white, size: 28), // 🔥 FIXED HERE
                                     ).animate(onPlay: (controller) => controller.repeat()).shimmer(duration: 2.seconds, color: Colors.white30),
                                   ),
                                 ),
