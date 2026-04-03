@@ -400,7 +400,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                             spacing: 15, runSpacing: 15,
                             alignment: AppTheme.heroStyle == 'centered' ? WrapAlignment.center : WrapAlignment.start,
                             children: [
-                              _buildHeroTrustBadge(context, provider, 'badge1', Icons.star_border_rounded, '100+ Premium Events'),
+                              _buildHeroTrustBadge(context, provider, 'badge1', Icons.star_border_rounded, '100+ Events'),
                               _buildHeroTrustBadge(context, provider, 'badge2', Icons.shield_outlined, '100% Reliable Staff'),
                               _buildHeroTrustBadge(context, provider, 'badge3', Icons.military_tech_outlined, 'Industry Leaders'),
                             ],
@@ -616,7 +616,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
         spacing: 40, runSpacing: 40,
         children: [
           _buildStatItem(context, provider, 'stat1', '100+', 'Successful Events'),
-          _buildStatItem(context, provider, 'stat2', '1000+', 'Trained Personnel'),
+          _buildStatItem(context, provider, 'stat2', '1000+', 'Trained Staff'),
           _buildStatItem(context, provider, 'stat3', '100%', 'Client Satisfaction'),
         ],
       ),
