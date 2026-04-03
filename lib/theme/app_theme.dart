@@ -11,7 +11,7 @@ class AppTheme {
   
   // 🎨 1. THEMES & COLORS (Default theme kya rakhni hai yahan likho)
   // Options: 'light', 'dark', 'ocean', 'sunset', 'hacker', 'cyberpunk', 'dracula', 'minimalist', 'midnight', 'forest', 'galaxy', 'fire', 'ice', 'luxury'
-  static String activeTheme = 'luxury'; 
+  static String activeTheme = 'minimalist'; 
   
   // Options: 'auto', 'blue', 'purple', 'green', 'red', 'gold', 'pink', 'cyan'
   static String accentColor = 'cyan'; 
@@ -472,9 +472,8 @@ class AppTheme {
       'description': 'Providing guest assistance, VIP handling, front desk operations, and hosting services to ensure every attendee feels welcomed.',
       'delay': 100, // Card kab aayega uska time (milliseconds)
       'images': [
-        'https://images.unsplash.com/photo-1551818255-e6e10975bc17?q=80&w=2000',
-        'https://images.unsplash.com/photo-1560179707-f14e90ef3623?q=80&w=2000',
-        'https://images.unsplash.com/photo-1530103862676-de8892bc952f?q=80&w=2000',
+        'https://cdn.jsdelivr.net/gh/satishrangile43/gurudairy@main/PAPA/hospi.jpg',
+        'https://cdn.jsdelivr.net/gh/satishrangile43/gurudairy@main/PAPA/hospi1.jpg',
       ]
     },
     {
@@ -482,8 +481,9 @@ class AppTheme {
       'description': 'Managing material movement, backstage coordination, and vendor communication to maintain an organized environment.',
       'delay': 200,
       'images': [
-        'https://images.unsplash.com/photo-1586528116311-ad8ed7c1590a?q=80&w=2000',
-        'https://images.unsplash.com/photo-1505373877841-8d25f7d46678?q=80&w=2000',
+        'https://cdn.jsdelivr.net/gh/satishrangile43/gurudairy@main/PAPA/logistic.jpg',
+        'https://cdn.jsdelivr.net/gh/satishrangile43/gurudairy@main/PAPA/logistic1.jpg',
+        'https://cdn.jsdelivr.net/gh/satishrangile43/gurudairy@main/PAPA/logistic2.jpg',
       ]
     },
     {
@@ -491,8 +491,9 @@ class AppTheme {
       'description': 'Dedicated personnel providing personalized support for artists, speakers, VIPs, and special guests ensuring their comfort.',
       'delay': 300,
       'images': [
-        'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?q=80&w=2000',
-        'https://images.unsplash.com/photo-1511765224389-37f0e77cf0eb?q=80&w=2000',
+        'https://cdn.jsdelivr.net/gh/satishrangile43/gurudairy@main/PAPA/shardow%20(1).jpg',
+        'https://cdn.jsdelivr.net/gh/satishrangile43/gurudairy@main/PAPA/shardow%20(2).jpg',
+        'https://cdn.jsdelivr.net/gh/satishrangile43/gurudairy@main/PAPA/shardow%20(3).jpg',
       ]
     },
     {
@@ -500,9 +501,9 @@ class AppTheme {
       'description': 'Efficient supervision of food and beverage operations, including service monitoring, counter assistance, and staff coordination.',
       'delay': 400,
       'images': [
-        'https://images.unsplash.com/photo-1555244162-803834f70033?q=80&w=2000',
-        'https://images.unsplash.com/photo-1414235077428-3389886e5643?q=80&w=2000',
-        'https://images.unsplash.com/photo-1533777857889-4be7c70b33f7?q=80&w=2000',
+        'https://cdn.jsdelivr.net/gh/satishrangile43/gurudairy@main/PAPA/f%26b%20(1).jpg',
+        'https://cdn.jsdelivr.net/gh/satishrangile43/gurudairy@main/PAPA/f%26b%20(2).jpg',
+        'https://cdn.jsdelivr.net/gh/satishrangile43/gurudairy@main/PAPA/f%26b%20(3).jpg',
       ]
     },
     {
@@ -510,8 +511,9 @@ class AppTheme {
       'description': 'Professional on-ground support for stage setup, lighting and sound coordination, and backstage operations.',
       'delay': 500,
       'images': [
-        'https://images.unsplash.com/photo-1478146896981-b80fe463b330?q=80&w=2000',
-        'https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?q=80&w=2000',
+        'https://cdn.jsdelivr.net/gh/satishrangile43/gurudairy@main/PAPA/production%20(1).jpg',
+        'https://cdn.jsdelivr.net/gh/satishrangile43/gurudairy@main/PAPA/production%20(2).jpg',
+        'https://cdn.jsdelivr.net/gh/satishrangile43/gurudairy@main/PAPA/production%20(3).jpg',
       ]
     },
     {
@@ -519,8 +521,9 @@ class AppTheme {
       'description': 'Efficient management of outsourced vendors and temporary staff, ensuring seamless coordination and clear communication.',
       'delay': 600,
       'images': [
-        'https://images.unsplash.com/photo-1522071820081-009f0129c71c?q=80&w=2000',
-        'https://images.unsplash.com/photo-1542744173-8e7e53415bb0?q=80&w=2000',
+        'https://cdn.jsdelivr.net/gh/satishrangile43/gurudairy@main/PAPA/outsourching%20(1).jpg',
+        'https://cdn.jsdelivr.net/gh/satishrangile43/gurudairy@main/PAPA/outsourching%20(2).jpg',
+        'https://cdn.jsdelivr.net/gh/satishrangile43/gurudairy@main/PAPA/outsourching%20(3).jpg',
       ]
     },
     {
@@ -528,8 +531,8 @@ class AppTheme {
       'description': 'Professional support for hotel and hospitality services including guest assistance, luggage handling, and coordination.',
       'delay': 700,
       'images': [
-        'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?q=80&w=2000',
-        'https://images.unsplash.com/photo-1564501049412-61c2a3083791?q=80&w=2000',
+        'https://cdn.jsdelivr.net/gh/satishrangile43/gurudairy@main/PAPA/bellboys%20(1).jpg',
+        'https://cdn.jsdelivr.net/gh/satishrangile43/gurudairy@main/PAPA/bellboys%20(2).jpg',
       ]
     },
     {
@@ -537,8 +540,9 @@ class AppTheme {
       'description': 'Experienced coordinators responsible for supervising teams, assigning tasks, and monitoring event flow.',
       'delay': 800,
       'images': [
-        'https://images.unsplash.com/photo-1515187029135-18ee286d815b?q=80&w=2000',
-        'https://images.unsplash.com/photo-1528605248644-14dd04022da1?q=80&w=2000',
+        'https://cdn.jsdelivr.net/gh/satishrangile43/gurudairy@main/PAPA/coordinator%20(1).jpg',
+        'https://cdn.jsdelivr.net/gh/satishrangile43/gurudairy@main/PAPA/coordinator%20(2).jpg',
+        'https://cdn.jsdelivr.net/gh/satishrangile43/gurudairy@main/PAPA/coordinator%20(3).jpg',
       ]
     }, 
   ];

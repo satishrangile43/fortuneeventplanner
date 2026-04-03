@@ -5,7 +5,9 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter/services.dart'; // 🚀 Haptics support
 import 'dart:convert'; // 🚀 JSON encode/decode
 import 'package:http/http.dart' as http; // 🚀 GitHub API call
-import 'package:url_launcher/url_launcher.dart'; // 🚀 WhatsApp link open karne ke liye
+import 'package:url_launcher/url_launcher.dart'; // 🚀 WhatsApp & Insta link open karne ke liye
+import 'package:font_awesome_flutter/font_awesome_flutter.dart'; // 🚀 Official WhatsApp/Insta Icons ke liye
+
 // Tumhare custom paths (Agar path error aaye toh inko check kar lena)
 import 'routes/app_router.dart';
 import 'theme/theme_provider.dart';
@@ -46,6 +48,9 @@ class _FortuneEventAppState extends State<FortuneEventApp> {
   final String _adminPasscode = "LOVEDAYBITTU"; 
   bool _isPanelOpen = false; 
   bool _isPublishing = false;
+  
+  // 🚀 NAYI STATE: Contact page track karne ke liye
+  bool _isContactPage = false; 
 
   // ==========================================
   // 🎛️ 2. DRAGGABLE GOD MODE & UI STATE
@@ -66,7 +71,27 @@ class _FortuneEventAppState extends State<FortuneEventApp> {
   final String _filePath = 'lib/theme/app_theme.dart';
 
   @override
+  void initState() {
+    super.initState();
+    // 🚀 ROUTE LISTENER: Check karne ke liye ki hum Contact page par hain ya nahi
+    appRouter.routerDelegate.addListener(_onRouteChanged);
+  }
+
+  void _onRouteChanged() {
+    final String location = appRouter.routerDelegate.currentConfiguration.uri.toString();
+    bool currentlyContact = location.contains('/contact');
+    if (_isContactPage != currentlyContact) {
+      if (mounted) {
+        setState(() {
+          _isContactPage = currentlyContact;
+        });
+      }
+    }
+  }
+
+  @override
   void dispose() {
+    appRouter.routerDelegate.removeListener(_onRouteChanged); // Memory leak se bachne ke liye
     _tokenController.dispose(); 
     super.dispose();
   }
@@ -189,17 +214,13 @@ class _FortuneEventAppState extends State<FortuneEventApp> {
   Future<void> _openWhatsApp() async {
     _triggerSound();
     
-    // 🟢 Apna WhatsApp number yahan dalo (Country code ke sath, bina '+' ke)
     const String phoneNumber = "918889155593"; 
-    
-    // 🟢 (Optional) Agar koi default message bhejna hai
     const String message = "Hello! I want to plan an event."; 
     
     final Uri whatsappUri = Uri.parse("https://wa.me/$phoneNumber?text=${Uri.encodeComponent(message)}");
 
     try {
       if (await canLaunchUrl(whatsappUri)) {
-        // externalApplication mode browser ya WhatsApp app direct open karega
         await launchUrl(whatsappUri, mode: LaunchMode.externalApplication); 
       } else {
         if (mounted) {
@@ -209,6 +230,26 @@ class _FortuneEventAppState extends State<FortuneEventApp> {
     } catch (e) {
       if (mounted) {
          _showSnackBar(context, '❌ Error opening WhatsApp', Colors.redAccent);
+      }
+    }
+  }
+
+  // 🚀 NAYA INSTAGRAM FUNCTION
+  Future<void> _openInstagram() async {
+    _triggerSound();
+    final Uri instaUri = Uri.parse("https://www.instagram.com/fortuneeventplanner1?igsh=MWgwOWNmb2c0cnkydw%3D%3D&utm_source=qr");
+
+    try {
+      if (await canLaunchUrl(instaUri)) {
+        await launchUrl(instaUri, mode: LaunchMode.externalApplication); 
+      } else {
+        if (mounted) {
+          _showSnackBar(context, '❌ Could not open Instagram.', Colors.redAccent);
+        }
+      }
+    } catch (e) {
+      if (mounted) {
+         _showSnackBar(context, '❌ Error opening Instagram', Colors.redAccent);
       }
     }
   }
@@ -348,29 +389,53 @@ class _FortuneEventAppState extends State<FortuneEventApp> {
                                 _buildGlobalGodBar(themeProvider),
 
                               // ==========================================
-                              // 🟢 NEW: GLOBAL WHATSAPP FLOATING ICON
+                              // 🟢 UPGRADED: WHATSAPP & INSTA FLOATING ICONS
                               // ==========================================
-                              AnimatedPositioned(
-                                duration: const Duration(milliseconds: 400),
-                                curve: Curves.easeOutBack,
-                                bottom: themeProvider.isSelectionMode ? 80 : 30, // Dynamic height! Avoids God Bar!
-                                right: 20,
-                                child: GestureDetector(
-                                  onTap: _openWhatsApp,
-                                  child: Container(
-                                    height: 55,
-                                    width: 55,
-                                    decoration: BoxDecoration(
-                                      color: Colors.green.shade600,
-                                      shape: BoxShape.circle,
-                                      boxShadow: [
-                                        BoxShadow(color: Colors.green.withValues(alpha: 0.4), blurRadius: 15, spreadRadius: 2, offset: const Offset(0, 4))
-                                      ]
-                                    ),
-                                    child: const Icon(Icons.chat_bubble_rounded, color: Colors.white, size: 28),
-                                  ).animate(onPlay: (controller) => controller.repeat()).shimmer(duration: 2.seconds, color: Colors.white30),
+                              if (!_isContactPage) ...[
+                                
+                                // 🟣 INSTAGRAM BUTTON
+                                AnimatedPositioned(
+                                  duration: const Duration(milliseconds: 400),
+                                  curve: Curves.easeOutBack,
+                                  bottom: themeProvider.isSelectionMode ? 145 : 95, // 🚀 Automatically stacks above WhatsApp
+                                  right: 20,
+                                  child: GestureDetector(
+                                    onTap: _openInstagram,
+                                    child: Container(
+                                      height: 55, width: 55,
+                                      decoration: BoxDecoration(
+                                        gradient: const LinearGradient(
+                                          colors: [Color(0xFF833AB4), Color(0xFFFD1D1D), Color(0xFFF56040)],
+                                          begin: Alignment.topLeft, end: Alignment.bottomRight,
+                                        ),
+                                        shape: BoxShape.circle,
+                                        boxShadow: [BoxShadow(color: const Color(0xFFFD1D1D).withValues(alpha: 0.4), blurRadius: 15, spreadRadius: 2, offset: const Offset(0, 4))]
+                                      ),
+                                      child: const Icon(FontAwesomeIcons.instagram, color: Colors.white, size: 28),
+                                    ).animate(onPlay: (controller) => controller.repeat()).shimmer(duration: 2.seconds, color: Colors.white30),
+                                  ),
                                 ),
-                              ),
+
+                                // 🟢 WHATSAPP BUTTON (Upgraded with Official Icon)
+                                AnimatedPositioned(
+                                  duration: const Duration(milliseconds: 400),
+                                  curve: Curves.easeOutBack,
+                                  bottom: themeProvider.isSelectionMode ? 80 : 30, // Dynamic height! Avoids God Bar!
+                                  right: 20,
+                                  child: GestureDetector(
+                                    onTap: _openWhatsApp,
+                                    child: Container(
+                                      height: 55, width: 55,
+                                      decoration: BoxDecoration(
+                                        color: const Color(0xFF25D366), // 🚀 Official WhatsApp Green
+                                        shape: BoxShape.circle,
+                                        boxShadow: [BoxShadow(color: const Color(0xFF25D366).withValues(alpha: 0.4), blurRadius: 15, spreadRadius: 2, offset: const Offset(0, 4))]
+                                      ),
+                                      child: const Icon(FontAwesomeIcons.whatsapp, color: Colors.white, size: 28),
+                                    ).animate(onPlay: (controller) => controller.repeat()).shimmer(duration: 2.seconds, color: Colors.white30),
+                                  ),
+                                ),
+                              ],
                             ],
                           );
                         }
