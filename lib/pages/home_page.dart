@@ -18,48 +18,64 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin {
   // ==========================================
   // 🤫 ADMIN SECRETS
   // ==========================================
   int _secretTapCount = 0;
   final String _adminPasscode = "LOVEDAYBITTU"; 
+  late AnimationController _pulseController;
 
   // ==========================================
   // 📸 MASSIVE GALLERY DATA
   // ==========================================
   final List<String> _gallery30 = [
-  'https://cdn.jsdelivr.net/gh/satishrangile43/gurudairy@main/PAPA/1.jpg',
-  'https://cdn.jsdelivr.net/gh/satishrangile43/gurudairy@main/PAPA/2.jpg',
-  'https://cdn.jsdelivr.net/gh/satishrangile43/gurudairy@main/PAPA/3.jpg',
-  'https://cdn.jsdelivr.net/gh/satishrangile43/gurudairy@main/PAPA/4.jpg',
-  'https://cdn.jsdelivr.net/gh/satishrangile43/gurudairy@main/PAPA/5.jpg',
-  'https://cdn.jsdelivr.net/gh/satishrangile43/gurudairy@main/PAPA/6.jpg',
-  'https://cdn.jsdelivr.net/gh/satishrangile43/gurudairy@main/PAPA/7.jpg',
-  'https://cdn.jsdelivr.net/gh/satishrangile43/gurudairy@main/PAPA/8.jpg',
-  'https://cdn.jsdelivr.net/gh/satishrangile43/gurudairy@main/PAPA/9.jpg',
-  'https://cdn.jsdelivr.net/gh/satishrangile43/gurudairy@main/PAPA/10.jpg',
-  'https://cdn.jsdelivr.net/gh/satishrangile43/gurudairy@main/PAPA/11.jpg',
-  'https://cdn.jsdelivr.net/gh/satishrangile43/gurudairy@main/PAPA/12.jpg',
-  'https://cdn.jsdelivr.net/gh/satishrangile43/gurudairy@main/PAPA/13.jpg',
-  'https://cdn.jsdelivr.net/gh/satishrangile43/gurudairy@main/PAPA/14.jpg',
-  'https://cdn.jsdelivr.net/gh/satishrangile43/gurudairy@main/PAPA/15.jpg',
-  'https://cdn.jsdelivr.net/gh/satishrangile43/gurudairy@main/PAPA/16.jpg',
-  'https://cdn.jsdelivr.net/gh/satishrangile43/gurudairy@main/PAPA/17.jpg',
-  'https://cdn.jsdelivr.net/gh/satishrangile43/gurudairy@main/PAPA/18.jpg',
-  'https://cdn.jsdelivr.net/gh/satishrangile43/gurudairy@main/PAPA/19.jpg',
-  'https://cdn.jsdelivr.net/gh/satishrangile43/gurudairy@main/PAPA/20.jpg',
-  'https://cdn.jsdelivr.net/gh/satishrangile43/gurudairy@main/PAPA/21.jpg',
-  'https://cdn.jsdelivr.net/gh/satishrangile43/gurudairy@main/PAPA/22.jpg',
-  'https://cdn.jsdelivr.net/gh/satishrangile43/gurudairy@main/PAPA/23.jpg',
-  'https://cdn.jsdelivr.net/gh/satishrangile43/gurudairy@main/PAPA/24.jpg',
-  'https://cdn.jsdelivr.net/gh/satishrangile43/gurudairy@main/PAPA/25.jpg',
-  'https://cdn.jsdelivr.net/gh/satishrangile43/gurudairy@main/PAPA/26.jpg',
-  'https://cdn.jsdelivr.net/gh/satishrangile43/gurudairy@main/PAPA/27.jpg',
-  'https://cdn.jsdelivr.net/gh/satishrangile43/gurudairy@main/PAPA/28.jpg',
-  'https://cdn.jsdelivr.net/gh/satishrangile43/gurudairy@main/PAPA/29.jpg',
-  'https://cdn.jsdelivr.net/gh/satishrangile43/gurudairy@main/PAPA/30.jpg',
+    'https://cdn.jsdelivr.net/gh/satishrangile43/gurudairy@main/PAPA/1.jpg',
+    'https://cdn.jsdelivr.net/gh/satishrangile43/gurudairy@main/PAPA/2.jpg',
+    'https://cdn.jsdelivr.net/gh/satishrangile43/gurudairy@main/PAPA/3.jpg',
+    'https://cdn.jsdelivr.net/gh/satishrangile43/gurudairy@main/PAPA/4.jpg',
+    'https://cdn.jsdelivr.net/gh/satishrangile43/gurudairy@main/PAPA/5.jpg',
+    'https://cdn.jsdelivr.net/gh/satishrangile43/gurudairy@main/PAPA/6.jpg',
+    'https://cdn.jsdelivr.net/gh/satishrangile43/gurudairy@main/PAPA/7.jpg',
+    'https://cdn.jsdelivr.net/gh/satishrangile43/gurudairy@main/PAPA/8.jpg',
+    'https://cdn.jsdelivr.net/gh/satishrangile43/gurudairy@main/PAPA/9.jpg',
+    'https://cdn.jsdelivr.net/gh/satishrangile43/gurudairy@main/PAPA/10.jpg',
+    'https://cdn.jsdelivr.net/gh/satishrangile43/gurudairy@main/PAPA/11.jpg',
+    'https://cdn.jsdelivr.net/gh/satishrangile43/gurudairy@main/PAPA/12.jpg',
+    'https://cdn.jsdelivr.net/gh/satishrangile43/gurudairy@main/PAPA/13.jpg',
+    'https://cdn.jsdelivr.net/gh/satishrangile43/gurudairy@main/PAPA/14.jpg',
+    'https://cdn.jsdelivr.net/gh/satishrangile43/gurudairy@main/PAPA/15.jpg',
+    'https://cdn.jsdelivr.net/gh/satishrangile43/gurudairy@main/PAPA/16.jpg',
+    'https://cdn.jsdelivr.net/gh/satishrangile43/gurudairy@main/PAPA/17.jpg',
+    'https://cdn.jsdelivr.net/gh/satishrangile43/gurudairy@main/PAPA/18.jpg',
+    'https://cdn.jsdelivr.net/gh/satishrangile43/gurudairy@main/PAPA/19.jpg',
+    'https://cdn.jsdelivr.net/gh/satishrangile43/gurudairy@main/PAPA/20.jpg',
+    'https://cdn.jsdelivr.net/gh/satishrangile43/gurudairy@main/PAPA/21.jpg',
+    'https://cdn.jsdelivr.net/gh/satishrangile43/gurudairy@main/PAPA/22.jpg',
+    'https://cdn.jsdelivr.net/gh/satishrangile43/gurudairy@main/PAPA/23.jpg',
+    'https://cdn.jsdelivr.net/gh/satishrangile43/gurudairy@main/PAPA/24.jpg',
+    'https://cdn.jsdelivr.net/gh/satishrangile43/gurudairy@main/PAPA/25.jpg',
+    'https://cdn.jsdelivr.net/gh/satishrangile43/gurudairy@main/PAPA/26.jpg',
+    'https://cdn.jsdelivr.net/gh/satishrangile43/gurudairy@main/PAPA/27.jpg',
+    'https://cdn.jsdelivr.net/gh/satishrangile43/gurudairy@main/PAPA/28.jpg',
+    'https://cdn.jsdelivr.net/gh/satishrangile43/gurudairy@main/PAPA/29.jpg',
+    'https://cdn.jsdelivr.net/gh/satishrangile43/gurudairy@main/PAPA/30.jpg',
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    _pulseController = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 2),
+    )..repeat(reverse: true);
+  }
+
+  @override
+  void dispose() {
+    _pulseController.dispose();
+    super.dispose();
+  }
 
   // ==========================================
   // 🔊 SOUND ENGINE
@@ -233,11 +249,17 @@ class _HomePageState extends State<HomePage> {
                           children: [
                             _buildDynamicHero(context, provider), 
                             _buildShortInfoStrip(context, provider), 
+                            
+                            // 🚀 NEW: Our Expertise / Services Section
+                            _buildExpertiseSection(context, provider),
+                            
+                            // 🚀 NEW: Company Stats / Trust Builder
+                            _buildStatsSection(context, provider),
+                            
+                            _buildWhyFortuneSection(context, provider),
                             _buildVibeGallery(context, provider), 
                             _buildMassiveGallery(context), 
-                            // 🚀 CHANGED HERE: Customer Ratings Section
                             _buildCustomerRatingsSection(context, provider), 
-                            _buildWhyFortuneSection(context, provider),
                             if (AppTheme.footerStyle != 'hidden') const CustomFooter(),
                           ],
                         ),
@@ -261,7 +283,6 @@ class _HomePageState extends State<HomePage> {
     bool isMobile = screenSize.width < 800 || AppTheme.mobileLayout == 'compact';
     double radius = AppTheme.borderStyle == 'sharp' ? 0.0 : AppTheme.getGlobalRadius() * 2;
     
-    // 🛠️ ALIGNMENT FIX: Sync the exact text alignment to the AppTheme engine
     TextAlign heroTextAlign = AppTheme.heroStyle == 'centered' 
         ? TextAlign.center 
         : (AppTheme.heroStyle == 'right' ? TextAlign.end : TextAlign.start);
@@ -272,11 +293,11 @@ class _HomePageState extends State<HomePage> {
 
     return SizedBox(
       width: double.infinity,
-      height: AppTheme.heroStyle == 'fullscreen' ? screenSize.height : (isMobile ? screenSize.height * 0.75 : screenSize.height * 0.85), 
+      height: AppTheme.heroStyle == 'fullscreen' ? screenSize.height : (isMobile ? screenSize.height * 0.85 : screenSize.height * 0.90), 
       child: Stack(
         fit: StackFit.expand,
         children: [
-          // 🎞️ CAROUSEL BACKGROUND (🚀 YE RAHI IMAGES JO TUM BADAL SAKTE HO)
+          // 🎞️ CAROUSEL BACKGROUND
           AppTheme.applyImageFilter(
             CarouselSlider(
               options: CarouselOptions(
@@ -299,9 +320,9 @@ class _HomePageState extends State<HomePage> {
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 colors: [
-                  AppTheme.bg.withValues(alpha: 0.7), 
-                  Colors.black.withValues(alpha: 0.3), 
-                  AppTheme.bg 
+                  AppTheme.bg.withValues(alpha: 0.8), 
+                  Colors.black.withValues(alpha: 0.4), 
+                  AppTheme.bg.withValues(alpha: 0.95), // Fade nicely into next section
                 ], 
                 begin: Alignment.topCenter, 
                 end: Alignment.bottomCenter
@@ -322,7 +343,7 @@ class _HomePageState extends State<HomePage> {
                     child: Container(
                       padding: EdgeInsets.all(isMobile ? 25 : 50), 
                       decoration: AppTheme.getCardDecoration(isHovered: false).copyWith(
-                        color: AppTheme.enableBlur ? AppTheme.cardBg.withValues(alpha: 0.6) : AppTheme.cardBg.withValues(alpha: 0.85),
+                        color: AppTheme.enableBlur ? AppTheme.cardBg.withValues(alpha: 0.5) : AppTheme.cardBg.withValues(alpha: 0.85),
                       ),
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
@@ -349,40 +370,39 @@ class _HomePageState extends State<HomePage> {
                               Text(
                                 provider.elementSettings['hero_title_text'] ?? AppTheme.heroTitle, 
                                 textAlign: heroTextAlign, 
-                                style: AppTheme.getHeadingStyle(fontSize: isMobile ? 32 : 64, color: AppTheme.textMain).copyWith( 
+                                style: AppTheme.getHeadingStyle(fontSize: isMobile ? 36 : 68, color: AppTheme.textMain).copyWith( 
                                   letterSpacing: -1.0, 
-                                  shadows: [Shadow(color: AppTheme.textMain.withValues(alpha: 0.15), offset: const Offset(0, 4), blurRadius: 15)]
+                                  shadows: [Shadow(color: AppTheme.textMain.withValues(alpha: 0.2), offset: const Offset(0, 4), blurRadius: 20)]
                                 )
                               )
                             ),
                           ),
                           
-                          const SizedBox(height: 15),
+                          const SizedBox(height: 20),
                           
                           _buildEditable(
                             context, provider, 'hero_subtitle', AppTheme.heroSubtitle, 
                             Text(
                               provider.elementSettings['hero_subtitle_text'] ?? AppTheme.heroSubtitle, 
                               textAlign: heroTextAlign, 
-                              style: AppTheme.getBodyStyle(fontSize: isMobile ? 14 : 18, color: AppTheme.textSub.withValues(alpha: 0.9), weight: FontWeight.w500).copyWith(height: 1.5)
+                              style: AppTheme.getBodyStyle(fontSize: isMobile ? 15 : 20, color: AppTheme.textSub.withValues(alpha: 0.9), weight: FontWeight.w500).copyWith(height: 1.5)
                             )
                           ), 
                           
-                          const SizedBox(height: 35),
+                          const SizedBox(height: 40),
                           
                           _buildCTAButton(context, provider),
 
-                          const SizedBox(height: 35),
+                          const SizedBox(height: 40),
 
-                          // 🚀 TRUST BADGES
+                          // 🚀 PREMIUM TRUST BADGES
                           Wrap(
-                            spacing: 20,
-                            runSpacing: 10,
+                            spacing: 15, runSpacing: 15,
                             alignment: AppTheme.heroStyle == 'centered' ? WrapAlignment.center : WrapAlignment.start,
                             children: [
-                              _buildHeroTrustBadge(context, provider, 'badge1', Icons.star, '500+ Events'),
-                              _buildHeroTrustBadge(context, provider, 'badge2', Icons.groups, '1000+ Staff'),
-                              _buildHeroTrustBadge(context, provider, 'badge3', Icons.emoji_events, '5+ Years Exp.'),
+                              _buildHeroTrustBadge(context, provider, 'badge1', Icons.star_border_rounded, '100+ Premium Events'),
+                              _buildHeroTrustBadge(context, provider, 'badge2', Icons.shield_outlined, '100% Reliable Staff'),
+                              _buildHeroTrustBadge(context, provider, 'badge3', Icons.military_tech_outlined, 'Industry Leaders'),
                             ],
                           )
                         ],
@@ -394,6 +414,21 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
           ),
+          
+          // 🖱️ SCROLL INDICATOR (Animated)
+          Positioned(
+            bottom: 30, left: 0, right: 0,
+            child: FadeTransition(
+              opacity: _pulseController,
+              child: Column(
+                children: [
+                  Text("SCROLL TO EXPLORE", style: AppTheme.getBodyStyle(fontSize: 10, color: AppTheme.textSub).copyWith(letterSpacing: 2.0)),
+                  const SizedBox(height: 10),
+                  Icon(Icons.keyboard_arrow_down_rounded, color: AppTheme.accent, size: 28),
+                ],
+              ),
+            ),
+          )
         ],
       ),
     );
@@ -404,22 +439,22 @@ class _HomePageState extends State<HomePage> {
   // ==========================================
   Widget _buildHeroTrustBadge(BuildContext context, ThemeProvider provider, String id, IconData icon, String defaultText) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       decoration: BoxDecoration(
-        color: AppTheme.textMain.withValues(alpha: 0.05),
-        border: Border.all(color: AppTheme.accent.withValues(alpha: 0.3)),
-        borderRadius: BorderRadius.circular(20),
+        color: AppTheme.bg.withValues(alpha: 0.5),
+        border: Border.all(color: AppTheme.accent.withValues(alpha: 0.2)),
+        borderRadius: BorderRadius.circular(30),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, color: AppTheme.accent, size: 14),
-          const SizedBox(width: 6),
+          Icon(icon, color: AppTheme.accent, size: 16),
+          const SizedBox(width: 8),
           _buildEditable(
             context, provider, id, defaultText,
             Text(
               provider.elementSettings['${id}_text'] ?? defaultText,
-              style: AppTheme.getBodyStyle(fontSize: 12, color: AppTheme.textMain, weight: FontWeight.bold),
+              style: AppTheme.getBodyStyle(fontSize: 13, color: AppTheme.textMain, weight: FontWeight.w600),
             )
           )
         ],
@@ -438,21 +473,27 @@ class _HomePageState extends State<HomePage> {
         child: ElevatedButton(
           style: ElevatedButton.styleFrom(
             backgroundColor: AppTheme.accent, 
-            padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 20), 
+            padding: const EdgeInsets.symmetric(horizontal: 45, vertical: 22), 
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(AppTheme.buttonStyle == 'sharp' ? 0 : (AppTheme.buttonStyle == 'pill' ? 50 : 12)), 
+              borderRadius: BorderRadius.circular(AppTheme.buttonStyle == 'sharp' ? 0 : (AppTheme.buttonStyle == 'pill' ? 50 : 8)), 
             ),
-            elevation: AppTheme.enableShadows ? 10 : 0, 
-            shadowColor: AppTheme.accent.withValues(alpha: 0.5),
+            elevation: AppTheme.enableShadows ? 15 : 0, 
+            shadowColor: AppTheme.accent.withValues(alpha: 0.6),
           ),
           onPressed: () { 
             _triggerSound(); 
-            // 🚀 CHANGED: Ab button click par contact page khulega
             context.go('/contact'); 
           },
-          child: Text(
-            provider.elementSettings['hero_btn_text'] ?? 'Book Your Event Now', 
-            style: AppTheme.getBodyStyle(fontSize: 16, color: Colors.black, weight: FontWeight.bold).copyWith(letterSpacing: 1.0)
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                provider.elementSettings['hero_btn_text'] ?? 'Book Your Event Now', 
+                style: AppTheme.getBodyStyle(fontSize: 16, color: Colors.black, weight: FontWeight.bold).copyWith(letterSpacing: 1.0)
+              ),
+              const SizedBox(width: 10),
+              const Icon(Icons.arrow_forward_rounded, color: Colors.black, size: 20)
+            ],
           ),
         ),
       ),
@@ -466,10 +507,10 @@ class _HomePageState extends State<HomePage> {
     bool isMobile = MediaQuery.of(context).size.width < 600;
     return Container(
       width: double.infinity,
-      padding: EdgeInsets.symmetric(vertical: isMobile ? 30 : 50, horizontal: 20),
+      padding: EdgeInsets.symmetric(vertical: isMobile ? 40 : 70, horizontal: 20),
       decoration: BoxDecoration(
-        color: AppTheme.accent.withValues(alpha: 0.05),
-        border: Border.symmetric(horizontal: BorderSide(color: AppTheme.accent.withValues(alpha: 0.2), width: 1)),
+        color: AppTheme.accent.withValues(alpha: 0.03),
+        border: Border.symmetric(horizontal: BorderSide(color: AppTheme.accent.withValues(alpha: 0.1), width: 1)),
       ),
       child: Column(
         children: [
@@ -477,18 +518,159 @@ class _HomePageState extends State<HomePage> {
             context, provider, 'strip_text_1', 'We provide complete event manpower solutions',
             Text(
               provider.elementSettings['strip_text_1_text'] ?? 'We provide complete event manpower solutions',
-              style: AppTheme.getHeadingStyle(fontSize: isMobile ? 22 : 32, color: AppTheme.textMain, weight: FontWeight.w600),
+              style: AppTheme.getHeadingStyle(fontSize: isMobile ? 24 : 36, color: AppTheme.textMain, weight: FontWeight.w600),
               textAlign: TextAlign.center,
             )
           ),
-          const SizedBox(height: 10),
+          const SizedBox(height: 15),
           _buildEditable(
             context, provider, 'strip_text_2', '—from security to hospitality— all in one place.',
             Text(
               provider.elementSettings['strip_text_2_text'] ?? '—from security to hospitality— all in one place.',
-              style: AppTheme.getBodyStyle(fontSize: isMobile ? 16 : 22, color: AppTheme.accent, weight: FontWeight.w400).copyWith(fontStyle: FontStyle.italic),
+              style: AppTheme.getBodyStyle(fontSize: isMobile ? 16 : 24, color: AppTheme.accent, weight: FontWeight.w400).copyWith(fontStyle: FontStyle.italic),
               textAlign: TextAlign.center,
             )
+          ),
+        ],
+      ),
+    );
+  }
+
+  // ==========================================
+  // 🆕 OUR EXPERTISE (SERVICES) SECTION
+  // ==========================================
+  Widget _buildExpertiseSection(BuildContext context, ThemeProvider provider) {
+    bool isMobile = MediaQuery.of(context).size.width < 800;
+    
+    return Container(
+      padding: EdgeInsets.symmetric(vertical: 80, horizontal: isMobile ? 20 : 60),
+      child: Column(
+        children: [
+          _buildEditable(
+            context, provider, 'expertise_title', 'Our Core Expertise',
+            Text(
+              provider.elementSettings['expertise_title_text'] ?? 'Our Core Expertise',
+              style: AppTheme.getHeadingStyle(fontSize: isMobile ? 32 : 52, color: AppTheme.textMain, weight: FontWeight.w800).copyWith(letterSpacing: -1.0),
+              textAlign: TextAlign.center,
+            )
+          ),
+          const SizedBox(height: 50),
+          Wrap(
+            spacing: 30, runSpacing: 30, alignment: WrapAlignment.center,
+            children: [
+              _buildExpertiseCard(context, provider, 'exp1', Icons.business_center, 'Corporate Events', 'Seamless management for conferences, seminars, and corporate galas.'),
+              _buildExpertiseCard(context, provider, 'exp2', Icons.favorite, 'Luxury Weddings', 'Premium hospitality and security to make your special day flawless.'),
+              _buildExpertiseCard(context, provider, 'exp3', Icons.music_note, 'Live Concerts', 'Robust crowd management and artist security for massive audiences.'),
+            ],
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget _buildExpertiseCard(BuildContext context, ThemeProvider provider, String id, IconData icon, String defaultTitle, String defaultDesc) {
+    bool isMobile = MediaQuery.of(context).size.width < 600;
+    return _ParallaxWrapper(
+      child: Container(
+        width: isMobile ? double.infinity : 350,
+        padding: const EdgeInsets.all(35),
+        decoration: AppTheme.getCardDecoration(isHovered: false).copyWith(
+          border: Border.all(color: AppTheme.accent.withValues(alpha: 0.1)),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Icon(icon, size: 40, color: AppTheme.accent),
+            const SizedBox(height: 20),
+            _buildEditable(
+              context, provider, '${id}_title', defaultTitle,
+              Text(provider.elementSettings['${id}_title_text'] ?? defaultTitle, style: AppTheme.getHeadingStyle(fontSize: 22, color: AppTheme.textMain, weight: FontWeight.bold))
+            ),
+            const SizedBox(height: 15),
+            _buildEditable(
+              context, provider, '${id}_desc', defaultDesc,
+              Text(provider.elementSettings['${id}_desc_text'] ?? defaultDesc, style: AppTheme.getBodyStyle(fontSize: 15, color: AppTheme.textSub).copyWith(height: 1.6))
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // ==========================================
+  // 🆕 COMPANY STATS SECTION (TRUST BUILDER)
+  // ==========================================
+  Widget _buildStatsSection(BuildContext context, ThemeProvider provider) {
+    bool isMobile = MediaQuery.of(context).size.width < 700;
+    return Container(
+      width: double.infinity,
+      margin: EdgeInsets.symmetric(vertical: 40, horizontal: isMobile ? 20 : 60),
+      padding: EdgeInsets.symmetric(vertical: 50, horizontal: 20),
+      decoration: BoxDecoration(
+        color: AppTheme.accent.withValues(alpha: 0.05),
+        borderRadius: BorderRadius.circular(AppTheme.getGlobalRadius()),
+        border: Border.all(color: AppTheme.accent.withValues(alpha: 0.3)),
+      ),
+      child: Wrap(
+        alignment: WrapAlignment.spaceEvenly,
+        spacing: 40, runSpacing: 40,
+        children: [
+          _buildStatItem(context, provider, 'stat1', '100+', 'Successful Events'),
+          _buildStatItem(context, provider, 'stat2', '1000+', 'Trained Personnel'),
+          _buildStatItem(context, provider, 'stat3', '100%', 'Client Satisfaction'),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildStatItem(BuildContext context, ThemeProvider provider, String id, String defaultNum, String defaultLabel) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        _buildEditable(
+          context, provider, '${id}_num', defaultNum,
+          Text(provider.elementSettings['${id}_num_text'] ?? defaultNum, style: AppTheme.getHeadingStyle(fontSize: 48, color: AppTheme.accent, weight: FontWeight.w900))
+        ),
+        const SizedBox(height: 8),
+        _buildEditable(
+          context, provider, '${id}_label', defaultLabel,
+          Text(provider.elementSettings['${id}_label_text'] ?? defaultLabel, style: AppTheme.getBodyStyle(fontSize: 16, color: AppTheme.textMain, weight: FontWeight.w600).copyWith(letterSpacing: 1.5))
+        ),
+      ],
+    );
+  }
+
+  // ==========================================
+  // ⭐ WHY FORTUNE SECTION
+  // ==========================================
+  Widget _buildWhyFortuneSection(BuildContext context, ThemeProvider provider) {
+    bool isMobile = MediaQuery.of(context).size.width < 600;
+    
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: isMobile ? 20 : 40, vertical: 80), 
+      child: Column(
+        children: [
+          _buildEditable(
+            context, provider, 'why_title', 'Why Choose Us?', 
+            Text(
+              provider.elementSettings['why_title_text'] ?? 'Why Choose Us?', 
+              style: AppTheme.getHeadingStyle(fontSize: isMobile ? 32 : 52, color: AppTheme.textMain, weight: FontWeight.w800).copyWith(letterSpacing: -1.0),
+              textAlign: TextAlign.center, 
+            )
+          ),
+          
+          const SizedBox(height: 60),
+          
+          Wrap(
+            spacing: AppTheme.layoutStyle == 'dense' ? 20 : 40, 
+            runSpacing: AppTheme.layoutStyle == 'dense' ? 20 : 40, 
+            alignment: WrapAlignment.center, 
+            children: [
+              _buildFeature(context, provider, 'f1', Icons.verified_user_outlined, 'Trained Professionals', 'Every executive, coordinator, porter, and security staff follows rigorous industry standards.'),
+              _buildFeature(context, provider, 'f2', Icons.groups_outlined, 'Complete Staffing Solutions', 'From elite hospitality to robust security, we provide all critical manpower under one roof.'),
+              _buildFeature(context, provider, 'f3', Icons.access_time_outlined, 'High Reliability', 'Punctual, disciplined, and flawlessly event-ready staff at your command.'),
+              _buildFeature(context, provider, 'f4', Icons.star_outline, 'Experienced Team Leaders', 'Highly skilled supervisors ensuring absolute smooth execution on-ground.'),
+            ],
           ),
         ],
       ),
@@ -549,12 +731,12 @@ class _HomePageState extends State<HomePage> {
   }
 
   // ==========================================
-  // ⭐ NEW: CUSTOMER RATINGS & REVIEWS SECTION
+  // ⭐ CUSTOMER RATINGS & REVIEWS SECTION
   // ==========================================
   Widget _buildCustomerRatingsSection(BuildContext context, ThemeProvider provider) {
     bool isMobile = MediaQuery.of(context).size.width < 600;
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: 80),
+      padding: const EdgeInsets.symmetric(vertical: 100),
       child: Column(
         children: [
           _buildEditable(
@@ -565,10 +747,10 @@ class _HomePageState extends State<HomePage> {
               textAlign: TextAlign.center,
             )
           ),
-          const SizedBox(height: 50),
+          const SizedBox(height: 60),
           
           SizedBox(
-            height: 240, // Height for the review cards
+            height: 250, 
             child: ListView(
               scrollDirection: Axis.horizontal,
               physics: const BouncingScrollPhysics(),
@@ -577,7 +759,6 @@ class _HomePageState extends State<HomePage> {
                 _buildReviewCard(context, provider, 'rev1', 'Absolutely flawless execution. The security team was highly professional and polite. Will definitely hire again.', 'Rajesh Verma', 'Corporate Event Planner'),
                 _buildReviewCard(context, provider, 'rev2', 'Best event management staffing we have ever hired. They handled our crowd of 5000+ smoothly without any chaos.', 'Amit Singhal', 'Wedding Organizer'),
                 _buildReviewCard(context, provider, 'rev3', 'The valet and hospitality team made our VIP guests feel incredibly special. Highly recommended!', 'Neha Sharma', 'Private Gala Host'),
-                _buildReviewCard(context, provider, 'rev4', 'Extremely punctual and disciplined. Took all the stress off my shoulders during the entire concert.', 'Vikram Singh', 'Concert Director'),
               ],
             ),
           )
@@ -591,16 +772,18 @@ class _HomePageState extends State<HomePage> {
     bool isMobile = MediaQuery.of(context).size.width < 600;
     return _ParallaxWrapper(
       child: Container(
-        width: isMobile ? 300 : 380,
+        width: isMobile ? 300 : 400,
         margin: const EdgeInsets.symmetric(horizontal: 15),
-        padding: const EdgeInsets.all(25),
-        decoration: AppTheme.getCardDecoration(isHovered: false),
+        padding: const EdgeInsets.all(30),
+        decoration: AppTheme.getCardDecoration(isHovered: false).copyWith(
+          border: Border.all(color: AppTheme.accent.withValues(alpha: 0.15)),
+        ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Row(
-              children: List.generate(5, (index) => const Icon(Icons.star, color: Colors.amber, size: 22)),
+              children: List.generate(5, (index) => const Icon(Icons.star_rounded, color: Colors.amber, size: 24)),
             ),
             const SizedBox(height: 20),
             Expanded(
@@ -608,71 +791,30 @@ class _HomePageState extends State<HomePage> {
                 context, provider, '${id}_text', defaultReview,
                 Text(
                   provider.elementSettings['${id}_text_text'] ?? defaultReview,
-                  style: AppTheme.getBodyStyle(fontSize: 15, color: AppTheme.textSub).copyWith(fontStyle: FontStyle.italic, height: 1.5),
+                  style: AppTheme.getBodyStyle(fontSize: 16, color: AppTheme.textSub).copyWith(fontStyle: FontStyle.italic, height: 1.5),
                   maxLines: 4,
                   overflow: TextOverflow.ellipsis,
                 )
               ),
             ),
-            const SizedBox(height: 10),
+            const SizedBox(height: 15),
             _buildEditable(
               context, provider, '${id}_name', defaultName,
               Text(
                 provider.elementSettings['${id}_name_text'] ?? defaultName,
-                style: AppTheme.getBodyStyle(fontSize: 16, color: AppTheme.textMain, weight: FontWeight.bold),
+                style: AppTheme.getBodyStyle(fontSize: 18, color: AppTheme.textMain, weight: FontWeight.bold),
               )
             ),
-            const SizedBox(height: 2),
+            const SizedBox(height: 4),
             _buildEditable(
               context, provider, '${id}_role', defaultRole,
               Text(
                 provider.elementSettings['${id}_role_text'] ?? defaultRole,
-                style: AppTheme.getBodyStyle(fontSize: 12, color: AppTheme.accent),
+                style: AppTheme.getBodyStyle(fontSize: 13, color: AppTheme.accent, weight: FontWeight.w600).copyWith(letterSpacing: 1.0),
               )
             ),
           ],
         ),
-      ),
-    );
-  }
-
-  // ==========================================
-  // ⭐ WHY FORTUNE SECTION
-  // ==========================================
-  Widget _buildWhyFortuneSection(BuildContext context, ThemeProvider provider) {
-    bool isMobile = MediaQuery.of(context).size.width < 600;
-    
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: isMobile ? 20 : 40, vertical: 80), 
-      color: Colors.transparent, 
-      child: Column(
-        children: [
-          _buildEditable(
-            context, provider, 'why_title', 'Why Choose Us?', 
-            Text(
-              provider.elementSettings['why_title_text'] ?? 'Why Choose Us?', 
-              style: AppTheme.getHeadingStyle(fontSize: isMobile ? 32 : 52, color: AppTheme.textMain, weight: FontWeight.w800).copyWith(letterSpacing: -1.0),
-              textAlign: TextAlign.center, 
-            )
-          ),
-          
-          const SizedBox(height: 60),
-          
-          Wrap(
-            spacing: AppTheme.layoutStyle == 'dense' ? 20 : 40, 
-            runSpacing: AppTheme.layoutStyle == 'dense' ? 20 : 40, 
-            alignment: WrapAlignment.center, 
-            children: [
-              _buildFeature(context, provider, 'f1', Icons.verified_user_outlined, 'Trained Professionals', 'Every executive, coordinator, porter, and security staff follows rigorous industry standards.'),
-              _buildFeature(context, provider, 'f2', Icons.groups_outlined, 'Complete Staffing Solutions', 'From elite hospitality to robust security, we provide all critical manpower under one roof.'),
-              _buildFeature(context, provider, 'f3', Icons.access_time_outlined, 'High Reliability', 'Punctual, disciplined, and flawlessly event-ready staff at your command.'),
-              _buildFeature(context, provider, 'f4', Icons.star_outline, 'Experienced Team Leaders', 'Highly skilled supervisors ensuring absolute smooth execution on-ground.'),
-              _buildFeature(context, provider, 'f5', Icons.health_and_safety_outlined, 'Safety & Quality First', 'An unyielding emphasis on guest safety, seamless operations, and total event control.'),
-              _buildFeature(context, provider, 'f6', Icons.zoom_out_map_outlined, 'Flexible & Scalable', 'Adaptable manpower available instantly for small, medium, and massive-scale events.'),
-              _buildFeature(context, provider, 'f7', Icons.handshake_outlined, 'Client-Focused Approach', 'We work intimately with event companies to perfectly match their exact, unique requirements.'),
-            ],
-          ),
-        ],
       ),
     );
   }
@@ -687,7 +829,7 @@ class _HomePageState extends State<HomePage> {
         context, provider, 'feat_${id}_title', defaultTitle, 
         Text(
           provider.elementSettings['feat_${id}_title_text'] ?? defaultTitle, 
-          style: AppTheme.getHeadingStyle(fontSize: 18, color: AppTheme.textMain, weight: FontWeight.w700), 
+          style: AppTheme.getHeadingStyle(fontSize: 20, color: AppTheme.textMain, weight: FontWeight.w700), 
           textAlign: TextAlign.center
         )
       ),
@@ -695,7 +837,7 @@ class _HomePageState extends State<HomePage> {
         context, provider, 'feat_${id}_desc', defaultDesc, 
         Text(
           provider.elementSettings['feat_${id}_desc_text'] ?? defaultDesc, 
-          style: AppTheme.getBodyStyle(fontSize: 14, color: AppTheme.textSub).copyWith(height: 1.6), 
+          style: AppTheme.getBodyStyle(fontSize: 15, color: AppTheme.textSub).copyWith(height: 1.6), 
           textAlign: TextAlign.center
         )
       ),
@@ -773,13 +915,13 @@ class _FeatureCardState extends State<_FeatureCard> {
           children: [
             AnimatedContainer(
               duration: const Duration(milliseconds: 300),
-              padding: const EdgeInsets.all(15),
+              padding: const EdgeInsets.all(18),
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 color: isHovered ? AppTheme.accent : AppTheme.accent.withValues(alpha: 0.1),
                 boxShadow: (AppTheme.enableGlow && isHovered) ? [BoxShadow(color: AppTheme.accent.withValues(alpha: 0.4), blurRadius: 20)] : []
               ),
-              child: Icon(widget.icon, size: 35, color: isHovered ? Colors.white : AppTheme.accent), 
+              child: Icon(widget.icon, size: 38, color: isHovered ? Colors.black : AppTheme.accent), 
             ),
             const SizedBox(height: 25), 
             widget.titleWidget, 
